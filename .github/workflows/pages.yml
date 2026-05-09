@@ -2,15 +2,6 @@ name: Deploy Dashboard
 
 on:
   workflow_dispatch:
-  push:
-    branches: ["main"]
-    paths:
-      - "apps/dashboard/**"
-      - "models/**"
-      - "reports/**"
-      - "generated/**"
-      - "packages/**"
-      - "scripts/build_dashboard_data.js"
 
 permissions:
   contents: read

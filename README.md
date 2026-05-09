@@ -8,7 +8,7 @@ This repo is designed to be the source of truth for:
 - Current champion and specialist model metadata.
 - Backtest and forward-paper reports.
 - Pattern recognition output.
-- GitHub Pages dashboard data.
+- Dashboard data for local viewing, GitHub Actions artifacts, or GitHub Pages if available.
 - Nightly GitHub Actions backtest/pattern-lab runs.
 
 ## Current Flow
@@ -24,7 +24,7 @@ flowchart LR
   SP --> TO["Tournaments"]
   TO --> CH["Champion Registry"]
   CH --> PE["Pine Export"]
-  CH --> DB["GitHub Pages Dashboard"]
+  CH --> DB["Dashboard"]
 ```
 
 ## Main Commands
@@ -56,3 +56,16 @@ GitHub stores code, models, reports, Pine exports, and compressed ledgers. It sh
 5. Run `npm run lab:report` to update dashboard data.
 
 This is paper/analytics only. It does not place trades.
+
+## Dashboard
+
+Local dashboard:
+
+```bash
+npm run lab:report
+python3 -m http.server 8080 --directory apps/dashboard/public
+```
+
+Open `http://localhost:8080`.
+
+For GitHub, the `Build Dashboard Artifact` workflow uploads the static dashboard. GitHub Pages is included as a manual workflow, but private Pages is not available on every GitHub plan.

@@ -1,0 +1,40 @@
+name: Build Dashboard Artifact
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "apps/dashboard/**"
+      - "models/**"
+      - "reports/**"
+      - "generated/**"
+      - "packages/**"
+      - "scripts/build_dashboard_data.js"
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install
+        run: npm install
+
+      - name: Build dashboard
+        run: npm run lab:report
+
+      - name: Upload dashboard artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: fusion-dashboard-static
+          path: apps/dashboard/public
+          retention-days: 30
