@@ -13,10 +13,10 @@ python3 -m http.server 8080 --directory apps/dashboard/public
 
 Open `http://localhost:8080`.
 
-## GitHub
+## GitHub Pages
 
-This repo is private. The current GitHub plan does not support GitHub Pages for this private repository, so the Pages workflow is manual-only and should be enabled only if the repo becomes public or the account already supports private Pages.
+This repo is public so GitHub Pages can deploy without a paid private-Pages plan.
 
-The free fallback is the `Build Dashboard Artifact` workflow. It uploads the dashboard as an Actions artifact named `fusion-dashboard-static`.
+The `Deploy Dashboard` workflow publishes `apps/dashboard/public` through GitHub Pages whenever dashboard/model/report files change on `main`.
 
-No paid upgrade is required for the artifact flow.
+The free fallback is still the `Build Dashboard Artifact` workflow. It uploads the dashboard as an Actions artifact named `fusion-dashboard-static`.

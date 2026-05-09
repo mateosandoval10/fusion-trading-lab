@@ -68,4 +68,4 @@ python3 -m http.server 8080 --directory apps/dashboard/public
 
 Open `http://localhost:8080`.
 
-For GitHub, the `Build Dashboard Artifact` workflow uploads the static dashboard. GitHub Pages is included as a manual workflow, but private Pages is not available on every GitHub plan.
+For GitHub, the public repo deploys the static dashboard through the `Deploy Dashboard` workflow. The `Build Dashboard Artifact` workflow remains as a backup artifact export.
