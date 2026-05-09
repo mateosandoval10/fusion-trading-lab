@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { createReadStream, existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import readline from 'node:readline';
-import { dirname, join, relative } from 'node:path';
+import { basename, dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -252,8 +252,9 @@ function normalizeTrade(row, sourcePath) {
   const trigger = String(combo.triggerMode || trade.triggerMode || row.triggerMode || 'unknown').toLowerCase();
   const session = String(combo.session || trade.session || row.session || 'all').toLowerCase();
   const date = dateFromTime(trade.entryTime || row.entryTime || trade.receivedAt || row.receivedAt);
+  const source = relative(root, sourcePath).startsWith('..') ? `external/${basename(sourcePath)}` : relative(root, sourcePath);
   const normalized = {
-    source: relative(root, sourcePath),
+    source,
     symbol,
     family: symbolFamily(symbol),
     side: String(side).toLowerCase(),
@@ -469,7 +470,7 @@ const report = {
     maxLedgerLines,
     maxLedgerFiles,
     maxTotalTrades,
-    externalLedgerDirs,
+    externalLedgerDirs: externalLedgerDirs.length ? [`${externalLedgerDirs.length} external ledger director${externalLedgerDirs.length === 1 ? 'y' : 'ies'}`] : [],
     featureCount: featureNames.length,
   },
   data: {
