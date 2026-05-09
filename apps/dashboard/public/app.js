@@ -6,6 +6,16 @@ const money = (value) => new Intl.NumberFormat('en-US', {
 
 const pct = (value) => `${Number(value || 0).toFixed(2)}%`;
 const num = (value) => Number(value || 0).toLocaleString();
+const price = (value) => Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: 2 });
+
+function shortTime(value) {
+  if (!value) return 'n/a';
+  const number = Number(value);
+  const date = Number.isFinite(number) && number > 0
+    ? new Date((number > 100000000000 ? number : number * 1000))
+    : new Date(value);
+  return Number.isNaN(date.getTime()) ? 'n/a' : date.toISOString().slice(0, 16).replace('T', ' ');
+}
 
 function metric(label, value, className = '') {
   return `<div class="metric"><div class="label">${label}</div><div class="value ${className}">${value}</div></div>`;
@@ -70,6 +80,68 @@ function renderSpecialists(data) {
     `<span class="${colorForNet(specialist.stress.netDollars)}">${money(specialist.stress.netDollars)}</span>`,
   ]));
   document.getElementById('specialistsTable').innerHTML = rows.join('') || row(['No specialists loaded', '', '', '', '', '', '', '']);
+}
+
+function chips(items, limit = 10) {
+  return (items || []).slice(0, limit).map((item) => `<span class="chip">${item}</span>`).join('');
+}
+
+function renderSpecialistCards(data) {
+  const specialists = data.specialists || [];
+  document.getElementById('specialistCards').innerHTML = specialists.map((specialist) => `
+    <article class="specialist-card">
+      <div>
+        <p class="eyebrow">${specialist.status}</p>
+        <h3>${specialist.name}</h3>
+        <p class="muted">${specialist.purpose || specialist.notes || 'No purpose description yet.'}</p>
+      </div>
+      <div class="metric-grid">
+        ${metric('Trades', num(specialist.metrics.trades))}
+        ${metric('Win', pct(specialist.metrics.winRate), specialist.metrics.winRate >= 85 ? 'good' : 'warn')}
+        ${metric('Net', money(specialist.metrics.netDollars), colorForNet(specialist.metrics.netDollars))}
+        ${metric('Routes', num(specialist.routeCount || 0))}
+      </div>
+      <div class="detail-list">
+        <div><strong>Built for:</strong> ${specialist.bestFor || 'Specialist route evaluation.'}</div>
+        <div><strong>Preferred use:</strong> ${specialist.preferredUse || 'n/a'}</div>
+        <div><strong>Activation:</strong> ${specialist.activation || 'n/a'}</div>
+        ${specialist.forwardFeedback ? `<div><strong>Forward feedback:</strong> ${specialist.forwardFeedback}</div>` : ''}
+        ${specialist.validationDecision ? `<div><strong>Validation:</strong> ${specialist.validationDecision}</div>` : ''}
+      </div>
+      <div>
+        <div class="muted">Triggers</div>
+        <div class="chip-row">${chips(specialist.triggers, 8) || '<span class="chip">n/a</span>'}</div>
+      </div>
+      <div>
+        <div class="muted">Symbols / universe</div>
+        <div class="chip-row">${chips(specialist.symbols, 14) || '<span class="chip">n/a</span>'}</div>
+      </div>
+    </article>
+  `).join('') || '<p class="muted">No specialist details loaded.</p>';
+}
+
+function renderTopHits(data) {
+  const symbols = data.backtestHits?.topSymbols || data.champion?.topSymbols || [];
+  document.getElementById('topSymbolsTable').innerHTML = symbols.map((item) => row([
+    `<strong>${item.symbol}</strong>`,
+    num(item.metrics?.trades ?? item.trades),
+    pct(item.metrics?.winRate ?? item.winRate),
+    `<span class="${colorForNet(item.metrics?.netDollars ?? item.netDollars)}">${money(item.metrics?.netDollars ?? item.netDollars)}</span>`,
+    money(item.metrics?.avgDollars ?? item.avgDollars),
+    item.bestTrade ? `${item.bestTrade.side} · ${money(item.bestTrade.pnlDollars)} · ${item.bestTrade.triggerMode}` : 'n/a',
+  ])).join('') || row(['No symbol hit data yet', '', '', '', '', '']);
+
+  const trades = data.backtestHits?.biggestTrades || data.champion?.biggestTrades || [];
+  document.getElementById('biggestTrades').innerHTML = trades.slice(0, 10).map((trade) => `
+    <div class="mini-card">
+      <div class="trade-line">
+        <strong>${trade.symbol} · ${trade.side}</strong>
+        <span class="${colorForNet(trade.pnlDollars)}">${money(trade.pnlDollars)}</span>
+      </div>
+      <p class="muted">${trade.triggerMode || trade.trigger} · entry ${price(trade.entry)} → exit ${price(trade.exit)} · MFE ${Number(trade.mfeR || 0).toFixed(2)}R · MAE ${Number(trade.maeR || 0).toFixed(2)}R · conf ${trade.confidence || 0}</p>
+      <p class="muted">${shortTime(trade.entryTime)} → ${shortTime(trade.exitTime)}</p>
+    </div>
+  `).join('') || '<p class="muted">No biggest-trade data yet.</p>';
 }
 
 function renderPatterns(data) {
@@ -139,6 +211,8 @@ loadDashboard()
     renderSummary(data);
     renderChampion(data);
     renderSpecialists(data);
+    renderSpecialistCards(data);
+    renderTopHits(data);
     renderPatterns(data);
     renderPine(data);
     renderCandidates(data);

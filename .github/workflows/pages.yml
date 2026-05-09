@@ -35,7 +35,7 @@ jobs:
         run: npm install
 
       - name: Build dashboard data
-        run: npm run lab:report
+        run: npm run pine:export && npm run lab:dashboard
 
       - uses: actions/configure-pages@v5
 

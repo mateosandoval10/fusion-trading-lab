@@ -30,7 +30,7 @@ jobs:
         run: npm install
 
       - name: Build dashboard
-        run: npm run lab:report
+        run: npm run pine:export && npm run lab:dashboard
 
       - name: Upload dashboard artifact
         uses: actions/upload-artifact@v4

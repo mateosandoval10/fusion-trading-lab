@@ -261,6 +261,10 @@ function normalizeTrade(row, sourcePath) {
     trigger,
     session,
     date,
+    entryTime: trade.entryTime || row.entryTime || null,
+    exitTime: trade.exitTime || row.exitTime || null,
+    entry: asNumber(trade.entry, null),
+    exit: asNumber(trade.exit, null),
     pnlDollars,
     win: pnlDollars > 0,
     mfeR: asNumber(trade.mfeR, 0),
@@ -408,6 +412,52 @@ function buildPatternSummaries(rows) {
   return { byTag, byRoute };
 }
 
+function topSymbols(rows, limit = 30) {
+  return [...groupBy(rows, (row) => row.symbol)]
+    .map(([symbol, symbolRows]) => ({ symbol, metrics: metrics(symbolRows) }))
+    .sort((a, b) => b.metrics.netDollars - a.metrics.netDollars)
+    .slice(0, limit);
+}
+
+function biggestTrades(rows, limit = 30) {
+  const seen = new Set();
+  return rows
+    .map((row) => ({
+      symbol: row.symbol,
+      family: row.family,
+      side: row.side,
+      trigger: row.trigger,
+      session: row.session,
+      date: row.date,
+      entryTime: row.entryTime,
+      exitTime: row.exitTime,
+      entry: row.entry,
+      exit: row.exit,
+      pnlDollars: row.pnlDollars,
+      mfeR: row.mfeR,
+      maeR: row.maeR,
+      confidence: row.confidence,
+      source: row.source,
+    }))
+    .sort((a, b) => b.pnlDollars - a.pnlDollars)
+    .filter((trade) => {
+      const key = [
+        trade.symbol,
+        trade.side,
+        trade.trigger,
+        trade.entryTime,
+        trade.exitTime,
+        Number(trade.entry || 0).toFixed(4),
+        Number(trade.exit || 0).toFixed(4),
+        Number(trade.pnlDollars || 0).toFixed(2),
+      ].join('|');
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, limit);
+}
+
 function generateSpecialistCandidates(patterns) {
   return patterns.byRoute
     .filter((route) => route.metrics.trades >= minPatternTrades)
@@ -487,6 +537,8 @@ const report = {
   },
   patterns,
   clusters,
+  topSymbols: topSymbols(trades),
+  biggestTrades: biggestTrades(trades),
   specialistCandidates: candidates,
   dailyPerformance: dailyPerformance(trades).slice(-400),
 };

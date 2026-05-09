@@ -61,10 +61,141 @@ function metricCompact(metrics = {}) {
   };
 }
 
+function sideText(trade = {}) {
+  return trade.side || (trade.dir === 1 ? 'long' : trade.dir === -1 ? 'short' : 'unknown');
+}
+
+function dateTime(epoch) {
+  const value = Number(epoch || 0);
+  if (!Number.isFinite(value) || value <= 0) return 'n/a';
+  return new Date((value > 100000000000 ? value : value * 1000)).toISOString();
+}
+
+function minutesBetween(start, end) {
+  const a = Number(start || 0);
+  const b = Number(end || 0);
+  if (!Number.isFinite(a) || !Number.isFinite(b) || a <= 0 || b <= 0) return null;
+  const startMs = a > 100000000000 ? a : a * 1000;
+  const endMs = b > 100000000000 ? b : b * 1000;
+  return Math.max(0, Math.round((endMs - startMs) / 60000));
+}
+
+function summarizeTradesBySymbol(trades = [], limit = 12) {
+  const bySymbol = new Map();
+  for (const trade of trades) {
+    const symbol = trade.symbol || trade.combo?.symbolFilter;
+    if (!symbol) continue;
+    const item = bySymbol.get(symbol) || {
+      symbol,
+      trades: 0,
+      wins: 0,
+      netDollars: 0,
+      grossWin: 0,
+      grossLoss: 0,
+      avgMfeR: 0,
+      avgMaeR: 0,
+      bestTrade: null,
+    };
+    const pnl = Number(trade.pnlDollars || 0);
+    item.trades += 1;
+    item.netDollars += pnl;
+    item.avgMfeR += Number(trade.mfeR || 0);
+    item.avgMaeR += Number(trade.maeR || 0);
+    if (pnl > 0) {
+      item.wins += 1;
+      item.grossWin += pnl;
+    } else {
+      item.grossLoss += Math.abs(pnl);
+    }
+    if (!item.bestTrade || pnl > item.bestTrade.pnlDollars) {
+      item.bestTrade = {
+        symbol,
+        side: sideText(trade),
+        entryTime: dateTime(trade.entryTime),
+        exitTime: dateTime(trade.exitTime),
+        minutesHeld: minutesBetween(trade.entryTime, trade.exitTime),
+        entry: trade.entry,
+        exit: trade.exit,
+        pnlDollars: pnl,
+        pnlR: trade.pnlR,
+        mfeR: trade.mfeR,
+        maeR: trade.maeR,
+        confidence: trade.confidence,
+        triggerMode: trade.combo?.triggerMode || trade.triggerMode || 'unknown',
+      };
+    }
+    bySymbol.set(symbol, item);
+  }
+  return [...bySymbol.values()]
+    .map((item) => ({
+      ...item,
+      winRate: item.trades ? item.wins / item.trades * 100 : 0,
+      profitFactor: item.grossLoss > 0 ? item.grossWin / item.grossLoss : item.grossWin > 0 ? 999 : 0,
+      avgDollars: item.trades ? item.netDollars / item.trades : 0,
+      avgMfeR: item.trades ? item.avgMfeR / item.trades : 0,
+      avgMaeR: item.trades ? item.avgMaeR / item.trades : 0,
+    }))
+    .sort((a, b) => b.netDollars - a.netDollars)
+    .slice(0, limit);
+}
+
+function summarizeBiggestTrades(trades = [], limit = 12) {
+  return trades
+    .map((trade) => ({
+      symbol: trade.symbol || trade.combo?.symbolFilter || 'unknown',
+      side: sideText(trade),
+      triggerMode: trade.combo?.triggerMode || trade.triggerMode || 'unknown',
+      entryTime: dateTime(trade.entryTime),
+      exitTime: dateTime(trade.exitTime),
+      minutesHeld: minutesBetween(trade.entryTime, trade.exitTime),
+      entry: trade.entry,
+      exit: trade.exit,
+      pnlDollars: Number(trade.pnlDollars || 0),
+      pnlR: trade.pnlR,
+      mfeR: trade.mfeR,
+      maeR: trade.maeR,
+      confidence: trade.confidence,
+    }))
+    .sort((a, b) => b.pnlDollars - a.pnlDollars)
+    .slice(0, limit);
+}
+
+function parseRouteIds(routeIds = []) {
+  const rows = routeIds.map((routeId) => {
+    const [symbol, session, direction, trigger] = String(routeId).split('|');
+    return { routeId, symbol, session, direction, trigger };
+  });
+  const countBy = (field) => [...rows.reduce((map, row) => {
+    const key = row[field] || 'unknown';
+    map.set(key, (map.get(key) || 0) + 1);
+    return map;
+  }, new Map())]
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+  return {
+    symbols: countBy('symbol').slice(0, 20),
+    triggers: countBy('trigger').slice(0, 12),
+    sessions: countBy('session').slice(0, 8),
+    directions: countBy('direction').slice(0, 8),
+    examples: rows.slice(0, 12),
+  };
+}
+
+function specialistBestFor(key, value = {}) {
+  const text = `${key} ${value.name || ''} ${value.description || ''}`.toLowerCase();
+  if (text.includes('council')) return 'Fused specialist council combining high-win and Phase17 routes.';
+  if (text.includes('powerhour')) return 'Late-day momentum scalps on whitelisted symbols.';
+  if (text.includes('profit max') || text.includes('aggressive')) return 'Higher-profit satellite signals when you accept lower win-rate risk.';
+  if (text.includes('phase17')) return 'Validated multi-trigger routing by symbol, session, and direction.';
+  if (text.includes('high win') || text.includes('conservative')) return 'Default conservative BUY/SELL labels focused on accuracy.';
+  return 'Specialist route set for paper/watchlist evaluation.';
+}
+
 function summarizeChampion(champion) {
   if (!champion) return null;
   const bestVariant = champion.bestVariant;
   const record = champion.variants?.[bestVariant];
+  const trades = record?.portfolio?.trades || [];
   return {
     updatedAt: champion.updatedAt,
     phase: champion.phase,
@@ -78,21 +209,55 @@ function summarizeChampion(champion) {
     stress: metricCompact(record?.portfolio?.stress),
     holdoutStress: metricCompact(record?.portfolio?.holdoutStress),
     byTrigger: record?.byTrigger || [],
+    byFamily: record?.byFamily || [],
+    topSymbols: summarizeTradesBySymbol(trades, 15),
+    biggestTrades: summarizeBiggestTrades(trades, 15),
     watchlist: champion.watchlists?.[bestVariant] || [],
   };
 }
 
-function summarizeSpecialists(activeModes = {}) {
-  return Object.entries(activeModes.activeModes || activeModes || {}).map(([key, value]) => ({
-    key,
-    name: value.name || key,
-    status: value.status || 'unknown',
-    mode: value.mode || null,
-    metrics: metricCompact(value.metrics),
-    holdout: metricCompact(value.holdout),
-    stress: metricCompact(value.stress),
-    notes: value.description || value.activation || '',
-  })).sort((a, b) => b.metrics.netDollars - a.metrics.netDollars);
+function summarizeSpecialists(activeModes = {}, context = {}) {
+  return Object.entries(activeModes.activeModes || activeModes || {}).map(([key, value]) => {
+    const routeSummary = parseRouteIds(value.rules?.routeIds || []);
+    const combo = value.rules?.combo || {};
+    const phase17Routes = context.phase17?.champions?.[context.phase17?.bestMode || 'high_win']?.selectedRoutes || [];
+    const phase17Symbols = [...new Set(phase17Routes.map((route) => route.symbol).filter(Boolean))];
+    const phase17Triggers = [...new Set(phase17Routes.map((route) => route.triggerMode).filter(Boolean))];
+    const symbols = key.includes('phase19')
+      ? (value.symbols || context.champion?.watchlist || [])
+      : key.includes('phase17')
+        ? (value.symbols || value.rules?.symbols || phase17Symbols)
+        : value.symbols || value.rules?.symbols || routeSummary.symbols.map((item) => item.name);
+    const triggers = key.includes('phase19')
+      ? (context.champion?.byTrigger || []).map((item) => item.name).filter(Boolean)
+      : key.includes('phase17')
+        ? (phase17Triggers.length ? phase17Triggers : value.rules?.triggers || [])
+        : value.rules?.triggers || (combo.triggerMode ? [combo.triggerMode] : routeSummary.triggers.map((item) => item.name));
+    return {
+      key,
+      name: value.name || key,
+      status: value.status || 'unknown',
+      mode: value.mode || null,
+      source: value.source || 'unknown',
+      purpose: value.description || '',
+      bestFor: specialistBestFor(key, value),
+      preferredUse: value.rules?.preferredUse || '',
+      activation: value.rules?.activation || '',
+      forwardFeedback: value.rules?.forwardFeedback || '',
+      validationDecision: value.validationDecision || '',
+      bestMode: value.bestMode || '',
+      routeCount: value.routeCount || value.rules?.routeCount || value.metrics?.routes || 0,
+      symbols: symbols.slice(0, 60),
+      triggers: triggers.slice(0, 20),
+      sessions: combo.session ? [combo.session] : routeSummary.sessions.map((item) => item.name),
+      directions: combo.direction ? [combo.direction] : routeSummary.directions.map((item) => item.name),
+      routeExamples: routeSummary.examples,
+      metrics: metricCompact(value.metrics),
+      holdout: metricCompact(value.holdout),
+      stress: metricCompact(value.stress),
+      notes: value.description || value.activation || '',
+    };
+  }).sort((a, b) => b.metrics.netDollars - a.metrics.netDollars);
 }
 
 function latestFiles(dir, limit = 20) {
@@ -144,20 +309,29 @@ const champion = readJson(join(root, 'models', 'champions', 'current-phase19-cha
 const activeModes = readJson(join(root, 'models', 'registry', 'current-active-scalp-modes.json'), {});
 const patternLab = readJson(join(root, 'models', 'pattern-lab', 'current-pattern-lab.json'), null);
 const patternCandidates = readJson(join(root, 'models', 'specialists', 'pattern-specialist-candidates.json'), { candidates: [] });
+const phase17 = readJson(join(root, 'models', 'specialists', 'current-phase17-specialist-tournament.json'), null);
+const championSummary = summarizeChampion(champion);
 
 const dashboard = {
   updatedAt: new Date().toISOString(),
-  champion: summarizeChampion(champion),
-  specialists: summarizeSpecialists(activeModes),
+  champion: championSummary,
+  specialists: summarizeSpecialists(activeModes, { champion: championSummary, phase17 }),
   patternLab: patternLab ? {
     updatedAt: patternLab.updatedAt,
     data: patternLab.data,
     global: patternLab.global,
     topPatterns: patternLab.patterns?.byTag?.slice(0, 20) || [],
     topRoutes: patternLab.patterns?.byRoute?.slice(0, 30) || [],
+    topSymbols: patternLab.topSymbols?.slice(0, 30) || [],
+    biggestTrades: patternLab.biggestTrades?.slice(0, 30) || [],
     clusters: patternLab.clusters,
     dailyPerformance: patternLab.dailyPerformance || [],
   } : null,
+  backtestHits: {
+    source: 'Pattern Lab sampled ledgers',
+    topSymbols: patternLab?.topSymbols?.slice(0, 30) || summarizeChampion(champion)?.topSymbols || [],
+    biggestTrades: patternLab?.biggestTrades?.slice(0, 30) || summarizeChampion(champion)?.biggestTrades || [],
+  },
   patternCandidates: patternCandidates.candidates || [],
   forward: summarizeForward(),
   pine: pineStatus(),
