@@ -20,3 +20,11 @@ This repo is public so GitHub Pages can deploy without a paid private-Pages plan
 The `Deploy Dashboard` workflow publishes `apps/dashboard/public` through GitHub Pages whenever dashboard/model/report files change on `main`.
 
 The free fallback is still the `Build Dashboard Artifact` workflow. It uploads the dashboard as an Actions artifact named `fusion-dashboard-static`.
+
+## Phase21 Panels
+
+The dashboard now includes a canonical data panel and specialist factory table:
+
+- `Phase21 Canonical Data` shows raw trades, deduped canonical trades, duplicates removed, route count, symbol count, global metrics, and top route quality.
+- `Phase21 Specialist Factory` shows deduped specialist candidates with consistency, outlier, drawdown, feature-boost, and target suggestions.
+- `Biggest Stock Hits` now prefers the canonical symbol manifest when available, so repeated ledger rows do not inflate the leaderboard.

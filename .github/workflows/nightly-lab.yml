@@ -39,7 +39,7 @@ jobs:
       - name: Compress ledgers and reports
         run: |
           mkdir -p artifacts
-          tar -czf artifacts/fusion-lab-reports.tgz reports models generated apps/dashboard/public/data || true
+          tar -czf artifacts/fusion-lab-reports.tgz reports models generated data/canonical apps/dashboard/public/data || true
           tar -czf artifacts/fusion-lab-ledgers.tgz ledgers optimization-results/forward-tests optimization-results/local-runs || true
 
       - name: Upload reports artifact

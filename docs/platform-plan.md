@@ -12,10 +12,19 @@
 
 - Read historical trade ledgers and forward-paper outcomes.
 - Extract feature vectors from every signal/trade.
+- Deduplicate repeated ledger rows into the Phase21 canonical trade spine.
 - Build winner and loser prototypes.
 - Cluster trades into repeatable pattern families.
 - Generate specialist candidates from durable patterns.
 - Promote only candidates passing train/test/holdout/stress.
+
+## Phase B2: Canonical Data + Specialist Factory
+
+- Store compact canonical summaries in `data/canonical/`.
+- Keep full raw trade ledgers out of git; use GitHub Actions artifacts or external storage.
+- Score routes by trades, unique days, unique weeks, win rate, profit factor, drawdown, loss streak, outlier dependence, and feature edges.
+- Generate `phase21-specialist-factory` candidates for tournament promotion.
+- Use the dashboard to show which routes are durable versus merely lucky backtest spikes.
 
 ## Phase C: Live Closed Loop
 

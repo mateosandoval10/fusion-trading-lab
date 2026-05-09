@@ -29,6 +29,13 @@ function colorForNet(value) {
   return Number(value || 0) >= 0 ? 'good' : 'bad';
 }
 
+function colorForQuality(value) {
+  const number = Number(value || 0);
+  if (number >= 78) return 'good';
+  if (number >= 62) return 'warn';
+  return 'bad';
+}
+
 async function loadDashboard() {
   const response = await fetch('./data/dashboard.json', { cache: 'no-store' });
   if (!response.ok) throw new Error(`dashboard.json ${response.status}`);
@@ -38,14 +45,49 @@ async function loadDashboard() {
 function renderSummary(data) {
   const champion = data.champion;
   const pattern = data.patternLab;
+  const canonical = data.canonical;
   const forward = data.forward?.latestPhase18?.metrics;
   document.getElementById('updatedAt').textContent = `Updated ${new Date(data.updatedAt).toLocaleString()}`;
   document.getElementById('summaryCards').innerHTML = [
     metric('Champion Net', money(champion?.metrics?.netDollars), colorForNet(champion?.metrics?.netDollars)),
     metric('Champion Win', pct(champion?.metrics?.winRate), 'good'),
-    metric('Pattern Trades', num(pattern?.data?.trades || 0)),
+    metric('Canonical Trades', num(canonical?.stats?.canonicalTrades || pattern?.data?.trades || 0)),
     metric('Forward Net', money(forward?.netDollars || 0), colorForNet(forward?.netDollars)),
   ].join('');
+}
+
+function renderCanonical(data) {
+  const canonical = data.canonical || {};
+  const stats = canonical.stats || {};
+  const metrics = canonical.globalMetrics || {};
+  document.getElementById('canonicalBadge').textContent = canonical.updatedAt
+    ? `Updated ${new Date(canonical.updatedAt).toLocaleString()}`
+    : 'No canonical data';
+  document.getElementById('canonicalMetrics').innerHTML = [
+    metric('Raw Trades', num(stats.rawTrades || 0)),
+    metric('Canonical Trades', num(stats.canonicalTrades || 0), 'good'),
+    metric('Duplicates Removed', num(stats.duplicatesRemoved || 0), 'warn'),
+    metric('Duplicate Rate', pct(stats.duplicateRate || 0), stats.duplicateRate > 10 ? 'warn' : ''),
+    metric('Unique Routes', num(stats.uniqueRoutes || 0)),
+    metric('Unique Symbols', num(stats.uniqueSymbols || 0)),
+    metric('Global Win', pct(metrics.winRate || 0), metrics.winRate >= 70 ? 'good' : 'warn'),
+    metric('Global Net', money(metrics.netDollars || 0), colorForNet(metrics.netDollars)),
+    metric('Max DD', money(metrics.maxDrawdownDollars || 0), 'warn'),
+    metric('Loss Streak', num(metrics.maxLossStreak || 0)),
+    metric('Factory Candidates', num((data.specialistFactory || []).length)),
+    metric('Weeks Covered', num(stats.uniqueWeeks || 0)),
+  ].join('');
+
+  const routes = canonical.topRoutes || [];
+  document.getElementById('canonicalRoutesTable').innerHTML = routes.slice(0, 20).map((route) => row([
+    `<strong>${route.symbol}</strong><br><span class="muted">${route.trigger} · ${route.session} · ${route.side}</span>`,
+    `${num(route.consistency?.uniqueDays || 0)} / ${num(route.consistency?.uniqueWeeks || 0)}`,
+    num(route.metrics?.trades || 0),
+    pct(route.metrics?.winRate || 0),
+    `<span class="${colorForNet(route.metrics?.netDollars)}">${money(route.metrics?.netDollars)}</span>`,
+    `<span class="${colorForQuality(route.qualityScore)}">${Number(route.qualityScore || 0).toFixed(1)}</span>`,
+    route.validation?.passed ? '<span class="good">Passed</span>' : '<span class="warn">Needs proof</span>',
+  ])).join('') || row(['No canonical routes yet', '', '', '', '', '', '']);
 }
 
 function renderChampion(data) {
@@ -181,6 +223,22 @@ function renderCandidates(data) {
   ])).join('') || row(['No candidates yet', '', '', '', '', '', '', '', '']);
 }
 
+function renderFactory(data) {
+  const candidates = data.specialistFactory || data.canonical?.factoryCandidates || [];
+  document.getElementById('factoryTable').innerHTML = candidates.slice(0, 100).map((candidate) => row([
+    `<strong>${candidate.id}</strong><br><span class="muted">${candidate.family}</span>`,
+    candidate.status,
+    `${candidate.symbol} · ${candidate.triggerMode}<br><span class="muted">${candidate.session} · ${candidate.side}</span>`,
+    num(candidate.metrics?.trades || 0),
+    pct(candidate.metrics?.winRate || 0),
+    `<span class="${colorForNet(candidate.metrics?.netDollars)}">${money(candidate.metrics?.netDollars)}</span>`,
+    `<span class="${colorForQuality(candidate.qualityScore)}">${Number(candidate.qualityScore || 0).toFixed(1)}</span>`,
+    `${num(candidate.consistency?.uniqueDays || 0)}d / ${num(candidate.consistency?.uniqueWeeks || 0)}w`,
+    `${candidate.suggestedRules?.targetR || 'n/a'}R`,
+    (candidate.featureBoosts || []).slice(0, 3).map((edge) => `${edge.feature} +${edge.edge}`).join(', ') || 'n/a',
+  ])).join('') || row(['No factory candidates yet', '', '', '', '', '', '', '', '', '']);
+}
+
 function renderDaily(data) {
   const daily = data.patternLab?.dailyPerformance || [];
   document.getElementById('dailyTable').innerHTML = daily.slice(-120).reverse().map((item) => row([
@@ -209,6 +267,7 @@ function renderForward(data) {
 loadDashboard()
   .then((data) => {
     renderSummary(data);
+    renderCanonical(data);
     renderChampion(data);
     renderSpecialists(data);
     renderSpecialistCards(data);
@@ -216,6 +275,7 @@ loadDashboard()
     renderPatterns(data);
     renderPine(data);
     renderCandidates(data);
+    renderFactory(data);
     renderDaily(data);
     renderForward(data);
   })

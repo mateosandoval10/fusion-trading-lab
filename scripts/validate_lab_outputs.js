@@ -9,7 +9,10 @@ const required = [
   'models/champions/current-phase19-champion-council-fusion.json',
   'models/pattern-lab/current-pattern-lab.json',
   'models/specialists/pattern-specialist-candidates.json',
+  'models/specialists/phase21-specialist-factory.json',
+  'data/canonical/canonical-summary.json',
   'apps/dashboard/public/data/dashboard.json',
+  'apps/dashboard/public/data/canonical-data.json',
   'apps/dashboard/public/index.html',
   'generated/fusionv3_codex_clean_tradingview.pine',
 ];
@@ -23,5 +26,7 @@ if (missing.length) {
 const dashboard = JSON.parse(readFileSync(join(root, 'apps/dashboard/public/data/dashboard.json'), 'utf8'));
 if (!dashboard.champion?.bestVariant) throw new Error('Dashboard has no champion bestVariant');
 if (!dashboard.pine?.hasClosedLoopAlert) throw new Error('Pine export does not expose closed-loop alert payload');
+if (!dashboard.canonical?.stats?.canonicalTrades) throw new Error('Dashboard has no canonical trade spine');
+if (!Array.isArray(dashboard.specialistFactory)) throw new Error('Dashboard has no Phase21 specialist factory list');
 
 console.log('Lab validation passed');

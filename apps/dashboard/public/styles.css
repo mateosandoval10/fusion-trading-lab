@@ -153,6 +153,10 @@ h2 {
   overflow: auto;
 }
 
+.compact-table {
+  margin-top: 1rem;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;

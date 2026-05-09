@@ -309,6 +309,9 @@ const champion = readJson(join(root, 'models', 'champions', 'current-phase19-cha
 const activeModes = readJson(join(root, 'models', 'registry', 'current-active-scalp-modes.json'), {});
 const patternLab = readJson(join(root, 'models', 'pattern-lab', 'current-pattern-lab.json'), null);
 const patternCandidates = readJson(join(root, 'models', 'specialists', 'pattern-specialist-candidates.json'), { candidates: [] });
+const canonicalData = readJson(join(root, 'data', 'canonical', 'canonical-summary.json'), null)
+  || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'canonical-data.json'), null);
+const specialistFactory = readJson(join(root, 'models', 'specialists', 'phase21-specialist-factory.json'), { candidates: [] });
 const phase17 = readJson(join(root, 'models', 'specialists', 'current-phase17-specialist-tournament.json'), null);
 const championSummary = summarizeChampion(champion);
 
@@ -327,12 +330,23 @@ const dashboard = {
     clusters: patternLab.clusters,
     dailyPerformance: patternLab.dailyPerformance || [],
   } : null,
+  canonical: canonicalData ? {
+    updatedAt: canonicalData.updatedAt,
+    source: canonicalData.source,
+    config: canonicalData.config,
+    stats: canonicalData.stats,
+    globalMetrics: canonicalData.globalMetrics,
+    topRoutes: canonicalData.topRoutes?.slice(0, 60) || [],
+    topSymbols: canonicalData.topSymbols?.slice(0, 60) || [],
+    factoryCandidates: canonicalData.factoryCandidates?.slice(0, 80) || [],
+  } : null,
   backtestHits: {
-    source: 'Pattern Lab sampled ledgers',
-    topSymbols: patternLab?.topSymbols?.slice(0, 30) || summarizeChampion(champion)?.topSymbols || [],
+    source: canonicalData ? 'Phase21 canonical deduped ledgers' : 'Pattern Lab sampled ledgers',
+    topSymbols: canonicalData?.topSymbols?.slice(0, 30) || patternLab?.topSymbols?.slice(0, 30) || summarizeChampion(champion)?.topSymbols || [],
     biggestTrades: patternLab?.biggestTrades?.slice(0, 30) || summarizeChampion(champion)?.biggestTrades || [],
   },
   patternCandidates: patternCandidates.candidates || [],
+  specialistFactory: specialistFactory.candidates || canonicalData?.factoryCandidates || [],
   forward: summarizeForward(),
   pine: pineStatus(),
   artifacts: {

@@ -1,0 +1,2880 @@
+{
+  "updatedAt": "2026-05-09T21:59:34.593Z",
+  "rawTrades": 500000,
+  "canonicalTrades": 32741,
+  "duplicatesRemoved": 467259,
+  "duplicateRate": 93.45179999999999,
+  "uniqueSymbols": 260,
+  "uniqueRoutes": 2475,
+  "uniqueDays": 62,
+  "uniqueWeeks": 13,
+  "sourceFiles": [
+    "external/local-fusion-2026-05-09T19-59-25-840Z-trades.jsonl",
+    "external/local-fusion-2026-05-09T09-22-25-670Z-trades.jsonl",
+    "external/local-fusion-2026-05-09T09-14-55-570Z-trades.jsonl",
+    "external/local-fusion-2026-05-09T06-35-00-145Z-trades.jsonl",
+    "external/local-fusion-2026-05-08T17-24-24-875Z-trades.jsonl",
+    "external/local-fusion-2026-05-08T13-21-32-169Z-trades.jsonl"
+  ],
+  "globalMetrics": {
+    "trades": 32741,
+    "wins": 22256,
+    "losses": 10485,
+    "winRate": 67.97593231727804,
+    "profitFactor": 1.705610338829877,
+    "netDollars": 6114928.474636335,
+    "avgDollars": 186.76669847091827,
+    "avgMfeR": 0.6759924974166851,
+    "avgMaeR": 0.5545862917734633,
+    "optionWorthyRate": 5.656516294554229,
+    "greatTradeRate": 3.063437280474023,
+    "maxDrawdownDollars": 172026.39782899385,
+    "maxLossStreak": 88
+  },
+  "factoryCandidateCount": 160,
+  "factoryPromotableCount": 45,
+  "topFactoryCandidates": [
+    {
+      "id": "phase21-factory-001",
+      "status": "factory-promotable",
+      "routeKey": "SOFI|high-beta-growth|base|all|short",
+      "symbol": "SOFI",
+      "family": "high-beta-growth",
+      "triggerMode": "base",
+      "session": "all",
+      "side": "short",
+      "qualityScore": 90.65,
+      "metrics": {
+        "trades": 36,
+        "wins": 36,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 19636.440083562356,
+        "avgDollars": 545.4566689878433,
+        "avgMfeR": 1.1057933333560608,
+        "avgMaeR": 0.32615612172288627,
+        "optionWorthyRate": 11.11111111111111,
+        "greatTradeRate": 11.11111111111111,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 10,
+        "uniqueWeeks": 7,
+        "profitableDays": 10,
+        "profitableWeeks": 7,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 10.83427460772686
+      },
+      "validation": {
+        "depthOk": true,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": true
+      },
+      "dominantTags": [
+        {
+          "tag": "opening-drive",
+          "count": 20
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 20
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 14
+        },
+        {
+          "tag": "clean-breakout",
+          "count": 12
+        },
+        {
+          "tag": "liquidity-sweep-reclaim",
+          "count": 6
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.9757,
+          "loser": 0,
+          "edge": 0.9757
+        },
+        {
+          "feature": "priceAcceleration",
+          "winner": 0.9717,
+          "loser": 0,
+          "edge": 0.9717
+        },
+        {
+          "feature": "trendQuality",
+          "winner": 0.8704,
+          "loser": 0,
+          "edge": 0.8704
+        },
+        {
+          "feature": "dayPositionQuality",
+          "winner": 0.8413,
+          "loser": 0,
+          "edge": 0.8413
+        },
+        {
+          "feature": "closeLocation",
+          "winner": 0.8397,
+          "loser": 0,
+          "edge": 0.8397
+        },
+        {
+          "feature": "timeEdge",
+          "winner": 0.8389,
+          "loser": 0,
+          "edge": 0.8389
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "maxMaeR": 0.44,
+        "requireRouteQualityScore": 84,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-002",
+      "status": "factory-promotable",
+      "routeKey": "PANW|general|base|morning|short",
+      "symbol": "PANW",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "morning",
+      "side": "short",
+      "qualityScore": 89.07,
+      "metrics": {
+        "trades": 28,
+        "wins": 28,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 12350.56641257384,
+        "avgDollars": 441.09165759192285,
+        "avgMfeR": 0.8595422633353033,
+        "avgMaeR": 0.2759916115443567,
+        "optionWorthyRate": 7.142857142857142,
+        "greatTradeRate": 0,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 8,
+        "uniqueWeeks": 6,
+        "profitableDays": 8,
+        "profitableWeeks": 6,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 7.360710540022368
+      },
+      "validation": {
+        "depthOk": true,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": true
+      },
+      "dominantTags": [
+        {
+          "tag": "volume-expansion",
+          "count": 18
+        },
+        {
+          "tag": "opening-drive",
+          "count": 16
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 14
+        },
+        {
+          "tag": "clean-breakout",
+          "count": 12
+        },
+        {
+          "tag": "liquidity-sweep-reclaim",
+          "count": 8
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "atrExpansion",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "priceAcceleration",
+          "winner": 0.9962,
+          "loser": 0,
+          "edge": 0.9962
+        },
+        {
+          "feature": "timeEdge",
+          "winner": 0.9464,
+          "loser": 0,
+          "edge": 0.9464
+        },
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.8777,
+          "loser": 0,
+          "edge": 0.8777
+        },
+        {
+          "feature": "breakoutQuality",
+          "winner": 0.8772,
+          "loser": 0,
+          "edge": 0.8772
+        },
+        {
+          "feature": "directionalCandle",
+          "winner": 0.8434,
+          "loser": 0,
+          "edge": 0.8434
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "maxMaeR": 0.37,
+        "requireRouteQualityScore": 83,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-003",
+      "status": "needs-more-data",
+      "routeKey": "ABNB|general|hybrid-consensus|open-0930|short",
+      "symbol": "ABNB",
+      "family": "general",
+      "triggerMode": "hybrid-consensus",
+      "session": "open-0930",
+      "side": "short",
+      "qualityScore": 88.32,
+      "metrics": {
+        "trades": 11,
+        "wins": 11,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 5018.24764347208,
+        "avgDollars": 456.2043312247346,
+        "avgMfeR": 1.3030392327490767,
+        "avgMaeR": 0.3234156367466154,
+        "optionWorthyRate": 27.27272727272727,
+        "greatTradeRate": 9.090909090909092,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 10,
+        "uniqueWeeks": 9,
+        "profitableDays": 10,
+        "profitableWeeks": 9,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 13.781762524990803
+      },
+      "validation": {
+        "depthOk": false,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": false
+      },
+      "dominantTags": [
+        {
+          "tag": "compression-pop",
+          "count": 6
+        },
+        {
+          "tag": "clean-breakout",
+          "count": 6
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 5
+        },
+        {
+          "tag": "opening-drive",
+          "count": 4
+        },
+        {
+          "tag": "liquidity-sweep-reclaim",
+          "count": 3
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "priceAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 0.9911,
+          "loser": 0,
+          "edge": 0.9911
+        },
+        {
+          "feature": "chopQuality",
+          "winner": 0.9476,
+          "loser": 0,
+          "edge": 0.9476
+        },
+        {
+          "feature": "efficiency",
+          "winner": 0.9296,
+          "loser": 0,
+          "edge": 0.9296
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 0.9144,
+          "loser": 0,
+          "edge": 0.9144
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.5,
+        "maxMaeR": 0.44,
+        "requireRouteQualityScore": 82,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-004",
+      "status": "factory-promotable",
+      "routeKey": "PANW|general|base|all|short",
+      "symbol": "PANW",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "all",
+      "side": "short",
+      "qualityScore": 88.27,
+      "metrics": {
+        "trades": 34,
+        "wins": 32,
+        "losses": 2,
+        "winRate": 94.11764705882352,
+        "profitFactor": 193.7855015892643,
+        "netDollars": 13341.221729692836,
+        "avgDollars": 392.38887440273044,
+        "avgMfeR": 0.8178634443967895,
+        "avgMaeR": 0.24015742728916328,
+        "optionWorthyRate": 5.88235294117647,
+        "greatTradeRate": 0,
+        "maxDrawdownDollars": 69.20241210937502,
+        "maxLossStreak": 2
+      },
+      "consistency": {
+        "uniqueDays": 9,
+        "uniqueWeeks": 6,
+        "profitableDays": 9,
+        "profitableWeeks": 6,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 6.778976071674149
+      },
+      "validation": {
+        "depthOk": true,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": true
+      },
+      "dominantTags": [
+        {
+          "tag": "volume-expansion",
+          "count": 22
+        },
+        {
+          "tag": "opening-drive",
+          "count": 16
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 14
+        },
+        {
+          "tag": "clean-breakout",
+          "count": 12
+        },
+        {
+          "tag": "unclassified",
+          "count": 8
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "breakoutQuality",
+          "winner": 0.8916,
+          "loser": 0,
+          "edge": 0.8916
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 0.8857,
+          "loser": 0.1184,
+          "edge": 0.7673
+        },
+        {
+          "feature": "priceAcceleration",
+          "winner": 0.9967,
+          "loser": 0.2464,
+          "edge": 0.7503
+        },
+        {
+          "feature": "cleanBreakout",
+          "winner": 0.5779,
+          "loser": 0,
+          "edge": 0.5779
+        },
+        {
+          "feature": "openingDriveQuality",
+          "winner": 0.517,
+          "loser": 0,
+          "edge": 0.517
+        },
+        {
+          "feature": "relativeStrength",
+          "winner": 0.7742,
+          "loser": 0.2963,
+          "edge": 0.4779
+        }
+      ],
+      "avoidFeatures": [
+        {
+          "feature": "volumeAcceleration",
+          "winner": 0.3153,
+          "loser": 0.7415,
+          "edge": -0.4262
+        }
+      ],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "maxMaeR": 0.35,
+        "requireRouteQualityScore": 82,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-005",
+      "status": "factory-promotable",
+      "routeKey": "PANW|general|base|open|short",
+      "symbol": "PANW",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "open",
+      "side": "short",
+      "qualityScore": 88.03,
+      "metrics": {
+        "trades": 26,
+        "wins": 26,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 11091.719578534781,
+        "avgDollars": 426.60459917441466,
+        "avgMfeR": 0.8425203617110596,
+        "avgMaeR": 0.2833180737795721,
+        "optionWorthyRate": 7.6923076923076925,
+        "greatTradeRate": 0,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 7,
+        "uniqueWeeks": 5,
+        "profitableDays": 7,
+        "profitableWeeks": 5,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 8.196109153733907
+      },
+      "validation": {
+        "depthOk": true,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": true
+      },
+      "dominantTags": [
+        {
+          "tag": "volume-expansion",
+          "count": 18
+        },
+        {
+          "tag": "opening-drive",
+          "count": 16
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 14
+        },
+        {
+          "tag": "clean-breakout",
+          "count": 12
+        },
+        {
+          "tag": "liquidity-sweep-reclaim",
+          "count": 8
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "atrExpansion",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "priceAcceleration",
+          "winner": 0.9959,
+          "loser": 0,
+          "edge": 0.9959
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 0.8772,
+          "loser": 0,
+          "edge": 0.8772
+        },
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.8683,
+          "loser": 0,
+          "edge": 0.8683
+        },
+        {
+          "feature": "breakoutQuality",
+          "winner": 0.8678,
+          "loser": 0,
+          "edge": 0.8678
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "maxMaeR": 0.38,
+        "requireRouteQualityScore": 82,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-006",
+      "status": "factory-promotable",
+      "routeKey": "PANW|general|base|open-0930|short",
+      "symbol": "PANW",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "open-0930",
+      "side": "short",
+      "qualityScore": 88.03,
+      "metrics": {
+        "trades": 26,
+        "wins": 26,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 11091.719578534781,
+        "avgDollars": 426.60459917441466,
+        "avgMfeR": 0.8425203617110596,
+        "avgMaeR": 0.2833180737795721,
+        "optionWorthyRate": 7.6923076923076925,
+        "greatTradeRate": 0,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 7,
+        "uniqueWeeks": 5,
+        "profitableDays": 7,
+        "profitableWeeks": 5,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 8.196109153733907
+      },
+      "validation": {
+        "depthOk": true,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": true
+      },
+      "dominantTags": [
+        {
+          "tag": "volume-expansion",
+          "count": 18
+        },
+        {
+          "tag": "opening-drive",
+          "count": 16
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 14
+        },
+        {
+          "tag": "clean-breakout",
+          "count": 12
+        },
+        {
+          "tag": "liquidity-sweep-reclaim",
+          "count": 8
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "atrExpansion",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "priceAcceleration",
+          "winner": 0.9959,
+          "loser": 0,
+          "edge": 0.9959
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 0.8772,
+          "loser": 0,
+          "edge": 0.8772
+        },
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.8683,
+          "loser": 0,
+          "edge": 0.8683
+        },
+        {
+          "feature": "breakoutQuality",
+          "winner": 0.8678,
+          "loser": 0,
+          "edge": 0.8678
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "maxMaeR": 0.38,
+        "requireRouteQualityScore": 82,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-007",
+      "status": "needs-more-data",
+      "routeKey": "WULF|crypto-proxy|options-burst|powerhour|long",
+      "symbol": "WULF",
+      "family": "crypto-proxy",
+      "triggerMode": "options-burst",
+      "session": "powerhour",
+      "side": "long",
+      "qualityScore": 87.78,
+      "metrics": {
+        "trades": 9,
+        "wins": 9,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 15489.298274103407,
+        "avgDollars": 1721.0331415670453,
+        "avgMfeR": 2.3306193277811693,
+        "avgMaeR": 0.4417119730618988,
+        "optionWorthyRate": 33.33333333333333,
+        "greatTradeRate": 33.33333333333333,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 7,
+        "uniqueWeeks": 5,
+        "profitableDays": 7,
+        "profitableWeeks": 5,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 25.940452054041778
+      },
+      "validation": {
+        "depthOk": false,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": false
+      },
+      "dominantTags": [
+        {
+          "tag": "options-worthy-burst",
+          "count": 9
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 7
+        },
+        {
+          "tag": "clean-breakout",
+          "count": 1
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "priceAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "directionalCandle",
+          "winner": 0.9156,
+          "loser": 0,
+          "edge": 0.9156
+        },
+        {
+          "feature": "emaSlope",
+          "winner": 0.9058,
+          "loser": 0,
+          "edge": 0.9058
+        },
+        {
+          "feature": "closeLocation",
+          "winner": 0.8982,
+          "loser": 0,
+          "edge": 0.8982
+        },
+        {
+          "feature": "rangeExpansionQuality",
+          "winner": 0.8762,
+          "loser": 0,
+          "edge": 0.8762
+        },
+        {
+          "feature": "relativeVolume",
+          "winner": 0.8473,
+          "loser": 0,
+          "edge": 0.8473
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.75,
+        "maxMaeR": 0.6,
+        "requireRouteQualityScore": 81,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-008",
+      "status": "needs-more-data",
+      "routeKey": "AMD|semis-ai|hybrid-consensus|open-0930|short",
+      "symbol": "AMD",
+      "family": "semis-ai",
+      "triggerMode": "hybrid-consensus",
+      "session": "open-0930",
+      "side": "short",
+      "qualityScore": 87.6,
+      "metrics": {
+        "trades": 12,
+        "wins": 12,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 6206.287554866443,
+        "avgDollars": 517.1906295722036,
+        "avgMfeR": 0.9031647237020227,
+        "avgMaeR": 0.16394383023018824,
+        "optionWorthyRate": 16.666666666666664,
+        "greatTradeRate": 8.333333333333332,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 12,
+        "uniqueWeeks": 9,
+        "profitableDays": 12,
+        "profitableWeeks": 9,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 20.748990489214748
+      },
+      "validation": {
+        "depthOk": false,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": false
+      },
+      "dominantTags": [
+        {
+          "tag": "opening-drive",
+          "count": 6
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 5
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 5
+        },
+        {
+          "tag": "clean-breakout",
+          "count": 4
+        },
+        {
+          "tag": "compression-pop",
+          "count": 3
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "priceAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "emaSlope",
+          "winner": 0.9812,
+          "loser": 0,
+          "edge": 0.9812
+        },
+        {
+          "feature": "chopQuality",
+          "winner": 0.9633,
+          "loser": 0,
+          "edge": 0.9633
+        },
+        {
+          "feature": "efficiency",
+          "winner": 0.9511,
+          "loser": 0,
+          "edge": 0.9511
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "maxMaeR": 0.35,
+        "requireRouteQualityScore": 81,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-009",
+      "status": "factory-promotable",
+      "routeKey": "OPEN|high-beta-growth|base|all|short",
+      "symbol": "OPEN",
+      "family": "high-beta-growth",
+      "triggerMode": "base",
+      "session": "all",
+      "side": "short",
+      "qualityScore": 87.41,
+      "metrics": {
+        "trades": 42,
+        "wins": 38,
+        "losses": 4,
+        "winRate": 90.47619047619048,
+        "profitFactor": 26.34060499368204,
+        "netDollars": 33747.15856265944,
+        "avgDollars": 803.5037753014152,
+        "avgMfeR": 1.0274398069533603,
+        "avgMaeR": 0.3726139810349447,
+        "optionWorthyRate": 14.285714285714285,
+        "greatTradeRate": 9.523809523809524,
+        "maxDrawdownDollars": 1224.2954981624607,
+        "maxLossStreak": 2
+      },
+      "consistency": {
+        "uniqueDays": 7,
+        "uniqueWeeks": 4,
+        "profitableDays": 7,
+        "profitableWeeks": 4,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 11.158316199673552
+      },
+      "validation": {
+        "depthOk": true,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": true
+      },
+      "dominantTags": [
+        {
+          "tag": "unclassified",
+          "count": 22
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 10
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 10
+        },
+        {
+          "tag": "opening-drive",
+          "count": 10
+        },
+        {
+          "tag": "compression-pop",
+          "count": 2
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "timeEdge",
+          "winner": 0.8,
+          "loser": 0.35,
+          "edge": 0.45
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 0.6229,
+          "loser": 0.1765,
+          "edge": 0.4464
+        },
+        {
+          "feature": "openingDriveQuality",
+          "winner": 0.319,
+          "loser": 0,
+          "edge": 0.319
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 0.7014,
+          "loser": 0.4677,
+          "edge": 0.2337
+        },
+        {
+          "feature": "volumeQuality",
+          "winner": 0.4935,
+          "loser": 0.2698,
+          "edge": 0.2237
+        }
+      ],
+      "avoidFeatures": [
+        {
+          "feature": "marketImpulse",
+          "winner": 0.5263,
+          "loser": 1,
+          "edge": -0.4737
+        },
+        {
+          "feature": "marketAlignment",
+          "winner": 0.2105,
+          "loser": 0.5,
+          "edge": -0.2895
+        },
+        {
+          "feature": "priceAcceleration",
+          "winner": 0.7273,
+          "loser": 1,
+          "edge": -0.2727
+        }
+      ],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "maxMaeR": 0.5,
+        "requireRouteQualityScore": 81,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-010",
+      "status": "needs-more-data",
+      "routeKey": "CRM|general|vwap-reclaim|morning|long",
+      "symbol": "CRM",
+      "family": "general",
+      "triggerMode": "vwap-reclaim",
+      "session": "morning",
+      "side": "long",
+      "qualityScore": 87.41,
+      "metrics": {
+        "trades": 9,
+        "wins": 9,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 3988.3476638043903,
+        "avgDollars": 443.14974042271,
+        "avgMfeR": 1.228967304084633,
+        "avgMaeR": 0.4928279746826405,
+        "optionWorthyRate": 22.22222222222222,
+        "greatTradeRate": 11.11111111111111,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 9,
+        "uniqueWeeks": 7,
+        "profitableDays": 9,
+        "profitableWeeks": 7,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 21.753098387763806
+      },
+      "validation": {
+        "depthOk": false,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": false
+      },
+      "dominantTags": [
+        {
+          "tag": "clean-vwap-reclaim",
+          "count": 9
+        },
+        {
+          "tag": "clean-breakout",
+          "count": 9
+        },
+        {
+          "tag": "opening-drive",
+          "count": 7
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 4
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 3
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "priceAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "chopQuality",
+          "winner": 0.9925,
+          "loser": 0,
+          "edge": 0.9925
+        },
+        {
+          "feature": "breakoutQuality",
+          "winner": 0.9866,
+          "loser": 0,
+          "edge": 0.9866
+        },
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.9828,
+          "loser": 0,
+          "edge": 0.9828
+        },
+        {
+          "feature": "emaSlope",
+          "winner": 0.9771,
+          "loser": 0,
+          "edge": 0.9771
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 65,
+        "targetR": 0.5,
+        "maxMaeR": 0.67,
+        "requireRouteQualityScore": 81,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-011",
+      "status": "needs-more-data",
+      "routeKey": "AFRM|high-beta-growth|volume-shock|open-0930|long",
+      "symbol": "AFRM",
+      "family": "high-beta-growth",
+      "triggerMode": "volume-shock",
+      "session": "open-0930",
+      "side": "long",
+      "qualityScore": 87.33,
+      "metrics": {
+        "trades": 10,
+        "wins": 10,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 9045.944704542271,
+        "avgDollars": 904.5944704542271,
+        "avgMfeR": 1.1367230016977596,
+        "avgMaeR": 0.4734300614896901,
+        "optionWorthyRate": 20,
+        "greatTradeRate": 20,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 10,
+        "uniqueWeeks": 5,
+        "profitableDays": 10,
+        "profitableWeeks": 5,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 23.60984090222659
+      },
+      "validation": {
+        "depthOk": false,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": false
+      },
+      "dominantTags": [
+        {
+          "tag": "volume-expansion",
+          "count": 10
+        },
+        {
+          "tag": "clean-breakout",
+          "count": 7
+        },
+        {
+          "tag": "opening-drive",
+          "count": 6
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 5
+        },
+        {
+          "tag": "compression-pop",
+          "count": 3
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "priceAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 0.9953,
+          "loser": 0,
+          "edge": 0.9953
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 0.98,
+          "loser": 0,
+          "edge": 0.98
+        },
+        {
+          "feature": "relativeStrength",
+          "winner": 0.9405,
+          "loser": 0,
+          "edge": 0.9405
+        },
+        {
+          "feature": "emaSlope",
+          "winner": 0.9353,
+          "loser": 0,
+          "edge": 0.9353
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 65,
+        "targetR": 0.35,
+        "maxMaeR": 0.64,
+        "requireRouteQualityScore": 81,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-012",
+      "status": "factory-promotable",
+      "routeKey": "AI|general|base|open|short",
+      "symbol": "AI",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "open",
+      "side": "short",
+      "qualityScore": 86.83,
+      "metrics": {
+        "trades": 24,
+        "wins": 24,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 17106.37511169963,
+        "avgDollars": 712.7656296541513,
+        "avgMfeR": 0.7295754741911363,
+        "avgMaeR": 0.10028321960191111,
+        "optionWorthyRate": 0,
+        "greatTradeRate": 0,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 6,
+        "uniqueWeeks": 5,
+        "profitableDays": 6,
+        "profitableWeeks": 5,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 6.815163960712191
+      },
+      "validation": {
+        "depthOk": true,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": true
+      },
+      "dominantTags": [
+        {
+          "tag": "unclassified",
+          "count": 8
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 6
+        },
+        {
+          "tag": "opening-drive",
+          "count": 4
+        },
+        {
+          "tag": "compression-pop",
+          "count": 4
+        },
+        {
+          "tag": "clean-vwap-reclaim",
+          "count": 2
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "priceAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "relativeStrength",
+          "winner": 0.9824,
+          "loser": 0,
+          "edge": 0.9824
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 0.969,
+          "loser": 0,
+          "edge": 0.969
+        },
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.9407,
+          "loser": 0,
+          "edge": 0.9407
+        },
+        {
+          "feature": "marketImpulse",
+          "winner": 0.9381,
+          "loser": 0,
+          "edge": 0.9381
+        },
+        {
+          "feature": "timeEdge",
+          "winner": 0.9083,
+          "loser": 0,
+          "edge": 0.9083
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "maxMaeR": 0.35,
+        "requireRouteQualityScore": 80,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-013",
+      "status": "factory-promotable",
+      "routeKey": "AI|general|base|morning|short",
+      "symbol": "AI",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "morning",
+      "side": "short",
+      "qualityScore": 86.83,
+      "metrics": {
+        "trades": 24,
+        "wins": 24,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 17106.37511169963,
+        "avgDollars": 712.7656296541513,
+        "avgMfeR": 0.7295754741911363,
+        "avgMaeR": 0.10028321960191111,
+        "optionWorthyRate": 0,
+        "greatTradeRate": 0,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 6,
+        "uniqueWeeks": 5,
+        "profitableDays": 6,
+        "profitableWeeks": 5,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 6.815163960712191
+      },
+      "validation": {
+        "depthOk": true,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": true
+      },
+      "dominantTags": [
+        {
+          "tag": "unclassified",
+          "count": 8
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 6
+        },
+        {
+          "tag": "opening-drive",
+          "count": 4
+        },
+        {
+          "tag": "compression-pop",
+          "count": 4
+        },
+        {
+          "tag": "clean-vwap-reclaim",
+          "count": 2
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "priceAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "relativeStrength",
+          "winner": 0.9824,
+          "loser": 0,
+          "edge": 0.9824
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 0.969,
+          "loser": 0,
+          "edge": 0.969
+        },
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.9407,
+          "loser": 0,
+          "edge": 0.9407
+        },
+        {
+          "feature": "marketImpulse",
+          "winner": 0.9381,
+          "loser": 0,
+          "edge": 0.9381
+        },
+        {
+          "feature": "timeEdge",
+          "winner": 0.9083,
+          "loser": 0,
+          "edge": 0.9083
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "maxMaeR": 0.35,
+        "requireRouteQualityScore": 80,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-014",
+      "status": "needs-more-data",
+      "routeKey": "SOFI|high-beta-growth|base|afternoon|short",
+      "symbol": "SOFI",
+      "family": "high-beta-growth",
+      "triggerMode": "base",
+      "session": "afternoon",
+      "side": "short",
+      "qualityScore": 86.68,
+      "metrics": {
+        "trades": 12,
+        "wins": 12,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 8167.60124639229,
+        "avgDollars": 680.6334371993574,
+        "avgMfeR": 2.082086004639372,
+        "avgMaeR": 0.27410632578527355,
+        "optionWorthyRate": 33.33333333333333,
+        "greatTradeRate": 33.33333333333333,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 5,
+        "uniqueWeeks": 5,
+        "profitableDays": 5,
+        "profitableWeeks": 5,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 26.04762129853754
+      },
+      "validation": {
+        "depthOk": false,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": false
+      },
+      "dominantTags": [
+        {
+          "tag": "unclassified",
+          "count": 6
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 4
+        },
+        {
+          "tag": "liquidity-sweep-reclaim",
+          "count": 2
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 2
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.9572,
+          "loser": 0,
+          "edge": 0.9572
+        },
+        {
+          "feature": "priceAcceleration",
+          "winner": 0.9152,
+          "loser": 0,
+          "edge": 0.9152
+        },
+        {
+          "feature": "closeLocation",
+          "winner": 0.8594,
+          "loser": 0,
+          "edge": 0.8594
+        },
+        {
+          "feature": "trendQuality",
+          "winner": 0.8333,
+          "loser": 0,
+          "edge": 0.8333
+        },
+        {
+          "feature": "directionalCandle",
+          "winner": 0.8045,
+          "loser": 0,
+          "edge": 0.8045
+        },
+        {
+          "feature": "rangeExpansionQuality",
+          "winner": 0.778,
+          "loser": 0,
+          "edge": 0.778
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.75,
+        "maxMaeR": 0.37,
+        "requireRouteQualityScore": 80,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-015",
+      "status": "factory-promotable",
+      "routeKey": "OPEN|high-beta-growth|base|open|short",
+      "symbol": "OPEN",
+      "family": "high-beta-growth",
+      "triggerMode": "base",
+      "session": "open",
+      "side": "short",
+      "qualityScore": 86.56,
+      "metrics": {
+        "trades": 22,
+        "wins": 22,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 24150.980181011248,
+        "avgDollars": 1097.7718264096022,
+        "avgMfeR": 0.914980582653573,
+        "avgMaeR": 0.275189635171368,
+        "optionWorthyRate": 18.181818181818183,
+        "greatTradeRate": 9.090909090909092,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 5,
+        "uniqueWeeks": 3,
+        "profitableDays": 5,
+        "profitableWeeks": 3,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 12.361703268529068
+      },
+      "validation": {
+        "depthOk": true,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": true
+      },
+      "dominantTags": [
+        {
+          "tag": "opening-drive",
+          "count": 10
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 8
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 8
+        },
+        {
+          "tag": "unclassified",
+          "count": 4
+        },
+        {
+          "tag": "compression-pop",
+          "count": 2
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 0.955,
+          "loser": 0,
+          "edge": 0.955
+        },
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.9496,
+          "loser": 0,
+          "edge": 0.9496
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 0.8422,
+          "loser": 0,
+          "edge": 0.8422
+        },
+        {
+          "feature": "relativeStrength",
+          "winner": 0.8141,
+          "loser": 0,
+          "edge": 0.8141
+        },
+        {
+          "feature": "trendQuality",
+          "winner": 0.7879,
+          "loser": 0,
+          "edge": 0.7879
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "maxMaeR": 0.37,
+        "requireRouteQualityScore": 80,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-016",
+      "status": "factory-promotable",
+      "routeKey": "OPEN|high-beta-growth|base|morning|short",
+      "symbol": "OPEN",
+      "family": "high-beta-growth",
+      "triggerMode": "base",
+      "session": "morning",
+      "side": "short",
+      "qualityScore": 86.56,
+      "metrics": {
+        "trades": 22,
+        "wins": 22,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 24150.980181011248,
+        "avgDollars": 1097.7718264096022,
+        "avgMfeR": 0.914980582653573,
+        "avgMaeR": 0.275189635171368,
+        "optionWorthyRate": 18.181818181818183,
+        "greatTradeRate": 9.090909090909092,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 5,
+        "uniqueWeeks": 3,
+        "profitableDays": 5,
+        "profitableWeeks": 3,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 12.361703268529068
+      },
+      "validation": {
+        "depthOk": true,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": true
+      },
+      "dominantTags": [
+        {
+          "tag": "opening-drive",
+          "count": 10
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 8
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 8
+        },
+        {
+          "tag": "unclassified",
+          "count": 4
+        },
+        {
+          "tag": "compression-pop",
+          "count": 2
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 0.955,
+          "loser": 0,
+          "edge": 0.955
+        },
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.9496,
+          "loser": 0,
+          "edge": 0.9496
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 0.8422,
+          "loser": 0,
+          "edge": 0.8422
+        },
+        {
+          "feature": "relativeStrength",
+          "winner": 0.8141,
+          "loser": 0,
+          "edge": 0.8141
+        },
+        {
+          "feature": "trendQuality",
+          "winner": 0.7879,
+          "loser": 0,
+          "edge": 0.7879
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "maxMaeR": 0.37,
+        "requireRouteQualityScore": 80,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-017",
+      "status": "factory-promotable",
+      "routeKey": "OPEN|high-beta-growth|base|open-0930|short",
+      "symbol": "OPEN",
+      "family": "high-beta-growth",
+      "triggerMode": "base",
+      "session": "open-0930",
+      "side": "short",
+      "qualityScore": 86.56,
+      "metrics": {
+        "trades": 22,
+        "wins": 22,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 24150.980181011248,
+        "avgDollars": 1097.7718264096022,
+        "avgMfeR": 0.914980582653573,
+        "avgMaeR": 0.275189635171368,
+        "optionWorthyRate": 18.181818181818183,
+        "greatTradeRate": 9.090909090909092,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 5,
+        "uniqueWeeks": 3,
+        "profitableDays": 5,
+        "profitableWeeks": 3,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 12.361703268529068
+      },
+      "validation": {
+        "depthOk": true,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": true
+      },
+      "dominantTags": [
+        {
+          "tag": "opening-drive",
+          "count": 10
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 8
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 8
+        },
+        {
+          "tag": "unclassified",
+          "count": 4
+        },
+        {
+          "tag": "compression-pop",
+          "count": 2
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 0.955,
+          "loser": 0,
+          "edge": 0.955
+        },
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.9496,
+          "loser": 0,
+          "edge": 0.9496
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 0.8422,
+          "loser": 0,
+          "edge": 0.8422
+        },
+        {
+          "feature": "relativeStrength",
+          "winner": 0.8141,
+          "loser": 0,
+          "edge": 0.8141
+        },
+        {
+          "feature": "trendQuality",
+          "winner": 0.7879,
+          "loser": 0,
+          "edge": 0.7879
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "maxMaeR": 0.37,
+        "requireRouteQualityScore": 80,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-018",
+      "status": "needs-more-data",
+      "routeKey": "IGV|general|base|open-0930|short",
+      "symbol": "IGV",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "open-0930",
+      "side": "short",
+      "qualityScore": 86.27,
+      "metrics": {
+        "trades": 11,
+        "wins": 11,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 4167.30853054843,
+        "avgDollars": 378.8462300498573,
+        "avgMfeR": 0.931949316601585,
+        "avgMaeR": 0.47201948601135996,
+        "optionWorthyRate": 18.181818181818183,
+        "greatTradeRate": 0,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 7,
+        "uniqueWeeks": 5,
+        "profitableDays": 7,
+        "profitableWeeks": 5,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 31.536620917182635
+      },
+      "validation": {
+        "depthOk": false,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": false
+      },
+      "dominantTags": [
+        {
+          "tag": "options-worthy-burst",
+          "count": 9
+        },
+        {
+          "tag": "opening-drive",
+          "count": 8
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 8
+        },
+        {
+          "tag": "clean-breakout",
+          "count": 7
+        },
+        {
+          "tag": "unclassified",
+          "count": 1
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "priceAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.9757,
+          "loser": 0,
+          "edge": 0.9757
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 0.9684,
+          "loser": 0,
+          "edge": 0.9684
+        },
+        {
+          "feature": "chopQuality",
+          "winner": 0.9162,
+          "loser": 0,
+          "edge": 0.9162
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 0.9138,
+          "loser": 0,
+          "edge": 0.9138
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 65,
+        "targetR": 0.35,
+        "maxMaeR": 0.64,
+        "requireRouteQualityScore": 80,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-019",
+      "status": "needs-more-data",
+      "routeKey": "SOFI|high-beta-growth|base|powerhour|short",
+      "symbol": "SOFI",
+      "family": "high-beta-growth",
+      "triggerMode": "base",
+      "session": "powerhour",
+      "side": "short",
+      "qualityScore": 86.07,
+      "metrics": {
+        "trades": 8,
+        "wins": 8,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 6732.324403087857,
+        "avgDollars": 841.5405503859821,
+        "avgMfeR": 2.7750781732514334,
+        "avgMaeR": 0.07769163846608736,
+        "optionWorthyRate": 50,
+        "greatTradeRate": 50,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 4,
+        "uniqueWeeks": 4,
+        "profitableDays": 4,
+        "profitableWeeks": 4,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 31.60076244779751
+      },
+      "validation": {
+        "depthOk": false,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": false
+      },
+      "dominantTags": [
+        {
+          "tag": "options-worthy-burst",
+          "count": 4
+        },
+        {
+          "tag": "liquidity-sweep-reclaim",
+          "count": 2
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 2
+        },
+        {
+          "tag": "unclassified",
+          "count": 2
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.9358,
+          "loser": 0,
+          "edge": 0.9358
+        },
+        {
+          "feature": "trendQuality",
+          "winner": 0.9167,
+          "loser": 0,
+          "edge": 0.9167
+        },
+        {
+          "feature": "priceAcceleration",
+          "winner": 0.8728,
+          "loser": 0,
+          "edge": 0.8728
+        },
+        {
+          "feature": "closeLocation",
+          "winner": 0.8105,
+          "loser": 0,
+          "edge": 0.8105
+        },
+        {
+          "feature": "directionalCandle",
+          "winner": 0.7933,
+          "loser": 0,
+          "edge": 0.7933
+        },
+        {
+          "feature": "dayPositionQuality",
+          "winner": 0.7647,
+          "loser": 0,
+          "edge": 0.7647
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.75,
+        "maxMaeR": 0.35,
+        "requireRouteQualityScore": 80,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-020",
+      "status": "needs-more-data",
+      "routeKey": "PLTR|high-beta-growth|breakout|open-0930|short",
+      "symbol": "PLTR",
+      "family": "high-beta-growth",
+      "triggerMode": "breakout",
+      "session": "open-0930",
+      "side": "short",
+      "qualityScore": 85.96,
+      "metrics": {
+        "trades": 8,
+        "wins": 8,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 4957.299142302243,
+        "avgDollars": 619.6623927877804,
+        "avgMfeR": 1.1169785930314293,
+        "avgMaeR": 0.3431178740010034,
+        "optionWorthyRate": 25,
+        "greatTradeRate": 0,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 6,
+        "uniqueWeeks": 4,
+        "profitableDays": 6,
+        "profitableWeeks": 4,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 27.332291858132308
+      },
+      "validation": {
+        "depthOk": false,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": false
+      },
+      "dominantTags": [
+        {
+          "tag": "clean-breakout",
+          "count": 8
+        },
+        {
+          "tag": "opening-drive",
+          "count": 7
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 7
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 6
+        },
+        {
+          "tag": "compression-pop",
+          "count": 2
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "priceAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "breakoutQuality",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "chopQuality",
+          "winner": 0.9726,
+          "loser": 0,
+          "edge": 0.9726
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "maxMaeR": 0.46,
+        "requireRouteQualityScore": 79,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-021",
+      "status": "factory-promotable",
+      "routeKey": "QS|ev-auto|base|morning|long",
+      "symbol": "QS",
+      "family": "ev-auto",
+      "triggerMode": "base",
+      "session": "morning",
+      "side": "long",
+      "qualityScore": 85.87,
+      "metrics": {
+        "trades": 56,
+        "wins": 50,
+        "losses": 6,
+        "winRate": 89.28571428571429,
+        "profitFactor": 20.121163640338725,
+        "netDollars": 51961.0665949266,
+        "avgDollars": 927.8761891951178,
+        "avgMfeR": 0.9034871475321431,
+        "avgMaeR": 0.20879002271235508,
+        "optionWorthyRate": 7.142857142857142,
+        "greatTradeRate": 7.142857142857142,
+        "maxDrawdownDollars": 2402.267939005278,
+        "maxLossStreak": 4
+      },
+      "consistency": {
+        "uniqueDays": 13,
+        "uniqueWeeks": 8,
+        "profitableDays": 11,
+        "profitableWeeks": 7,
+        "dayConsistency": 84.61538461538461,
+        "weekConsistency": 87.5,
+        "outlierProfitShare": 12.294910707548294
+      },
+      "validation": {
+        "depthOk": true,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": true
+      },
+      "dominantTags": [
+        {
+          "tag": "opening-drive",
+          "count": 34
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 24
+        },
+        {
+          "tag": "clean-breakout",
+          "count": 18
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 14
+        },
+        {
+          "tag": "compression-pop",
+          "count": 10
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "vwapPressure",
+          "winner": 0.6702,
+          "loser": 0.2736,
+          "edge": 0.3966
+        },
+        {
+          "feature": "cleanBreakout",
+          "winner": 0.3715,
+          "loser": 0.1014,
+          "edge": 0.2701
+        }
+      ],
+      "avoidFeatures": [
+        {
+          "feature": "marketImpulse",
+          "winner": 0.6292,
+          "loser": 1,
+          "edge": -0.3708
+        },
+        {
+          "feature": "priorDayBreakQuality",
+          "winner": 0,
+          "loser": 0.3333,
+          "edge": -0.3333
+        },
+        {
+          "feature": "priorDayReclaim",
+          "winner": 0.04,
+          "loser": 0.3333,
+          "edge": -0.2933
+        },
+        {
+          "feature": "efficiency",
+          "winner": 0.7341,
+          "loser": 1,
+          "edge": -0.2659
+        },
+        {
+          "feature": "relVolTodQuality",
+          "winner": 0.3797,
+          "loser": 0.6384,
+          "edge": -0.2587
+        },
+        {
+          "feature": "chopQuality",
+          "winner": 0.7507,
+          "loser": 1,
+          "edge": -0.2493
+        }
+      ],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "maxMaeR": 0.35,
+        "requireRouteQualityScore": 79,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-022",
+      "status": "needs-more-data",
+      "routeKey": "NEM|general|base|open|long",
+      "symbol": "NEM",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "open",
+      "side": "long",
+      "qualityScore": 85.86,
+      "metrics": {
+        "trades": 8,
+        "wins": 8,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 4292.898961915997,
+        "avgDollars": 536.6123702394996,
+        "avgMfeR": 0.9367378929375826,
+        "avgMaeR": 0.3592152126866156,
+        "optionWorthyRate": 12.5,
+        "greatTradeRate": 0,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 7,
+        "uniqueWeeks": 7,
+        "profitableDays": 7,
+        "profitableWeeks": 7,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 18.44937375118319
+      },
+      "validation": {
+        "depthOk": false,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": false
+      },
+      "dominantTags": [
+        {
+          "tag": "clean-breakout",
+          "count": 6
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 5
+        },
+        {
+          "tag": "opening-drive",
+          "count": 4
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 4
+        },
+        {
+          "tag": "compression-pop",
+          "count": 1
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "priceAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 0.9976,
+          "loser": 0,
+          "edge": 0.9976
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 0.9744,
+          "loser": 0,
+          "edge": 0.9744
+        },
+        {
+          "feature": "chopQuality",
+          "winner": 0.9223,
+          "loser": 0,
+          "edge": 0.9223
+        },
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.9158,
+          "loser": 0,
+          "edge": 0.9158
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "maxMaeR": 0.48,
+        "requireRouteQualityScore": 79,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-023",
+      "status": "needs-more-data",
+      "routeKey": "NEM|general|base|morning|long",
+      "symbol": "NEM",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "morning",
+      "side": "long",
+      "qualityScore": 85.86,
+      "metrics": {
+        "trades": 8,
+        "wins": 8,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 4292.898961915997,
+        "avgDollars": 536.6123702394996,
+        "avgMfeR": 0.9367378929375826,
+        "avgMaeR": 0.3592152126866156,
+        "optionWorthyRate": 12.5,
+        "greatTradeRate": 0,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 7,
+        "uniqueWeeks": 7,
+        "profitableDays": 7,
+        "profitableWeeks": 7,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 18.44937375118319
+      },
+      "validation": {
+        "depthOk": false,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": false
+      },
+      "dominantTags": [
+        {
+          "tag": "clean-breakout",
+          "count": 6
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 5
+        },
+        {
+          "tag": "opening-drive",
+          "count": 4
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 4
+        },
+        {
+          "tag": "compression-pop",
+          "count": 1
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "priceAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 0.9976,
+          "loser": 0,
+          "edge": 0.9976
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 0.9744,
+          "loser": 0,
+          "edge": 0.9744
+        },
+        {
+          "feature": "chopQuality",
+          "winner": 0.9223,
+          "loser": 0,
+          "edge": 0.9223
+        },
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.9158,
+          "loser": 0,
+          "edge": 0.9158
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "maxMaeR": 0.48,
+        "requireRouteQualityScore": 79,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-024",
+      "status": "needs-more-data",
+      "routeKey": "NEM|general|base|open-0930|long",
+      "symbol": "NEM",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "open-0930",
+      "side": "long",
+      "qualityScore": 85.86,
+      "metrics": {
+        "trades": 8,
+        "wins": 8,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 4292.898961915997,
+        "avgDollars": 536.6123702394996,
+        "avgMfeR": 0.9367378929375826,
+        "avgMaeR": 0.3592152126866156,
+        "optionWorthyRate": 12.5,
+        "greatTradeRate": 0,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 7,
+        "uniqueWeeks": 7,
+        "profitableDays": 7,
+        "profitableWeeks": 7,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 18.44937375118319
+      },
+      "validation": {
+        "depthOk": false,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": false
+      },
+      "dominantTags": [
+        {
+          "tag": "clean-breakout",
+          "count": 6
+        },
+        {
+          "tag": "options-worthy-burst",
+          "count": 5
+        },
+        {
+          "tag": "opening-drive",
+          "count": 4
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 4
+        },
+        {
+          "tag": "compression-pop",
+          "count": 1
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "priceAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 0.9976,
+          "loser": 0,
+          "edge": 0.9976
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 0.9744,
+          "loser": 0,
+          "edge": 0.9744
+        },
+        {
+          "feature": "chopQuality",
+          "winner": 0.9223,
+          "loser": 0,
+          "edge": 0.9223
+        },
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.9158,
+          "loser": 0,
+          "edge": 0.9158
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "maxMaeR": 0.48,
+        "requireRouteQualityScore": 79,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    },
+    {
+      "id": "phase21-factory-025",
+      "status": "factory-promotable",
+      "routeKey": "AI|general|base|open-0930|short",
+      "symbol": "AI",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "open-0930",
+      "side": "short",
+      "qualityScore": 85.64,
+      "metrics": {
+        "trades": 20,
+        "wins": 20,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 15245.174005588657,
+        "avgDollars": 762.2587002794328,
+        "avgMfeR": 0.7711575133881005,
+        "avgMaeR": 0.09288456798161648,
+        "optionWorthyRate": 0,
+        "greatTradeRate": 0,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "consistency": {
+        "uniqueDays": 5,
+        "uniqueWeeks": 5,
+        "profitableDays": 5,
+        "profitableWeeks": 5,
+        "dayConsistency": 100,
+        "weekConsistency": 100,
+        "outlierProfitShare": 7.647190587456842
+      },
+      "validation": {
+        "depthOk": true,
+        "daysOk": true,
+        "weeksOk": true,
+        "profitOk": true,
+        "outlierOk": true,
+        "passed": true
+      },
+      "dominantTags": [
+        {
+          "tag": "unclassified",
+          "count": 8
+        },
+        {
+          "tag": "volume-expansion",
+          "count": 6
+        },
+        {
+          "tag": "opening-drive",
+          "count": 4
+        },
+        {
+          "tag": "clean-vwap-reclaim",
+          "count": 2
+        },
+        {
+          "tag": "clean-breakout",
+          "count": 2
+        }
+      ],
+      "featureBoosts": [
+        {
+          "feature": "priceAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "relativeStrength",
+          "winner": 0.9869,
+          "loser": 0,
+          "edge": 0.9869
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 0.9628,
+          "loser": 0,
+          "edge": 0.9628
+        },
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.9288,
+          "loser": 0,
+          "edge": 0.9288
+        },
+        {
+          "feature": "marketImpulse",
+          "winner": 0.9257,
+          "loser": 0,
+          "edge": 0.9257
+        }
+      ],
+      "avoidFeatures": [],
+      "suggestedRules": {
+        "minConfidence": 68,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "maxMaeR": 0.35,
+        "requireRouteQualityScore": 79,
+        "requireConsistentDays": true,
+        "requireNoOutlierDependence": true
+      }
+    }
+  ]
+}

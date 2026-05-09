@@ -1,6 +1,6 @@
 # Fusion Trading Lab
 
-Private research lab for the Fusion/Sniper TradingView system.
+Research lab for the Fusion/Sniper TradingView system.
 
 This repo is designed to be the source of truth for:
 
@@ -20,7 +20,10 @@ flowchart LR
   BT["Backtest Engine"] --> TL["Trade Ledgers"]
   TL --> PL["Pattern Lab"]
   FL --> PL
+  PL --> CD["Canonical Data Spine"]
+  CD --> SF["Phase21 Specialist Factory"]
   PL --> SP["Specialist Candidates"]
+  SF --> SP
   SP --> TO["Tournaments"]
   TO --> CH["Champion Registry"]
   CH --> PE["Pine Export"]
@@ -31,6 +34,7 @@ flowchart LR
 
 ```bash
 npm run lab:report
+npm run lab:phase21
 npm run lab:nightly
 npm run scalp:phase19 -- --fresh-data=false
 npm run scalp:closed-loop:start
@@ -45,7 +49,17 @@ FUSION_EXTERNAL_LEDGER_DIRS="/path/to/old/local-runs,/path/to/old/trade-ledger" 
 
 ## Important Storage Rule
 
-GitHub stores code, models, reports, Pine exports, and compressed ledgers. It should not become the permanent raw tick/bar database. If this grows, move raw data to Supabase/Postgres/S3/R2 and keep GitHub as the control plane.
+GitHub stores code, models, reports, Pine exports, canonical summaries, specialist factory output, and compressed ledgers. Raw `.jsonl` ledgers stay ignored or get uploaded as Actions artifacts. If this grows, move raw data to Supabase/Postgres/S3/R2 and keep GitHub as the control plane.
+
+## Phase21 Canonical Data
+
+`npm run lab:phase21` runs Pattern Lab with the new canonical spine:
+
+- Dedupes repeated trade rows across backtest ledgers.
+- Assigns `canonicalId` and `routeId` values to trades.
+- Writes route, symbol, and factory summaries into `data/canonical/`.
+- Writes deduped specialist candidates into `models/specialists/phase21-specialist-factory.json`.
+- Updates the dashboard with raw-vs-canonical trade counts, biggest symbol hits, route quality, and consistency checks.
 
 ## TradingView Connection
 

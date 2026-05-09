@@ -8,6 +8,7 @@ on:
       - "apps/dashboard/**"
       - "models/**"
       - "reports/**"
+      - "data/canonical/**"
       - "generated/**"
       - "packages/**"
       - "scripts/build_dashboard_data.js"

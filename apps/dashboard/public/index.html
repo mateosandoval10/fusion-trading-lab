@@ -21,6 +21,33 @@
       <section class="panel">
         <div class="panel-head">
           <div>
+            <p class="eyebrow">Phase21 Canonical Data</p>
+            <h2>Deduped truth layer for backtests and specialists</h2>
+          </div>
+          <span class="badge" id="canonicalBadge">Loading…</span>
+        </div>
+        <div class="metric-grid" id="canonicalMetrics"></div>
+        <div class="table-wrap compact-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Top Route</th>
+                <th>Days / Weeks</th>
+                <th>Trades</th>
+                <th>Win</th>
+                <th>Net</th>
+                <th>Quality</th>
+                <th>Decision</th>
+              </tr>
+            </thead>
+            <tbody id="canonicalRoutesTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
             <p class="eyebrow">Current Champion</p>
             <h2 id="championTitle">Loading champion…</h2>
           </div>
@@ -146,6 +173,34 @@
               </tr>
             </thead>
             <tbody id="candidateTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Phase21 Specialist Factory</p>
+            <h2>Deduped candidates with consistency and outlier checks</h2>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Factory Candidate</th>
+                <th>Status</th>
+                <th>Route</th>
+                <th>Trades</th>
+                <th>Win</th>
+                <th>Net</th>
+                <th>Quality</th>
+                <th>Days</th>
+                <th>Target</th>
+                <th>Feature Boosts</th>
+              </tr>
+            </thead>
+            <tbody id="factoryTable"></tbody>
           </table>
         </div>
       </section>

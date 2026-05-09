@@ -10,6 +10,8 @@ optimization-results/local-runs/
 optimization-results/runs/
 optimization-results/shard-runs/
 optimization-results/datasets/
+optimization-results/canonical/*.jsonl
+data/canonical/canonical-trades.full.jsonl
 
 # Keep forward summaries and compressed ledgers, avoid accidental huge raw dumps.
 *.tmp

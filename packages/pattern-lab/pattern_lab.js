@@ -17,6 +17,8 @@ const paths = {
   reports: join(root, 'reports'),
   dashboardData: join(root, 'apps', 'dashboard', 'public', 'data'),
   forward: join(root, 'optimization-results', 'forward-tests'),
+  canonical: join(root, 'data', 'canonical'),
+  canonicalLocal: join(root, 'optimization-results', 'canonical'),
 };
 
 for (const path of Object.values(paths)) mkdirSync(path, { recursive: true });
@@ -31,6 +33,9 @@ const maxClusters = Number(args.get('clusters') || 8);
 const maxLedgerLines = Number(args.get('max-ledger-lines') || 200000);
 const maxLedgerFiles = Number(args.get('max-ledger-files') || 12);
 const maxTotalTrades = Number(args.get('max-total-trades') || 500000);
+const useCanonicalDedupe = args.get('canonical-dedupe') !== 'false';
+const canonicalSampleSize = Number(args.get('canonical-sample') || 1500);
+const writeFullCanonical = args.get('write-full-canonical') === 'true' || process.env.FUSION_WRITE_FULL_CANONICAL === 'true';
 const externalLedgerDirs = [
   ...(args.get('external-ledgers') || process.env.FUSION_EXTERNAL_LEDGER_DIRS || '')
     .split(',')
@@ -92,6 +97,11 @@ function writeJson(path, payload) {
   writeFileSync(path, `${JSON.stringify(payload, null, 2)}\n`);
 }
 
+function writeJsonl(path, rows) {
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, `${rows.map((row) => JSON.stringify(row)).join('\n')}\n`);
+}
+
 async function readJsonl(path) {
   if (!existsSync(path)) return [];
   const rows = [];
@@ -143,14 +153,26 @@ function dateFromTime(value) {
   return new Date(ms).toISOString().slice(0, 10);
 }
 
-function symbolFamily(symbol = '') {
+function weekFromDate(date) {
+  if (!date || date === 'unknown') return 'unknown';
+  const parsed = new Date(`${date}T00:00:00.000Z`);
+  if (Number.isNaN(parsed.getTime())) return 'unknown';
+  const start = new Date(Date.UTC(parsed.getUTCFullYear(), 0, 1));
+  const days = Math.floor((parsed - start) / 86400000);
+  const week = Math.floor((days + start.getUTCDay()) / 7) + 1;
+  return `${parsed.getUTCFullYear()}-W${String(week).padStart(2, '0')}`;
+}
+
+function symbolFamily(symbol = '', price = null) {
   const clean = String(symbol).toUpperCase();
   if (['NVDA', 'AMD', 'AVGO', 'SMCI', 'SMH', 'INTC', 'ARM', 'MU'].includes(clean)) return 'semis-ai';
   if (['COIN', 'MARA', 'RIOT', 'HOOD', 'BTC-USD', 'ETHA', 'IREN', 'WULF'].includes(clean)) return 'crypto-proxy';
   if (['TSLA', 'RIVN', 'LCID', 'QS', 'NIO', 'F'].includes(clean)) return 'ev-auto';
   if (['QQQ', 'SPY', 'IWM', 'UVXY', 'SLV'].includes(clean)) return 'etf-macro';
+  if (asNumber(price, NaN) > 0 && asNumber(price, NaN) < 5) return 'low-priced';
   if (['OPEN', 'SOFI', 'PLTR', 'RDDT', 'RBLX', 'AFRM', 'HOOD'].includes(clean)) return 'high-beta-growth';
-  if (asNumber(clean.replace(/[^0-9.]/g, ''), NaN) < 5) return 'low-priced';
+  const numericSymbol = clean.replace(/[^0-9.]/g, '');
+  if (numericSymbol && asNumber(numericSymbol, NaN) < 5) return 'low-priced';
   return 'general';
 }
 
@@ -209,6 +231,32 @@ function metrics(rows) {
   };
 }
 
+function equityDiagnostics(rows) {
+  const ordered = [...rows].sort((a, b) => {
+    const at = Number(a.entryTime || 0);
+    const bt = Number(b.entryTime || 0);
+    return at - bt || a.date.localeCompare(b.date);
+  });
+  let equity = 0;
+  let peak = 0;
+  let maxDrawdownDollars = 0;
+  let lossStreak = 0;
+  let maxLossStreak = 0;
+  for (const row of ordered) {
+    equity += row.pnlDollars;
+    peak = Math.max(peak, equity);
+    maxDrawdownDollars = Math.max(maxDrawdownDollars, peak - equity);
+    if (row.pnlDollars <= 0) lossStreak += 1;
+    else lossStreak = 0;
+    maxLossStreak = Math.max(maxLossStreak, lossStreak);
+  }
+  return { maxDrawdownDollars, maxLossStreak };
+}
+
+function enrichedMetrics(rows) {
+  return { ...metrics(rows), ...equityDiagnostics(rows) };
+}
+
 function topFeatureDifferences(winners, losers, limit = 10) {
   const winMean = meanFeatureMap(winners);
   const lossMean = meanFeatureMap(losers);
@@ -240,6 +288,90 @@ function patternTags(row) {
   return tags;
 }
 
+function normalizedTime(value) {
+  if (value === null || value === undefined || value === '') return '';
+  const number = Number(value);
+  if (Number.isFinite(number)) return String(Math.round(number > 100000000000 ? number / 1000 : number));
+  const parsed = Date.parse(value);
+  return Number.isFinite(parsed) ? String(Math.round(parsed / 1000)) : String(value);
+}
+
+function normalizedPrice(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number.toFixed(4) : '';
+}
+
+function canonicalTradeKey(row) {
+  const timeKey = `${normalizedTime(row.entryTime)}|${normalizedTime(row.exitTime)}`;
+  const fallbackKey = `${row.date}|${normalizedPrice(row.entry)}|${normalizedPrice(row.exit)}`;
+  return [
+    row.symbol,
+    row.side,
+    row.trigger,
+    row.session,
+    timeKey === '|' ? fallbackKey : timeKey,
+    normalizedPrice(row.entry),
+    normalizedPrice(row.exit),
+    Number(row.pnlDollars || 0).toFixed(2),
+  ].join('|');
+}
+
+function mergeDuplicateTrade(existing, incoming) {
+  existing.duplicateCount = (existing.duplicateCount || 1) + 1;
+  existing.sources = [...new Set([...(existing.sources || [existing.source]), incoming.source])];
+  existing.forward = Boolean(existing.forward || incoming.forward);
+  existing.confidence = Math.max(asNumber(existing.confidence, 0), asNumber(incoming.confidence, 0));
+  existing.mfeR = Math.max(asNumber(existing.mfeR, 0), asNumber(incoming.mfeR, 0));
+  existing.maeR = Math.max(asNumber(existing.maeR, 0), asNumber(incoming.maeR, 0));
+  existing.optionWorthy = Boolean(existing.optionWorthy || incoming.optionWorthy);
+  existing.greatTrade = Boolean(existing.greatTrade || incoming.greatTrade);
+  return existing;
+}
+
+function canonicalizeTrades(rows) {
+  if (!useCanonicalDedupe) {
+    return {
+      trades: rows.map((row) => ({
+        ...row,
+        canonicalId: canonicalTradeKey(row),
+        routeId: routeKey(row),
+        sources: [row.source],
+        duplicateCount: 1,
+      })),
+      stats: {
+        rawTrades: rows.length,
+        canonicalTrades: rows.length,
+        duplicatesRemoved: 0,
+        duplicateRate: 0,
+      },
+    };
+  }
+
+  const byKey = new Map();
+  for (const row of rows) {
+    const canonicalId = canonicalTradeKey(row);
+    const prepared = {
+      ...row,
+      canonicalId,
+      routeId: routeKey(row),
+      sources: [row.source],
+      duplicateCount: 1,
+    };
+    if (byKey.has(canonicalId)) mergeDuplicateTrade(byKey.get(canonicalId), prepared);
+    else byKey.set(canonicalId, prepared);
+  }
+  const trades = [...byKey.values()];
+  return {
+    trades,
+    stats: {
+      rawTrades: rows.length,
+      canonicalTrades: trades.length,
+      duplicatesRemoved: rows.length - trades.length,
+      duplicateRate: rows.length ? (rows.length - trades.length) / rows.length * 100 : 0,
+    },
+  };
+}
+
 function normalizeTrade(row, sourcePath) {
   const trade = row.trade || row;
   const combo = row.combo || trade.combo || {};
@@ -253,18 +385,20 @@ function normalizeTrade(row, sourcePath) {
   const session = String(combo.session || trade.session || row.session || 'all').toLowerCase();
   const date = dateFromTime(trade.entryTime || row.entryTime || trade.receivedAt || row.receivedAt);
   const source = relative(root, sourcePath).startsWith('..') ? `external/${basename(sourcePath)}` : relative(root, sourcePath);
+  const entry = asNumber(trade.entry, null);
+  const exit = asNumber(trade.exit, null);
   const normalized = {
     source,
     symbol,
-    family: symbolFamily(symbol),
+    family: symbolFamily(symbol, entry),
     side: String(side).toLowerCase(),
     trigger,
     session,
     date,
     entryTime: trade.entryTime || row.entryTime || null,
     exitTime: trade.exitTime || row.exitTime || null,
-    entry: asNumber(trade.entry, null),
-    exit: asNumber(trade.exit, null),
+    entry,
+    exit,
     pnlDollars,
     win: pnlDollars > 0,
     mfeR: asNumber(trade.mfeR, 0),
@@ -374,6 +508,187 @@ function kmeans(rows, k) {
 
 function routeKey(row) {
   return [row.symbol, row.family, row.trigger, row.session, row.side].join('|');
+}
+
+function consistencyStats(rows) {
+  const byDay = groupBy(rows, (row) => row.date);
+  const byWeek = groupBy(rows, (row) => weekFromDate(row.date));
+  const dayRows = [...byDay].filter(([date]) => date !== 'unknown');
+  const weekRows = [...byWeek].filter(([week]) => week !== 'unknown');
+  const profitableDays = dayRows.filter(([, dayTrades]) => dayTrades.reduce((sum, row) => sum + row.pnlDollars, 0) > 0).length;
+  const profitableWeeks = weekRows.filter(([, weekTrades]) => weekTrades.reduce((sum, row) => sum + row.pnlDollars, 0) > 0).length;
+  const grossWin = rows.filter((row) => row.pnlDollars > 0).reduce((sum, row) => sum + row.pnlDollars, 0);
+  const largestWin = rows.reduce((max, row) => Math.max(max, row.pnlDollars), 0);
+  const uniqueDays = dayRows.length;
+  const uniqueWeeks = weekRows.length;
+  return {
+    uniqueDays,
+    uniqueWeeks,
+    profitableDays,
+    profitableWeeks,
+    dayConsistency: uniqueDays ? profitableDays / uniqueDays * 100 : 0,
+    weekConsistency: uniqueWeeks ? profitableWeeks / uniqueWeeks * 100 : 0,
+    outlierProfitShare: grossWin > 0 ? Math.max(0, largestWin) / grossWin * 100 : 0,
+  };
+}
+
+function routeQualityScore(summary) {
+  const m = summary.metrics;
+  const c = summary.consistency;
+  const mfeMaeShape = Math.max(0, Math.min(100, ((m.avgMfeR || 0) - Math.max(0, m.avgMaeR || 0)) * 45 + 50));
+  const profitFactorScore = Math.max(0, Math.min(100, (m.profitFactor || 0) / 4 * 100));
+  const tradeDepthScore = Math.max(0, Math.min(100, (m.trades || 0) / 75 * 100));
+  const dayDepthScore = Math.max(0, Math.min(100, (c.uniqueDays || 0) / 8 * 100));
+  const outlierPenalty = Math.max(0, (c.outlierProfitShare || 0) - 35) * 0.6;
+  const drawdownPenalty = m.netDollars > 0 ? Math.max(0, (m.maxDrawdownDollars || 0) / Math.max(m.netDollars, 1) * 25) : 25;
+  const score =
+    (m.winRate || 0) * 0.24 +
+    profitFactorScore * 0.16 +
+    Math.max(0, Math.min(100, (m.avgDollars || 0) / 350 * 100)) * 0.12 +
+    (c.dayConsistency || 0) * 0.14 +
+    (c.weekConsistency || c.dayConsistency || 0) * 0.10 +
+    tradeDepthScore * 0.10 +
+    dayDepthScore * 0.06 +
+    (m.optionWorthyRate || 0) * 0.04 +
+    mfeMaeShape * 0.04 -
+    outlierPenalty -
+    drawdownPenalty;
+  return Number(Math.max(0, Math.min(100, score)).toFixed(2));
+}
+
+function routeManifest(rows) {
+  return [...groupBy(rows, routeKey)]
+    .map(([key, routeRows]) => {
+      const [symbol, family, trigger, session, side] = key.split('|');
+      const summary = {
+        key,
+        symbol,
+        family,
+        trigger,
+        session,
+        side,
+        metrics: enrichedMetrics(routeRows),
+        consistency: consistencyStats(routeRows),
+        dominantTags: [...groupBy(routeRows.flatMap((row) => row.tags.map((tag) => ({ tag }))), (row) => row.tag)]
+          .map(([tag, tagged]) => ({ tag, count: tagged.length }))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 5),
+        featureEdges: topFeatureDifferences(routeRows.filter((row) => row.win), routeRows.filter((row) => !row.win), 8),
+      };
+      summary.qualityScore = routeQualityScore(summary);
+      summary.validation = {
+        depthOk: summary.metrics.trades >= 20,
+        daysOk: summary.consistency.uniqueDays >= 3,
+        weeksOk: summary.consistency.uniqueWeeks >= 2,
+        profitOk: summary.metrics.netDollars > 0 && summary.metrics.profitFactor >= 1.25,
+        outlierOk: summary.consistency.outlierProfitShare <= 55 || summary.metrics.trades >= 75,
+      };
+      summary.validation.passed = Object.values(summary.validation).every(Boolean);
+      return summary;
+    })
+    .sort((a, b) => b.qualityScore - a.qualityScore || b.metrics.netDollars - a.metrics.netDollars);
+}
+
+function symbolManifest(rows) {
+  return [...groupBy(rows, (row) => row.symbol)]
+    .map(([symbol, symbolRows]) => {
+      const summary = {
+        symbol,
+        family: symbolRows[0]?.family || 'unknown',
+        metrics: enrichedMetrics(symbolRows),
+        consistency: consistencyStats(symbolRows),
+        topRoutes: [...groupBy(symbolRows, routeKey)]
+          .map(([key, routeRows]) => ({ key, metrics: metrics(routeRows) }))
+          .sort((a, b) => b.metrics.netDollars - a.metrics.netDollars)
+          .slice(0, 8),
+      };
+      summary.qualityScore = routeQualityScore(summary);
+      return summary;
+    })
+    .sort((a, b) => b.metrics.netDollars - a.metrics.netDollars);
+}
+
+function generateFactoryCandidates(routes) {
+  return routes
+    .filter((route) => route.metrics.netDollars > 0)
+    .filter((route) => route.metrics.trades >= 8)
+    .filter((route) => route.metrics.winRate >= 62)
+    .slice(0, 160)
+    .map((route, index) => {
+      const minConfidence = route.metrics.winRate >= 88 ? 68 : route.metrics.winRate >= 78 ? 72 : 76;
+      const targetR = route.metrics.avgMfeR >= 1.8 && route.metrics.avgMaeR <= 0.7
+        ? 0.75
+        : route.metrics.avgMfeR >= 1.15
+          ? 0.50
+          : 0.35;
+      const status = route.validation.passed && route.qualityScore >= 72
+        ? 'factory-promotable'
+        : route.metrics.trades >= 20 && route.consistency.uniqueDays >= 3
+          ? 'factory-watchlist'
+          : 'needs-more-data';
+      return {
+        id: `phase21-factory-${String(index + 1).padStart(3, '0')}`,
+        status,
+        routeKey: route.key,
+        symbol: route.symbol,
+        family: route.family,
+        triggerMode: route.trigger,
+        session: route.session,
+        side: route.side,
+        qualityScore: route.qualityScore,
+        metrics: route.metrics,
+        consistency: route.consistency,
+        validation: route.validation,
+        dominantTags: route.dominantTags,
+        featureBoosts: route.featureEdges.filter((edge) => edge.edge > 0).slice(0, 6),
+        avoidFeatures: route.featureEdges.filter((edge) => edge.edge < 0).slice(0, 6),
+        suggestedRules: {
+          minConfidence,
+          minAlphaQuality: route.metrics.avgMaeR <= 0.45 ? 55 : 65,
+          targetR,
+          maxMaeR: Number(Math.max(0.35, Math.min(0.9, route.metrics.avgMaeR * 1.35 || 0.7)).toFixed(2)),
+          requireRouteQualityScore: Math.max(60, Math.floor(route.qualityScore - 6)),
+          requireConsistentDays: route.consistency.uniqueDays >= 4,
+          requireNoOutlierDependence: route.consistency.outlierProfitShare <= 45,
+        },
+      };
+    });
+}
+
+function canonicalSample(rows) {
+  const byAbsPnl = [...rows].sort((a, b) => Math.abs(b.pnlDollars) - Math.abs(a.pnlDollars)).slice(0, Math.floor(canonicalSampleSize * 0.45));
+  const recent = [...rows].sort((a, b) => normalizedTime(b.entryTime).localeCompare(normalizedTime(a.entryTime))).slice(0, Math.floor(canonicalSampleSize * 0.35));
+  const routeRepresentatives = [...groupBy(rows, routeKey)]
+    .flatMap(([, routeRows]) => routeRows.slice(0, 2))
+    .slice(0, Math.floor(canonicalSampleSize * 0.35));
+  const seen = new Set();
+  return [...byAbsPnl, ...recent, ...routeRepresentatives]
+    .filter((row) => {
+      if (seen.has(row.canonicalId)) return false;
+      seen.add(row.canonicalId);
+      return true;
+    })
+    .slice(0, canonicalSampleSize)
+    .map((row) => ({
+      canonicalId: row.canonicalId,
+      routeId: row.routeId,
+      symbol: row.symbol,
+      family: row.family,
+      side: row.side,
+      trigger: row.trigger,
+      session: row.session,
+      date: row.date,
+      entryTime: row.entryTime,
+      exitTime: row.exitTime,
+      entry: row.entry,
+      exit: row.exit,
+      pnlDollars: row.pnlDollars,
+      mfeR: row.mfeR,
+      maeR: row.maeR,
+      confidence: row.confidence,
+      tags: row.tags,
+      duplicateCount: row.duplicateCount,
+    }));
 }
 
 function buildPatternSummaries(rows) {
@@ -500,15 +815,45 @@ function dailyPerformance(rows) {
     .sort((a, b) => a.date.localeCompare(b.date) || b.metrics.netDollars - a.metrics.netDollars);
 }
 
-const trades = await loadTrades();
+const rawTrades = await loadTrades();
+const canonical = canonicalizeTrades(rawTrades);
+const trades = canonical.trades;
 const winners = trades.filter((row) => row.win);
 const losers = trades.filter((row) => !row.win);
 const patterns = buildPatternSummaries(trades);
 const candidates = generateSpecialistCandidates(patterns);
+const routes = routeManifest(trades);
+const symbols = symbolManifest(trades);
+const factoryCandidates = generateFactoryCandidates(routes);
 const clusters = {
   winners: kmeans(winners, maxClusters),
   losers: kmeans(losers, maxClusters),
   all: kmeans(trades, maxClusters),
+};
+const canonicalReport = {
+  updatedAt: new Date().toISOString(),
+  source: 'phase21-canonical-data-spine',
+  config: {
+    useCanonicalDedupe,
+    maxLedgerLines,
+    maxLedgerFiles,
+    maxTotalTrades,
+    canonicalSampleSize,
+    writeFullCanonical,
+    externalLedgerDirs: externalLedgerDirs.length ? [`${externalLedgerDirs.length} external ledger director${externalLedgerDirs.length === 1 ? 'y' : 'ies'}`] : [],
+  },
+  stats: {
+    ...canonical.stats,
+    uniqueSymbols: new Set(trades.map((row) => row.symbol)).size,
+    uniqueRoutes: routes.length,
+    uniqueDays: new Set(trades.map((row) => row.date).filter((date) => date !== 'unknown')).size,
+    uniqueWeeks: new Set(trades.map((row) => weekFromDate(row.date)).filter((week) => week !== 'unknown')).size,
+    sourceFiles: [...new Set(rawTrades.map((row) => row.source))].slice(0, 250),
+  },
+  globalMetrics: enrichedMetrics(trades),
+  topSymbols: symbols.slice(0, 60),
+  topRoutes: routes.slice(0, 120),
+  factoryCandidates: factoryCandidates.slice(0, 120),
 };
 
 const report = {
@@ -520,17 +865,27 @@ const report = {
     maxLedgerLines,
     maxLedgerFiles,
     maxTotalTrades,
+    useCanonicalDedupe,
     externalLedgerDirs: externalLedgerDirs.length ? [`${externalLedgerDirs.length} external ledger director${externalLedgerDirs.length === 1 ? 'y' : 'ies'}`] : [],
     featureCount: featureNames.length,
   },
   data: {
+    rawTrades: rawTrades.length,
     trades: trades.length,
+    canonicalTrades: trades.length,
+    duplicatesRemoved: canonical.stats.duplicatesRemoved,
+    duplicateRate: canonical.stats.duplicateRate,
     winners: winners.length,
     losers: losers.length,
     sources: [...new Set(trades.map((row) => row.source))].slice(0, 200),
   },
+  canonical: {
+    stats: canonicalReport.stats,
+    topRoutes: canonicalReport.topRoutes.slice(0, 30),
+    factoryCandidates: canonicalReport.factoryCandidates.slice(0, 30),
+  },
   global: {
-    metrics: metrics(trades),
+    metrics: enrichedMetrics(trades),
     winnerPrototype: meanFeatureMap(winners),
     loserPrototype: meanFeatureMap(losers),
     strongestFeatureEdges: topFeatureDifferences(winners, losers, 15),
@@ -549,16 +904,46 @@ writeJson(join(paths.specialists, 'pattern-specialist-candidates.json'), {
   source: 'pattern-lab-v1',
   candidates,
 });
+writeJson(join(paths.specialists, 'phase21-specialist-factory.json'), {
+  updatedAt: report.updatedAt,
+  source: 'phase21-canonical-specialist-factory',
+  description: 'Canonical deduped route specialists with unique day/week, consistency, outlier, drawdown, and feature-edge gates.',
+  candidates: factoryCandidates,
+});
+writeJson(join(paths.canonical, 'canonical-summary.json'), canonicalReport);
+writeJson(join(paths.canonical, 'route-manifest.json'), {
+  updatedAt: report.updatedAt,
+  source: 'phase21-canonical-route-manifest',
+  routes,
+});
+writeJson(join(paths.canonical, 'symbol-manifest.json'), {
+  updatedAt: report.updatedAt,
+  source: 'phase21-canonical-symbol-manifest',
+  symbols,
+});
+writeJsonl(join(paths.canonical, 'canonical-trades.sample.jsonl'), canonicalSample(trades));
+if (writeFullCanonical) writeJsonl(join(paths.canonicalLocal, 'canonical-trades.full.jsonl'), trades);
 writeJson(join(paths.reports, 'pattern-lab-report.json'), report);
+writeJson(join(paths.reports, 'canonical-data-report.json'), canonicalReport);
 writeJson(join(paths.dashboardData, 'pattern-lab.json'), report);
+writeJson(join(paths.dashboardData, 'canonical-data.json'), canonicalReport);
 writeJson(join(paths.registry, 'pattern-lab-registry.json'), {
   updatedAt: report.updatedAt,
   candidateCount: candidates.length,
   promotableCount: candidates.filter((candidate) => candidate.status === 'candidate-promotable').length,
   topCandidates: candidates.slice(0, 25),
 });
+writeJson(join(paths.registry, 'canonical-data-registry.json'), {
+  updatedAt: report.updatedAt,
+  ...canonicalReport.stats,
+  globalMetrics: canonicalReport.globalMetrics,
+  factoryCandidateCount: factoryCandidates.length,
+  factoryPromotableCount: factoryCandidates.filter((candidate) => candidate.status === 'factory-promotable').length,
+  topFactoryCandidates: factoryCandidates.slice(0, 25),
+});
 
 console.log('Pattern Lab complete');
-console.log(`Trades=${report.data.trades} winners=${report.data.winners} losers=${report.data.losers}`);
+console.log(`Trades=${report.data.trades} canonical / ${report.data.rawTrades} raw; duplicatesRemoved=${report.data.duplicatesRemoved}`);
 console.log(`Pattern candidates=${candidates.length}, promotable=${candidates.filter((candidate) => candidate.status === 'candidate-promotable').length}`);
+console.log(`Phase21 factory candidates=${factoryCandidates.length}, promotable=${factoryCandidates.filter((candidate) => candidate.status === 'factory-promotable').length}`);
 console.log(`Report: ${join(paths.reports, 'pattern-lab-report.json')}`);

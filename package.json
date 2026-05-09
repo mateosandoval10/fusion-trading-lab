@@ -9,6 +9,7 @@
     "lab:dashboard": "node scripts/build_dashboard_data.js",
     "lab:nightly": "node scripts/lab_nightly.js",
     "lab:report": "npm run lab:pattern && npm run lab:dashboard",
+    "lab:phase21": "npm run lab:report",
     "scalp:phase19": "node scripts/phase19_champion_council_fusion.js",
     "scalp:closed-loop:start": "bash scripts/start_live_closed_loop.sh",
     "scalp:closed-loop:stop": "bash scripts/stop_live_closed_loop.sh",
