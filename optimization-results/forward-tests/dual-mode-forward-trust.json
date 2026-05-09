@@ -1,0 +1,137 @@
+{
+  "updatedAt": "2026-05-04T02:40:39.166Z",
+  "modes": {
+    "high_win": {
+      "trades": 2,
+      "wins": 1,
+      "netDollars": -911.3516771665376,
+      "grossWin": 406.2071159138219,
+      "grossLoss": 1317.5587930803595,
+      "lossStreak": 0,
+      "quarantined": false,
+      "winRate": 50,
+      "profitFactor": 0.3083028385884309
+    },
+    "profit_max": {
+      "trades": 8,
+      "wins": 7,
+      "netDollars": 3417.188921963457,
+      "grossWin": 4734.747715043816,
+      "grossLoss": 1317.5587930803595,
+      "lossStreak": 0,
+      "quarantined": false,
+      "winRate": 87.5,
+      "profitFactor": 3.593576043748538
+    }
+  },
+  "routes": {
+    "high_win|BB|open-0930|both|volume-shock": {
+      "trades": 1,
+      "wins": 0,
+      "netDollars": -1317.5587930803595,
+      "grossWin": 0,
+      "grossLoss": 1317.5587930803595,
+      "lossStreak": 1,
+      "quarantined": false,
+      "winRate": 0,
+      "profitFactor": 0,
+      "lastSeen": "2026-05-04T02:40:39.166Z"
+    },
+    "high_win|ASTS|open-0930|short|momentum-acceleration": {
+      "trades": 1,
+      "wins": 1,
+      "netDollars": 406.2071159138219,
+      "grossWin": 406.2071159138219,
+      "grossLoss": 0,
+      "lossStreak": 0,
+      "quarantined": false,
+      "winRate": 100,
+      "profitFactor": 999,
+      "lastSeen": "2026-05-04T02:40:39.166Z"
+    },
+    "profit_max|BB|open-0930|both|volume-shock": {
+      "trades": 1,
+      "wins": 0,
+      "netDollars": -1317.5587930803595,
+      "grossWin": 0,
+      "grossLoss": 1317.5587930803595,
+      "lossStreak": 1,
+      "quarantined": false,
+      "winRate": 0,
+      "profitFactor": 0,
+      "lastSeen": "2026-05-04T02:40:39.166Z"
+    },
+    "profit_max|ASTS|open-0930|short|momentum-acceleration": {
+      "trades": 1,
+      "wins": 1,
+      "netDollars": 406.2071159138219,
+      "grossWin": 406.2071159138219,
+      "grossLoss": 0,
+      "lossStreak": 0,
+      "quarantined": false,
+      "winRate": 100,
+      "profitFactor": 999,
+      "lastSeen": "2026-05-04T02:40:39.166Z"
+    },
+    "profit_max|U|open-0930|both|opening-drive-continuation": {
+      "trades": 1,
+      "wins": 1,
+      "netDollars": 267.17435651430606,
+      "grossWin": 267.17435651430606,
+      "grossLoss": 0,
+      "lossStreak": 0,
+      "quarantined": false,
+      "winRate": 100,
+      "profitFactor": 999,
+      "lastSeen": "2026-05-04T02:40:39.166Z"
+    },
+    "profit_max|SQQQ|open-0930|both|momentum-acceleration": {
+      "trades": 1,
+      "wins": 1,
+      "netDollars": 435.7398594720999,
+      "grossWin": 435.7398594720999,
+      "grossLoss": 0,
+      "lossStreak": 0,
+      "quarantined": false,
+      "winRate": 100,
+      "profitFactor": 999,
+      "lastSeen": "2026-05-04T02:40:39.166Z"
+    },
+    "profit_max|SOUN|open-0930|both|opening-drive-continuation": {
+      "trades": 1,
+      "wins": 1,
+      "netDollars": 1498.511772093177,
+      "grossWin": 1498.511772093177,
+      "grossLoss": 0,
+      "lossStreak": 0,
+      "quarantined": false,
+      "winRate": 100,
+      "profitFactor": 999,
+      "lastSeen": "2026-05-04T02:40:39.166Z"
+    },
+    "profit_max|NIO|open-0930|both|volume-shock": {
+      "trades": 2,
+      "wins": 2,
+      "netDollars": 1944.278030656376,
+      "grossWin": 1944.278030656376,
+      "grossLoss": 0,
+      "lossStreak": 0,
+      "quarantined": false,
+      "winRate": 100,
+      "profitFactor": 999,
+      "lastSeen": "2026-05-04T02:40:39.166Z"
+    },
+    "profit_max|TSLA|open-1000|both|opening-drive-continuation": {
+      "trades": 1,
+      "wins": 1,
+      "netDollars": 182.83658039403502,
+      "grossWin": 182.83658039403502,
+      "grossLoss": 0,
+      "lossStreak": 0,
+      "quarantined": false,
+      "winRate": 100,
+      "profitFactor": 999,
+      "lastSeen": "2026-05-04T02:40:39.166Z"
+    }
+  }
+}

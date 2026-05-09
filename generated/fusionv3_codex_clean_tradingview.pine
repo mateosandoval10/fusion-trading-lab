@@ -1,0 +1,1480 @@
+//@version=6
+// © KhanSaab - 2026. All rights reserved.
+// Sniper v03 Fusion — combines:
+//   • V.02 Self-Learn+ core (7-factor confluence, weight learning, trust memory, meta-LR, chop-aware)
+//   • Adaptive SuperTrend factor (f8)
+//   • Adaptive MFI cluster-vote factor (f9, simplified k-means, 3 centroids)
+//   • KNN confirmation gate (RSI-z / MA-dev-z / CHOP-z — 3 features)
+//   • Dynamic Swing VWAP gate (WillyAlgoTrader-style, segment + band)
+//   • Major-swing filter (pivot freshness + min ATR leg + cooldown + key-level span)
+//   • Flow proxy (range-weighted delta + absorption + entropy) — no footprint / no private imports
+//   • Adaptive SL/TP (self-tuning ATR multiplier from rolling sim win-rate, reverting)
+//   • Options helper (dashboard only: DTE bucket + strike offset + exit heuristic)
+indicator("Sniper v03 Fusion v3.2 [KhanSaab]", overlay=true, max_labels_count=500, max_boxes_count=500, max_lines_count=500, max_bars_back=5000)
+
+// ═══════════════════════════════════════════════════════════
+// COLORS
+// ═══════════════════════════════════════════════════════════
+color c_turquoise = #40E0D0
+color c_bull = color.new(color.green, 0)
+color c_bear = color.new(color.red, 0)
+
+// ═══════════════════════════════════════════════════════════
+// INPUTS — Visuals
+// ═══════════════════════════════════════════════════════════
+groupVis        = "① Visuals & UI"
+dashTextSize    = input.string("small", "Dashboard font size", options=["tiny","small","normal","large","huge"], group=groupVis)
+tradeTextSize   = input.string("small", "Trade label size", options=["tiny","small","normal","large","huge"], group=groupVis)
+dashboardMode   = input.string("Compact", "Dashboard mode", options=["Compact","Full"], group=groupVis)
+ribbonOpacity   = input.int(75, "EMA ribbon opacity", minval=0, maxval=100, group=groupVis)
+labelOffset     = input.int(12, "Label right offset (bars)", minval=1, group=groupVis)
+showSlLabel     = input.bool(true, "Show SL label", group=groupVis)
+showScoreMeters = input.bool(true, "Show BUY/SELL meters", group=groupVis)
+showOptionsBox  = input.bool(true, "Show options helper rows", group=groupVis)
+dashPos         = input.string("middle_left", "Dashboard position", options=["top_left","top_right","middle_left","middle_right","bottom_left","bottom_right"], group=groupVis)
+
+// ═══════════════════════════════════════════════════════════
+// INPUTS — Preset (one-click strictness)
+// ═══════════════════════════════════════════════════════════
+groupPreset = "⓪ Preset (overrides gate strictness)"
+presetMode  = input.string("Balanced", "Strictness preset", options=["Custom","V.02 classic","Aggressive","Balanced","Strict"], group=groupPreset, tooltip="V.02 classic = same density as V.02 Self-Learn+ (only EMA cross + optional learn filter). Aggressive = adds flow/swing but stays loose. Balanced = moderate. Strict = all filters on.")
+
+// ═══════════════════════════════════════════════════════════
+// INPUTS — Signal filter toggles (per-filter: Auto / On / Off)
+// Use to force a single filter on or off, overriding the preset.
+// "Auto" = whatever the preset decided.
+// ═══════════════════════════════════════════════════════════
+groupToggles = "⓪·b Filter toggles (large moves = turn ON more)"
+tog_trendHtf   = input.string("Auto", "HTF trend filter (removes counter-trend)",   options=["Auto","On","Off"], group=groupToggles, tooltip="ON = only BUY when HTF EMA is bullish, only SELL when bearish. Removes mean-reverting micro signals.")
+tog_chopConv   = input.string("Auto", "Chop / expansion (ATR + ER)",                options=["Auto","On","Off"], group=groupToggles, tooltip="ON = require volatility + trending price. Filters out sideways chop signals.")
+tog_adxFloor   = input.string("Auto", "ADX floor (trend strength)",                 options=["Auto","On","Off"], group=groupToggles, tooltip="ON = block signals when ADX is too weak. Keeps only strong-trend entries.")
+tog_swingLeg   = input.string("Auto", "Major swing leg only (min ATR distance)",    options=["Auto","On","Off"], group=groupToggles, tooltip="ON = require price has moved minSwingATR×ATR from swing low/high. Kills tiny micro-moves.")
+tog_keyLevel   = input.string("Auto", "Key level span (lookback range)",            options=["Auto","On","Off"], group=groupToggles, tooltip="ON = require recent range ≥ keyLevelX×ATR. Ensures the move is meaningful vs prior chop.")
+tog_freshPvt   = input.string("Auto", "Fresh pivot (recent structure)",             options=["Auto","On","Off"], group=groupToggles, tooltip="ON = require a recent pivot high/low. Prevents signals in drifting markets with no structure.")
+tog_cooldown   = input.string("Auto", "Cooldown between signals",                   options=["Auto","On","Off"], group=groupToggles, tooltip="ON = enforce minBarsBetween. Prevents back-to-back whipsaw prints.")
+tog_flow       = input.string("Auto", "Order-flow proxy gate",                      options=["Auto","On","Off"], group=groupToggles, tooltip="ON = directional flow bias must not oppose the trade. Filters weak, low-volume signals.")
+tog_knn        = input.string("Auto", "KNN history agreement",                      options=["Auto","On","Off"], group=groupToggles, tooltip="ON = require past-similar bars to have been profitable in that direction.")
+tog_dsVwap     = input.string("Auto", "DS-VWAP segment gate",                       options=["Auto","On","Off"], group=groupToggles, tooltip="ON = require anchored-VWAP swing segment to match direction. Strong for swing highs/lows.")
+tog_bigSwing   = input.string("Auto", "Big moves only (hides small signals)",       options=["Auto","On","Off"], group=groupToggles, tooltip="ON = only print BUY+/SELL+ for moves ≥ minSwingATR. Hides everything smaller.")
+tog_minConf    = input.int(65, "Min signal confidence % (0 = show all)", minval=0, maxval=100, step=5, group=groupToggles, tooltip="If > 0, BUY/SELL only print when composite confidence ≥ this %. Use 65+ for only the best setups, 80+ for elite swings.")
+
+// ═══════════════════════════════════════════════════════════
+// INPUTS — Signal density (one-print-per-trend control)
+// ═══════════════════════════════════════════════════════════
+groupDensity = "⓪·c Signal density (big-picture filter)"
+signalDensity = input.string("Mega moves only", "Signal density", options=["All signals","Medium moves","Big moves only","Mega moves only"], group=groupDensity, tooltip="All = every valid EMA cross prints. Medium = filters small pullback flips. Big = only prints for ≥2×ATR legs. Mega = only prints for ≥3.5×ATR legs with HTF alignment.")
+entryMode = input.string("Scalp Trigger Engine", "Entry trigger mode", options=["EMA cross only","Cross + pullback reclaim","Score regime shifts","Options Sniper","Scalp Trigger Engine"], group=groupDensity, tooltip="Scalp Trigger Engine uses the same trigger families tested in the local optimizer: confirmed/no-repaint, momentum, volume shock, breakout, pullback, and hybrid consensus.")
+minLeadScore = input.float(55.0, "Min leading side score %", minval=40.0, maxval=90.0, step=1.0, group=groupDensity)
+minScoreEdge = input.float(10.0, "Min bull/bear edge %", minval=0.0, maxval=50.0, step=1.0, group=groupDensity)
+trendLockEnable = input.bool(true, "Trend-lock: suppress same-direction re-prints while in trade", group=groupDensity, tooltip="After a BUY, blocks further BUYs until trend structure breaks (price retraces retraceGive×risk or HTF EMA flips). Prevents duplicate entries on pullback flips.")
+retraceGiveR   = input.float(1.2, "Retrace to unlock (× risk R)", minval=0.3, maxval=5.0, step=0.1, group=groupDensity, tooltip="While locked, only re-consider signals if price retraces this many R from best. 1.2 = modest pullback, 2.5 = full structure break.")
+minMoveAtrMed  = input.float(1.2, "Min move × ATR (Medium tier)", minval=0.3, maxval=5.0, step=0.1, group=groupDensity)
+minMoveAtrBig  = input.float(2.0, "Min move × ATR (Big tier)",    minval=0.5, maxval=8.0, step=0.1, group=groupDensity)
+minMoveAtrMega = input.float(3.5, "Min move × ATR (Mega tier)",   minval=1.0, maxval=12.0, step=0.1, group=groupDensity)
+megaReqHtf     = input.bool(true, "Mega tier requires HTF agreement", group=groupDensity)
+
+// ═══════════════════════════════════════════════════════════
+// INPUTS — Regime learning profile
+// ═══════════════════════════════════════════════════════════
+groupRegime = "⓪·d Regime learning"
+useRegimeProfile = input.bool(true, "Use learned regime profile", group=groupRegime, tooltip="Adapts entry mode, confidence floor, and move density using the external optimizer's best regime profiles.")
+
+// ═══════════════════════════════════════════════════════════
+// INPUTS — Options Sniper
+// ═══════════════════════════════════════════════════════════
+groupOptSniper = "⓪·e Options Sniper"
+optMinLeadScore = input.float(70.0, "Min leading score %", minval=45.0, maxval=95.0, step=1.0, group=groupOptSniper)
+optMinScoreEdge = input.float(12.0, "Min bull/bear edge %", minval=5.0, maxval=60.0, step=1.0, group=groupOptSniper)
+optMinAtrRatio  = input.float(0.90, "Min ATR expansion", minval=0.8, maxval=2.5, step=0.05, group=groupOptSniper)
+optMinAdx       = input.float(18.0, "Min ADX", minval=0.0, maxval=50.0, step=1.0, group=groupOptSniper)
+optMinEr        = input.float(0.10, "Min efficiency ratio", minval=0.05, maxval=0.80, step=0.01, group=groupOptSniper)
+optVolMult      = input.float(1.20, "Min volume × avg", minval=0.5, maxval=5.0, step=0.05, group=groupOptSniper)
+optNeedVwap     = input.bool(true, "Require price vs VWAP", group=groupOptSniper)
+optNeedFlow     = input.bool(true, "Require directional flow", group=groupOptSniper)
+optNeedHtf      = input.bool(true, "Require HTF alignment", group=groupOptSniper)
+
+// ═══════════════════════════════════════════════════════════
+// INPUTS — Scalp optimizer filters
+// ═══════════════════════════════════════════════════════════
+groupScalpOpt = "⓪·f Scalp optimizer"
+scalpFilterEnable = input.bool(true, "Enable optimized scalp filters", group=groupScalpOpt, tooltip="Applies filters learned by the local optimizer: session, direction, VWAP extension, confidence rising, and loss cooldown.")
+scalpSession = input.string("All", "Session filter", options=["All","Open","Open 9:30-10","Open 10-10:30","Open 10:30-11","Midday","Power hour","Morning","Afternoon"], group=groupScalpOpt)
+scalpDirection = input.string("Short only", "Direction filter", options=["Both","Long only","Short only"], group=groupScalpOpt)
+scalpRequireConfRising = input.bool(false, "Require confidence rising", group=groupScalpOpt)
+scalpMaxVwapAtr = input.float(0.0, "Max VWAP distance × ATR (0=off)", minval=0.0, maxval=5.0, step=0.25, group=groupScalpOpt)
+scalpLossCooldownBars = input.int(0, "Cooldown bars after sim loss", minval=0, maxval=100, group=groupScalpOpt)
+scalpOpeningRange = input.string("Off", "Opening range context", options=["Off","Break 15m","Near 15m"], group=groupScalpOpt)
+scalpHtfMode = input.string("Not against EMA50", "HTF permission", options=["Off","Align EMA50","Not against EMA50"], group=groupScalpOpt)
+scalpVolumeQuality = input.string("Off", "Volume quality", options=["Off","Clean"], group=groupScalpOpt)
+scalpSpreadBps = input.float(2.0, "Estimated spread bps", minval=0.0, maxval=100.0, step=0.25, group=groupScalpOpt)
+scalpSlippageBps = input.float(1.0, "Estimated slippage bps each side", minval=0.0, maxval=100.0, step=0.25, group=groupScalpOpt)
+scalpMinMoveToCost = input.float(5.0, "Min target move ÷ cost (0=off)", minval=0.0, maxval=50.0, step=0.5, group=groupScalpOpt)
+scalpAdaptiveTarget = input.bool(false, "Adaptive scalp target size", group=groupScalpOpt)
+scalpMaxConsecLosses = input.int(0, "Loss-cluster shutoff after N losses (0=off)", minval=0, maxval=10, group=groupScalpOpt)
+scalpClusterCooldownBars = input.int(24, "Loss-cluster cooldown bars", minval=1, maxval=300, group=groupScalpOpt)
+scalpMinPrice = input.float(1.0, "Min stock price (0=off)", minval=0.0, step=0.25, group=groupScalpOpt)
+scalpMaxPrice = input.float(0.0, "Max stock price (0=off)", minval=0.0, step=0.25, group=groupScalpOpt)
+scalpMinDollarVol = input.float(500000.0, "Min $ volume avg (0=off)", minval=0.0, step=100000.0, group=groupScalpOpt)
+scalpGapMode = input.string("Off", "Gap context", options=["Off","With gap","No big gap"], group=groupScalpOpt)
+scalpDailyContext = input.string("Trend day", "Daily context", options=["Off","Trend day","Range expansion"], group=groupScalpOpt)
+scalpPriorDayMode = input.string("Off", "Prior-day level", options=["Off","Break PD","Near PD"], group=groupScalpOpt)
+scalpMarketMode = input.string("Off", "Market alignment", options=["Off","SPY","QQQ","SPY + QQQ"], group=groupScalpOpt)
+scalpRelVolMode = input.string("Off", "Relative volume", options=["Off","Raw SMA"], group=groupScalpOpt)
+scalpMinRelVol = input.float(1.0, "Min relative volume", minval=0.0, maxval=10.0, step=0.1, group=groupScalpOpt)
+scalpPeerMode = input.string("Off", "Peer confirmation", options=["Off","QQQ proxy"], group=groupScalpOpt)
+scalpNewsMode = input.string("Off", "News/abnormal spike filter", options=["Off","Avoid spike","Momentum only"], group=groupScalpOpt)
+scalpTriggerMode = input.string("Hybrid Consensus", "Scalp trigger family", options=["Base","EMA Cross","Score Cross","VWAP Reclaim","EMA Pullback","Breakout","Failed Reversal","Momentum Acceleration","Mean Reversion","Trend Continuation","Squeeze Expansion","Volume Shock","Options Burst","Confirmed No-Repaint","Hybrid Consensus"], group=groupScalpOpt)
+scalpUseAlphaQuality = input.bool(true, "Use alpha-quality engine", group=groupScalpOpt, tooltip="Adds candle quality, VWAP pressure, EMA slope, acceleration, volume quality, flow, breakout/rejection structure, and trend stack to filter weak scalp signals.")
+scalpMinAlphaQuality = input.int(55, "Min alpha quality %", minval=0, maxval=100, step=5, group=groupScalpOpt)
+championBadge = input.string("Backtest Only", "Champion proof badge", options=["Backtest Only","Forward Proven","Quarantined"], group=groupScalpOpt)
+championRouteName = input.string("Manual / optimizer route", "Champion route name", group=groupScalpOpt)
+championTargetMode = input.string("Auto target", "Champion target mode", group=groupScalpOpt)
+championBacktestWr = input.float(0.0, "Champion backtest WR %", minval=0.0, maxval=100.0, step=0.1, group=groupScalpOpt)
+championForwardWr = input.float(0.0, "Champion forward WR % (0=n/a)", minval=0.0, maxval=100.0, step=0.1, group=groupScalpOpt)
+activeScalpMode = input.string("Auto Specialist", "Active scalp mode", options=["Auto Specialist","Champion Council Fusion","High Win Main","Phase17 High Win Router","Profit Max Specialist","Powerhour Momentum","Options Burst Specialist"], group=groupScalpOpt, tooltip="Auto Specialist lets the indicator choose between Champion Council, High Win, Phase17, Powerhour, Profit Max, and Options Burst based on symbol/session/volatility. Manual choices force one specialist.")
+autoSpecialistPolicy = input.string("Forward trust first", "Auto specialist policy", options=["Forward trust first","High win bias","Profit max bias"], group=groupScalpOpt)
+highWinBacktestWr = input.float(92.9, "High Win backtest WR %", minval=0.0, maxval=100.0, step=0.1, group=groupScalpOpt)
+highWinForwardWr = input.float(100.0, "High Win forward WR %", minval=0.0, maxval=100.0, step=0.1, group=groupScalpOpt)
+highWinStatus = input.string("Forward Proven", "High Win status", options=["Watchlist","Forward Proven","Quarantined"], group=groupScalpOpt)
+councilBacktestWr = input.float(90.7, "Champion Council backtest WR %", minval=0.0, maxval=100.0, step=0.1, group=groupScalpOpt)
+councilHoldoutWr = input.float(99.3, "Champion Council holdout WR %", minval=0.0, maxval=100.0, step=0.1, group=groupScalpOpt)
+councilForwardWr = input.float(0.0, "Champion Council forward WR % (0=n/a)", minval=0.0, maxval=100.0, step=0.1, group=groupScalpOpt)
+councilStatus = input.string("Watchlist", "Champion Council status", options=["Watchlist","Forward Proven","Quarantined"], group=groupScalpOpt)
+councilTriggerMode = input.string("Hybrid Consensus", "Champion Council fallback trigger", options=["Base","EMA Cross","Score Cross","VWAP Reclaim","EMA Pullback","Breakout","Failed Reversal","Momentum Acceleration","Mean Reversion","Trend Continuation","Squeeze Expansion","Volume Shock","Options Burst","Confirmed No-Repaint","Hybrid Consensus"], group=groupScalpOpt, tooltip="Local Phase19 stores exact route triggers. Pine uses this fallback trigger for chart-side labels/alerts until the closed loop maps the exact route.")
+councilWhitelist = input.string("DASH,WULF,HOOD,PLTR,OPEN,CRM,PANW,F,SMH,AFRM,ABNB,AMD,AAPL,SHOP,LYFT,DDOG,TCEHY,UVXY,ZS,RCL,COIN,BAC,NIO,ORCL,SOFI,MU,PL,RDDT,UAL,NNE,SNOW,EME,QS,IREN,RBLX,IGV,CRDO,SLV,CTSH,ETHA,CNC,AXTI,QBTS,OKLO,W", "Champion Council ticker whitelist", group=groupScalpOpt, tooltip="Phase19 profit-guarded fusion whitelist from the latest Champion Council tournament.")
+phase17BacktestWr = input.float(89.4, "Phase17 High Win backtest WR %", minval=0.0, maxval=100.0, step=0.1, group=groupScalpOpt)
+phase17HoldoutWr = input.float(90.0, "Phase17 High Win holdout WR %", minval=0.0, maxval=100.0, step=0.1, group=groupScalpOpt)
+phase17ForwardWr = input.float(100.0, "Phase17 forward-paper WR %", minval=0.0, maxval=100.0, step=0.1, group=groupScalpOpt)
+phase17Status = input.string("Forward Proven", "Phase17 status", options=["Watchlist","Forward Proven","Quarantined"], group=groupScalpOpt)
+phase17TriggerMode = input.string("Hybrid Consensus", "Phase17 fallback trigger", options=["Base","EMA Cross","Score Cross","VWAP Reclaim","EMA Pullback","Breakout","Failed Reversal","Momentum Acceleration","Mean Reversion","Trend Continuation","Squeeze Expansion","Volume Shock","Options Burst","Confirmed No-Repaint","Hybrid Consensus"], group=groupScalpOpt, tooltip="Pine cannot hold every route in the local Phase17 router, so this is the chart-side fallback trigger. The local closed loop stores exact route evidence from alerts.")
+phase17Whitelist = input.string("OPEN,HOOD,DASH,WULF,SHOP,LCID,ABNB,SLB,LYFT,SMH,COIN,IONQ,UVXY,DIA,CIFR,AFRM,CRM,DDOG,TCEHY,BAC,RCL,SOFI,ZS,PLTR,AMD,GOOG,AAPL,ORCL,F,NIO,PANW,SMCI,MU,QBTS,IREN,RDDT,CLSK,UAL,SNOW,TQQQ,NCLH", "Phase17 ticker whitelist", group=groupScalpOpt)
+profitMaxBacktestWr = input.float(87.2, "Profit Max validation WR %", minval=0.0, maxval=100.0, step=0.1, group=groupScalpOpt)
+profitMaxForwardWr = input.float(87.5, "Profit Max forward WR %", minval=0.0, maxval=100.0, step=0.1, group=groupScalpOpt)
+profitMaxStatus = input.string("Watchlist", "Profit Max status", options=["Watchlist","Forward Proven","Quarantined"], group=groupScalpOpt)
+optionsBurstBacktestWr = input.float(80.0, "Options Burst backtest WR %", minval=0.0, maxval=100.0, step=0.1, group=groupScalpOpt)
+optionsBurstForwardWr = input.float(0.0, "Options Burst forward WR %", minval=0.0, maxval=100.0, step=0.1, group=groupScalpOpt)
+optionsBurstStatus = input.string("Watchlist", "Options Burst status", options=["Watchlist","Forward Proven","Quarantined"], group=groupScalpOpt)
+powerhourBacktestWr = input.float(76.6, "Powerhour Momentum WR %", minval=0.0, maxval=100.0, step=0.1, group=groupScalpOpt)
+powerhourHoldoutWr = input.float(74.1, "Powerhour holdout WR %", minval=0.0, maxval=100.0, step=0.1, group=groupScalpOpt)
+powerhourStatus = input.string("Watchlist", "Powerhour status", options=["Watchlist","Forward Proven","Quarantined"], group=groupScalpOpt)
+powerhourWhitelist = input.string("U,JOBY,MRNA,BE,CRSP,AMD,COIN,SOXS,MU,UPST,RDDT,SOFI,UVXY,MSTR,AVGO,INTC,DASH,SNOW,DAL,CAT,UAL,HOOD,RIVN,F,SLB,COF,GM,CRWD,OXY,BA,SLV", "Powerhour ticker whitelist", group=groupScalpOpt, tooltip="Backtested whitelist for the Powerhour Momentum specialist. Only these tickers are allowed when that mode is active.")
+forwardSampleTrades = input.int(10, "Forward proof sample trades", minval=0, maxval=10000, group=groupScalpOpt)
+forwardQuarantine = input.bool(false, "Forward quarantine active", group=groupScalpOpt)
+showChampionContext = input.bool(true, "Show route/why labels", group=groupScalpOpt)
+visualDebugMode = input.string("Explain blockers", "Visual debug mode", options=["Off","Explain blockers","Show candidate dots","Force visual markers"], group=groupScalpOpt, tooltip="Debug overlay only. Does not change real BUY/SELL logic. Use it to verify the dashboard, see why signals are blocked, and confirm the active model is thinking.")
+debugShowLastBarLabel = input.bool(true, "Debug label on latest bar", group=groupScalpOpt)
+debugShowCandidateDots = input.bool(true, "Show pre-signal candidate dots", group=groupScalpOpt)
+debugLabelEveryBars = input.int(20, "Debug label refresh bars", minval=1, maxval=200, group=groupScalpOpt)
+
+groupLiveLoop = "⓪·g Live closed loop"
+enableClosedLoopAlerts = input.bool(true, "Emit JSON alerts for local learning loop", group=groupLiveLoop, tooltip="Create a TradingView alert using 'Any alert() function call' and set the webhook URL to your local server.")
+closedLoopModelId = input.string("fusionv3-phase19", "Closed-loop model id", group=groupLiveLoop)
+closedLoopAlertVersion = input.string("1", "Alert schema version", group=groupLiveLoop)
+closedLoopTimeStopBars = input.int(12, "Paper scoring horizon bars", minval=1, maxval=200, group=groupLiveLoop)
+
+// ═══════════════════════════════════════════════════════════
+// INPUTS — Risk
+// ═══════════════════════════════════════════════════════════
+groupRisk    = "② Risk Management"
+atrMultBase  = input.float(1.5, "Base SL ATR multiplier", minval=0.3, maxval=5.0, step=0.1, group=groupRisk)
+tpLadderRR   = input.float(1.0, "TP1 risk-multiple (R)", minval=0.5, maxval=3.0, step=0.1, group=groupRisk, tooltip="TP1 = entry ± R×SL-distance. TP2..TP5 scale 2R..5R.")
+adaptiveSlTp = input.bool(true, "Adapt SL/TP from rolling sim win-rate", group=groupRisk, tooltip="Gently widens SL on losing streaks, tightens on winning streaks. Reverts to base slowly.")
+slAdaptCap   = input.float(0.35, "Max SL deviation from base (×)", minval=0.0, maxval=1.0, step=0.05, group=groupRisk)
+
+// ═══════════════════════════════════════════════════════════
+// INPUTS — Core learning (from V.02)
+// ═══════════════════════════════════════════════════════════
+groupLearn     = "③ Core learning (sim TP1 vs SL)"
+enableLearn    = input.bool(true,  "Enable learning & adjusted scores", group=groupLearn)
+lrWin          = input.float(0.04, "Step on sim win", minval=0.001, maxval=0.25, step=0.005, group=groupLearn)
+lrLoss         = input.float(0.055,"Step on sim loss", minval=0.001, maxval=0.30, step=0.005, group=groupLearn)
+useConfScale   = input.bool(true,  "Scale step by entry confluence", group=groupLearn)
+weightMin      = input.float(0.35, "Min factor weight", minval=0.1,  maxval=1.0, step=0.05, group=groupLearn)
+weightMax      = input.float(2.25, "Max factor weight", minval=1.0,  maxval=4.0, step=0.05, group=groupLearn)
+weightDecayBar = input.float(0.00035, "Decay per bar → 1.0", minval=0.0, maxval=0.02, step=0.00005, group=groupLearn)
+useLearnFilter = input.bool(true,  "Filter signals with learned score", group=groupLearn)
+minLearnBull   = input.float(50.0, "Min adjusted bull % (buys)", minval=0.0, maxval=100.0, step=1.0, group=groupLearn)
+minLearnBear   = input.float(50.0, "Min adjusted bear % (sells)", minval=0.0, maxval=100.0, step=1.0, group=groupLearn)
+neutralPenalty = input.bool(true,  "Penalize on neutral exit (EMA flip)", group=groupLearn)
+neutralScale   = input.float(0.35, "Neutral vs loss step scale", minval=0.0, maxval=1.0, step=0.05, group=groupLearn)
+
+// ═══════════════════════════════════════════════════════════
+// INPUTS — Meta & factor trust
+// ═══════════════════════════════════════════════════════════
+groupMeta       = "④ Meta-learning & trust"
+enableMeta      = input.bool(true,  "Adapt LR to sim win rate + loss streaks", group=groupMeta)
+perfAlpha       = input.float(0.11, "Perf memory blend per trade", minval=0.04, maxval=0.35, step=0.01, group=groupMeta)
+lossStreakBoost = input.float(0.07, "Extra loss step per streak (cap 10)", minval=0.0, maxval=0.35, step=0.01, group=groupMeta)
+useFactorTrust  = input.bool(true,  "Per-factor trust memory", group=groupMeta)
+trustAlpha      = input.float(0.09, "Trust memory speed", minval=0.02, maxval=0.25, step=0.01, group=groupMeta)
+trustMismatchK  = input.float(0.72, "Extra loss penalty when trust low", minval=0.0, maxval=1.5, step=0.02, group=groupMeta)
+regimeAware     = input.bool(true,  "Bigger learning in chop losses", group=groupMeta)
+trendAdxTh      = input.float(22.0, "Trend ADX threshold", minval=10.0, maxval=40.0, step=1.0, group=groupMeta)
+chopLossBoost   = input.float(0.12, "Extra loss multiplier in chop", minval=0.0, maxval=0.5, step=0.02, group=groupMeta)
+
+// ═══════════════════════════════════════════════════════════
+// INPUTS — HTF / quality / chop
+// ═══════════════════════════════════════════════════════════
+groupHtf      = "⑤ HTF trend filter"
+useHtfFilter  = input.bool(true, "Require HTF EMA trend", group=groupHtf)
+htfTf         = input.timeframe("15", "Higher timeframe", group=groupHtf)
+htfTf2        = input.timeframe("5",  "Mid timeframe (for 5m RSI factor)", group=groupHtf)
+
+groupQuality  = "⑥ Signal quality"
+minAdxSignals = input.float(0.0, "Min ADX (0=off)", minval=0.0, maxval=50.0, step=1.0, group=groupQuality)
+
+groupChop         = "⑦ Chop / expansion"
+filterChop        = input.bool(true,  "Require trend + expansion", group=groupChop)
+chopFloorAdx      = input.float(14.0, "ADX floor if Min ADX=0", minval=0.0, maxval=45.0, step=1.0, group=groupChop)
+chopUseAdxFloor   = input.bool(true,  "Apply ADX floor", group=groupChop)
+minAtrRatio       = input.float(0.90, "Min ATR / SMA(ATR,20)", minval=0.75, maxval=1.15, step=0.01, group=groupChop)
+erLen             = input.int(10,     "Efficiency ratio lookback", minval=3, maxval=30, group=groupChop)
+minEfficiencyRatio= input.float(0.12, "Min efficiency ratio", minval=0.05, maxval=0.9, step=0.01, group=groupChop)
+
+// ═══════════════════════════════════════════════════════════
+// INPUTS — Major swings
+// ═══════════════════════════════════════════════════════════
+groupSwing     = "⑧ Major swings only"
+swingMode      = input.string("Highlight big moves", "Swing mode", options=["Off","Highlight big moves","Big moves only"], group=groupSwing)
+swingLookback  = input.int(14, "Swing lookback", minval=3, maxval=120, group=groupSwing)
+minSwingATR    = input.float(0.65, "Min swing leg × ATR", minval=0.1, maxval=5.0, step=0.05, group=groupSwing)
+pivotLen       = input.int(3,  "Pivot freshness (bars)", minval=2, maxval=30, group=groupSwing)
+minBarsBetween = input.int(3,  "Min bars between signals", minval=0, maxval=120, group=groupSwing)
+keyLevelX      = input.float(0.90, "Key level span × ATR over lookback", minval=0.0, maxval=5.0, step=0.05, group=groupSwing)
+
+// ═══════════════════════════════════════════════════════════
+// INPUTS — DS-VWAP gate (WillyAlgoTrader-style)
+// ═══════════════════════════════════════════════════════════
+groupDs      = "⑨ DS-VWAP gate"
+enableDsVwap = input.bool(true,  "Enable DS-VWAP", group=groupDs)
+dsGateMode   = input.string("Off", "Gate mode", options=["Off","DS segment agrees","DS segment + price vs DS-VWAP"], group=groupDs)
+ds_prd       = input.int(55,  "Swing period", minval=4, group=groupDs)
+ds_baseApt   = input.float(21.0, "Adaptive price tracking", minval=1.0, step=1.0, group=groupDs)
+ds_showLine  = input.bool(true, "Plot DS-VWAP", group=groupDs)
+ds_bandMult  = input.float(0.618, "Band × EWMA ATR", minval=0.1, maxval=3.0, step=0.1, group=groupDs)
+
+// ═══════════════════════════════════════════════════════════
+// INPUTS — Adaptive SuperTrend factor (f8)
+// ═══════════════════════════════════════════════════════════
+groupSt      = "⑩ SuperTrend factor"
+useSt        = input.bool(true, "Enable SuperTrend factor (f8)", group=groupSt)
+stAtrLen     = input.int(10, "ST ATR length", minval=3, maxval=50, group=groupSt)
+stMult       = input.float(3.0, "ST multiplier", minval=0.5, maxval=10.0, step=0.1, group=groupSt)
+
+// ═══════════════════════════════════════════════════════════
+// INPUTS — Adaptive MFI cluster factor (f9)
+// ═══════════════════════════════════════════════════════════
+groupMfi    = "⑪ Adaptive MFI factor"
+useMfi      = input.bool(true, "Enable MFI cluster factor (f9)", group=groupMfi)
+mfiLen      = input.int(14, "MFI length", minval=3, maxval=50, group=groupMfi)
+mfiClusterLr= input.float(0.04, "Cluster learn rate", minval=0.005, maxval=0.3, step=0.005, group=groupMfi)
+
+// ═══════════════════════════════════════════════════════════
+// INPUTS — KNN confirmation gate
+// ═══════════════════════════════════════════════════════════
+groupKnn    = "⑫ KNN confirmation"
+useKnn      = input.bool(true, "Require KNN agreement on entries", group=groupKnn)
+knnK        = input.int(5, "K (neighbors)", minval=3, maxval=25, group=groupKnn)
+knnLookback = input.int(180, "Feature history depth", minval=40, maxval=500, group=groupKnn)
+knnHoriz    = input.int(4, "Label horizon (bars)", minval=1, maxval=20, group=groupKnn)
+
+// ═══════════════════════════════════════════════════════════
+// INPUTS — Flow proxy (no footprint)
+// ═══════════════════════════════════════════════════════════
+groupFlow = "⑬ Order-flow proxy"
+useFlow   = input.bool(true, "Use flow proxy to modulate signals", group=groupFlow)
+flowLen   = input.int(20, "Flow smoothing length", minval=3, maxval=100, group=groupFlow)
+flowAbsorpLen = input.int(20, "Absorption EMA length", minval=3, maxval=100, group=groupFlow)
+
+// ═══════════════════════════════════════════════════════════
+// INPUTS — Options helper (dashboard only)
+// ═══════════════════════════════════════════════════════════
+groupOpt      = "⑭ Options helper (dashboard only)"
+strikeStep    = input.float(1.0, "Strike grid step ($)", minval=0.01, step=0.5, group=groupOpt, tooltip="e.g. SPY=1, TSLA=2.5, AAPL=1, BTC=100.")
+useSessionHigh= input.bool(true, "Flag exit near session high/low", group=groupOpt)
+
+// ═══════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════
+f_addDashRow(_table, _row, _title, _val, _col, _size) =>
+    table.cell(_table, 0, _row, _title, text_color=color.black, text_halign=text.align_left, text_size=_size)
+    table.cell(_table, 1, _row, _val,   text_color=_col,       text_halign=text.align_right, text_size=_size)
+
+f_clamp(float x, float lo, float hi) => math.max(lo, math.min(hi, x))
+
+f_scoreMeter(float pct) =>
+    int n = int(math.round(pct / 10.0))
+    n := math.min(10, math.max(0, n))
+    str.repeat("█", n) + str.repeat("░", 10 - n)
+
+f_efficiencyRatio(int len) =>
+    float d = math.abs(close - close[len])
+    float v = 0.0
+    for i = 0 to len - 1
+        v += math.abs(close[i] - close[i + 1])
+    v > 0 ? d / v : 0.0
+
+// Kaufman-style z-score (robust)
+f_zscore(float x, int len) =>
+    float m = ta.sma(x, len)
+    float s = ta.stdev(x, len)
+    s > 0 ? (x - m) / s : 0.0
+
+// Trust helpers
+f_rel(float acc, bool use) => use ? f_clamp(0.42 + 1.16 * acc, 0.38, 1.78) : 1.0
+f_lossMult(float eb, float acc, bool useT) => useT and eb > 0 ? (1.0 + trustMismatchK * math.max(0.0, 0.48 - acc)) : 1.0
+f_winMult(float eb, float acc, bool useT) => useT and eb > 0 ? (0.88 + 0.30 * acc) : 1.0
+f_csvHas(string csv, string item) => str.contains("," + str.upper(str.replace_all(csv, " ", "")) + ",", "," + str.upper(item) + ",")
+
+// Dashboard position
+dashPosVal = dashPos == "top_left"    ? position.top_left    : dashPos == "top_right"    ? position.top_right    : dashPos == "middle_right" ? position.middle_right : dashPos == "bottom_left" ? position.bottom_left : dashPos == "bottom_right" ? position.bottom_right : position.middle_left
+
+// ═══════════════════════════════════════════════════════════
+// PRESET RESOLUTION — override selected gates based on preset
+// ═══════════════════════════════════════════════════════════
+bool    isV02  = presetMode == "V.02 classic"
+bool    isAggr = presetMode == "Aggressive"
+bool    isBal  = presetMode == "Balanced"
+bool    isStr  = presetMode == "Strict"
+bool    isCust = presetMode == "Custom"
+
+// Helper: apply toggle override to a preset-decided boolean.
+f_tog(string tog, bool presetVal) => tog == "On" ? true : tog == "Off" ? false : presetVal
+
+// Gate master switches — when OFF, that gate is bypassed entirely.
+// V.02 classic = only EMA cross + learn filter (same as original).
+bool    gate_chopConv    = f_tog(tog_chopConv, isV02 ? false : isAggr ? false : isBal ? true  : isStr ? true  : filterChop)
+bool    gate_adx         = f_tog(tog_adxFloor, isV02 ? false : isAggr ? false : isBal ? true  : isStr ? true  : (minAdxSignals > 0.0 or (filterChop and chopUseAdxFloor)))
+bool    gate_swingLeg    = f_tog(tog_swingLeg, isV02 ? false : isAggr ? false : isBal ? false : isStr ? true  : (swingMode == "Big moves only"))
+bool    gate_keyLevel    = f_tog(tog_keyLevel, isV02 ? false : isAggr ? false : isBal ? true  : isStr ? true  : true)
+bool    gate_freshPivot  = f_tog(tog_freshPvt, isV02 ? false : isAggr ? false : isBal ? true  : isStr ? true  : true)
+bool    gate_cooldown    = f_tog(tog_cooldown, isV02 ? false : isAggr ? true  : isBal ? true  : isStr ? true  : true)
+bool    gate_flow        = f_tog(tog_flow,     isV02 ? false : isAggr ? false : isBal ? true  : isStr ? true  : useFlow)
+bool    gate_trendHtf    = f_tog(tog_trendHtf, isV02 ? false : isAggr ? false : isBal ? useHtfFilter : isStr ? true : useHtfFilter)
+bool    gate_knn         = f_tog(tog_knn,      isV02 ? false : isAggr ? false : isBal ? useKnn : isStr ? true : useKnn)
+bool    gate_dsVwap      = f_tog(tog_dsVwap,   isV02 ? false : isAggr ? false : isBal ? false : isStr ? true : dsGateMode != "Off")
+bool    gate_bigSwing    = f_tog(tog_bigSwing, isV02 ? false : isAggr ? false : isBal ? false : isStr ? true : (swingMode == "Big moves only"))
+
+float   eff_minLearnBull  = isV02 ? 52.0 : isAggr ? 46.0 : isBal ? 50.0 : isStr ? 58.0 : minLearnBull
+float   eff_minLearnBear  = isV02 ? 52.0 : isAggr ? 46.0 : isBal ? 50.0 : isStr ? 58.0 : minLearnBear
+float   eff_minSwingATR   = isV02 ? 0.0  : isAggr ? 0.45 : isBal ? 0.65 : isStr ? 1.00 : minSwingATR
+float   eff_keyLevelX     = isV02 ? 0.0  : isAggr ? 0.55 : isBal ? 0.90 : isStr ? 1.30 : keyLevelX
+int     eff_minBarsBetween= isV02 ? 0    : isAggr ? 2    : isBal ? 3    : isStr ? 7    : minBarsBetween
+int     eff_pivotLen      = isV02 ? 2    : isAggr ? 2    : isBal ? 3    : isStr ? 5    : pivotLen
+float   eff_minEffRatio   = isV02 ? 0.0  : isAggr ? 0.08 : isBal ? 0.12 : isStr ? 0.20 : minEfficiencyRatio
+float   eff_minAtrRatio   = isV02 ? 0.0  : isAggr ? 0.85 : isBal ? 0.90 : isStr ? 0.98 : minAtrRatio
+float   eff_chopFloorAdx  = isV02 ? 0.0  : isAggr ? 11.0 : isBal ? 14.0 : isStr ? 18.0 : chopFloorAdx
+bool    eff_useKnn        = gate_knn
+int     eff_knnK          = isV02 ? 5    : isAggr ? 5    : isBal ? 5    : isStr ? 9    : knnK
+string  eff_dsGate        = gate_dsVwap ? (dsGateMode == "Off" ? "DS segment agrees" : dsGateMode) : "Off"
+string  eff_swingMode     = gate_bigSwing ? "Big moves only" : (isV02 or isAggr ? "Off" : swingMode)
+bool    eff_useHtf        = gate_trendHtf
+bool    eff_useLearnFilt  = useLearnFilter
+
+// ═══════════════════════════════════════════════════════════
+// CORE INDICATORS
+// ═══════════════════════════════════════════════════════════
+ema9   = ta.ema(close, 9)
+ema21  = ta.ema(close, 21)
+ema50  = ta.ema(close, 50)
+vwapV  = ta.vwap(hlc3)
+atr    = ta.atr(14)
+atrSma = ta.sma(atr, 20)
+rsiVal = ta.rsi(close, 14)
+rsiMtf = request.security(syminfo.tickerid, htfTf2, ta.rsi(close, 14), barmerge.gaps_off, barmerge.lookahead_off)
+[macdM, macdS, _macdH] = ta.macd(close, 12, 26, 9)
+[_plusDI, _minusDI, adx] = ta.dmi(14, 14)
+volAvg = ta.sma(volume, 20)
+erVal  = f_efficiencyRatio(erLen)
+
+// HTF trend
+ema9_htf  = request.security(syminfo.tickerid, htfTf, ta.ema(close, 9),  barmerge.gaps_off, barmerge.lookahead_off)
+ema21_htf = request.security(syminfo.tickerid, htfTf, ta.ema(close, 21), barmerge.gaps_off, barmerge.lookahead_off)
+htfBull   = ema9_htf > ema21_htf
+passHtfBuy  = not eff_useHtf or htfBull
+passHtfSell = not eff_useHtf or not htfBull
+
+// Chop/expansion gates
+effectiveMinAdx = minAdxSignals > 0.0 ? minAdxSignals : (filterChop and chopUseAdxFloor ? eff_chopFloorAdx : 0.0)
+passAdxOk       = effectiveMinAdx <= 0.0 or adx >= effectiveMinAdx
+passAtrExpand   = atr >= eff_minAtrRatio * atrSma
+passErOk        = erVal >= eff_minEffRatio
+passChopConv    = not filterChop or (passAtrExpand and passErOk)
+
+// Learned regime classifier — mirrored from optimizer/regime-profiles.json
+float regimeAtrRatio = atr / math.max(ta.sma(atr, 50), syminfo.mintick)
+float regimeEr       = erVal
+float regimeEma20    = ta.ema(close, 20)
+float regimeSpread   = math.abs(regimeEma20 - ema50) / math.max(atr, syminfo.mintick)
+bool  regimeHighVol  = regimeAtrRatio >= 1.20
+bool  regimeLowVol   = regimeAtrRatio <= 0.85
+bool  regimeBull     = regimeEma20 >= ema50
+bool  regimeTrend    = regimeEr >= 0.28 and regimeSpread >= 0.65
+bool  regimeChop     = regimeEr <= 0.14 or regimeSpread <= 0.25
+string regimeVolTag  = regimeHighVol ? "highVol" : regimeLowVol ? "lowVol" : "normalVol"
+string regimeTrendTag= regimeTrend ? "trend" : regimeChop ? "chop" : "mixed"
+string regimeDirTag  = regimeBull ? "bull" : "bear"
+string regimeTag     = regimeVolTag + "-" + regimeTrendTag + "-" + regimeDirTag
+bool rpHighVolChopBear = useRegimeProfile and regimeTag == "highVol-chop-bear"
+bool rpHighVolChopBull = useRegimeProfile and regimeTag == "highVol-chop-bull"
+bool rpTrendDirectional = useRegimeProfile and (regimeTag == "highVol-trend-bear" or regimeTag == "normalVol-trend-bull")
+string runtimeEntryMode = rpHighVolChopBear ? "Score regime shifts" : rpHighVolChopBull ? "Cross + pullback reclaim" : rpTrendDirectional ? "EMA cross only" : entryMode
+bool runtimeOptionsSniper = runtimeEntryMode == "Options Sniper"
+string runtimeSignalDensity = runtimeOptionsSniper or rpHighVolChopBull ? "Mega moves only" : "Big moves only"
+int runtimeMinConf = runtimeOptionsSniper ? 80 : rpHighVolChopBear ? 75 : rpTrendDirectional ? 60 : tog_minConf
+bool autoMode = activeScalpMode == "Auto Specialist"
+bool autoInPowerhour = not na(time(timeframe.period, "1500-1600"))
+bool autoOptionsContext = regimeAtrRatio >= optMinAtrRatio and volume >= volAvg * optVolMult and regimeTrend and not regimeChop
+bool councilTickerOkRaw = f_csvHas(councilWhitelist, syminfo.ticker)
+bool phase17TickerOkRaw = f_csvHas(phase17Whitelist, syminfo.ticker)
+bool powerhourTickerOkRaw = f_csvHas(powerhourWhitelist, syminfo.ticker)
+bool autoPreferProfit = autoSpecialistPolicy == "Profit max bias" and profitMaxStatus != "Quarantined" and highWinForwardWr < 90
+string selectedScalpMode = autoMode and powerhourTickerOkRaw and autoInPowerhour and powerhourStatus != "Quarantined" ? "Powerhour Momentum" : autoMode and councilTickerOkRaw and councilStatus != "Quarantined" ? "Champion Council Fusion" : autoMode and autoOptionsContext and optionsBurstStatus != "Quarantined" ? "Options Burst Specialist" : autoMode and phase17TickerOkRaw and phase17Status != "Quarantined" ? "Phase17 High Win Router" : autoMode and autoPreferProfit ? "Profit Max Specialist" : autoMode ? "High Win Main" : activeScalpMode
+bool powerhourMode = selectedScalpMode == "Powerhour Momentum"
+bool councilMode = selectedScalpMode == "Champion Council Fusion"
+bool phase17Mode = selectedScalpMode == "Phase17 High Win Router"
+bool profitMaxMode = selectedScalpMode == "Profit Max Specialist"
+bool optionsBurstMode = selectedScalpMode == "Options Burst Specialist"
+bool highWinMode = selectedScalpMode == "High Win Main"
+bool activeSpecialistTickerOk = powerhourMode ? powerhourTickerOkRaw : councilMode ? councilTickerOkRaw : phase17Mode ? phase17TickerOkRaw : true
+string effectiveScalpTriggerMode = powerhourMode ? "Momentum Acceleration" : councilMode ? councilTriggerMode : phase17Mode ? phase17TriggerMode : optionsBurstMode ? "Options Burst" : profitMaxMode ? "Options Burst" : scalpTriggerMode
+string effectiveScalpSession = powerhourMode ? "Power hour" : councilMode ? "All" : phase17Mode ? "Morning" : optionsBurstMode ? "Morning" : scalpSession
+string effectiveScalpDirection = powerhourMode ? "Long only" : optionsBurstMode ? "Long only" : scalpDirection
+string effectiveRouteArchetype = effectiveScalpTriggerMode == "Options Burst" or effectiveScalpTriggerMode == "Volume Shock" or effectiveScalpTriggerMode == "Momentum Acceleration" ? "profit_momentum" : effectiveScalpTriggerMode == "Breakout" or effectiveScalpTriggerMode == "Squeeze Expansion" ? "breakout_expansion" : effectiveScalpTriggerMode == "VWAP Reclaim" or effectiveScalpTriggerMode == "EMA Pullback" ? "structure_reclaim" : effectiveScalpTriggerMode == "Failed Reversal" or effectiveScalpTriggerMode == "Mean Reversion" ? "reversal_sweep" : "high_win_confirmed"
+string effectiveStructureExit = effectiveScalpTriggerMode == "Confirmed No-Repaint" or effectiveScalpTriggerMode == "Hybrid Consensus" ? "strict" : "loose"
+bool effectiveScalpRequireConfRising = powerhourMode or councilMode or phase17Mode or optionsBurstMode ? true : scalpRequireConfRising
+int effectiveScalpMinAlphaQuality = powerhourMode ? 55 : councilMode ? 60 : phase17Mode ? 65 : optionsBurstMode ? 65 : profitMaxMode ? 55 : scalpMinAlphaQuality
+bool effectiveScalpUseAlphaQuality = powerhourMode or councilMode or phase17Mode or optionsBurstMode ? true : scalpUseAlphaQuality
+float effectiveScalpTargetR = powerhourMode ? 0.50 : councilMode ? 0.50 : phase17Mode ? 0.50 : optionsBurstMode ? 0.75 : profitMaxMode ? 0.75 : tpLadderRR
+int effectiveRuntimeMinConf = powerhourMode ? 70 : councilMode ? 70 : phase17Mode ? 75 : optionsBurstMode ? 80 : profitMaxMode ? 70 : runtimeMinConf
+string effectiveChampionRouteName = powerhourMode ? "Powerhour Momentum · whitelist" : councilMode ? "Champion Council Fusion · Phase19" : phase17Mode ? "Phase17 High Win Router" : optionsBurstMode ? "Options Burst Specialist" : profitMaxMode ? "Profit Max Specialist" : highWinMode ? "High Win Main" : championRouteName
+string effectiveChampionTargetMode = powerhourMode ? "0.50R smart scalp" : councilMode ? "0.50R profit-guarded fusion" : phase17Mode ? "0.50R high-win route" : optionsBurstMode ? "0.75R options burst" : profitMaxMode ? "0.75R profit max" : championTargetMode
+float effectiveChampionBacktestWr = powerhourMode ? powerhourBacktestWr : councilMode ? councilBacktestWr : phase17Mode ? phase17BacktestWr : optionsBurstMode ? optionsBurstBacktestWr : profitMaxMode ? profitMaxBacktestWr : highWinMode ? highWinBacktestWr : championBacktestWr
+float effectiveChampionForwardWr = powerhourMode ? powerhourHoldoutWr : councilMode ? councilForwardWr : phase17Mode ? phase17ForwardWr : optionsBurstMode ? optionsBurstForwardWr : profitMaxMode ? profitMaxForwardWr : highWinMode ? highWinForwardWr : championForwardWr
+string effectiveChampionStatus = powerhourMode ? powerhourStatus : councilMode ? councilStatus : phase17Mode ? phase17Status : optionsBurstMode ? optionsBurstStatus : profitMaxMode ? profitMaxStatus : highWinMode ? highWinStatus : championBadge
+
+// ═══════════════════════════════════════════════════════════
+// FACTOR 8 — Adaptive SuperTrend direction
+// ═══════════════════════════════════════════════════════════
+[_stLine, stDir] = ta.supertrend(stMult, stAtrLen)
+stBull = useSt ? stDir < 0 : false   // ta.supertrend returns -1 when uptrend
+stBear = useSt ? stDir > 0 : false
+
+// ═══════════════════════════════════════════════════════════
+// FACTOR 9 — Adaptive MFI cluster vote (simplified k-means, 3 centroids)
+// ═══════════════════════════════════════════════════════════
+mfiRaw = ta.mfi(hlc3, mfiLen)
+var float cLo = 25.0
+var float cMd = 50.0
+var float cHi = 75.0
+if not na(mfiRaw)
+    dLo = math.abs(mfiRaw - cLo)
+    dMd = math.abs(mfiRaw - cMd)
+    dHi = math.abs(mfiRaw - cHi)
+    // nudge the nearest centroid toward the sample
+    if dLo <= dMd and dLo <= dHi
+        cLo := cLo + mfiClusterLr * (mfiRaw - cLo)
+    else if dHi <= dMd and dHi <= dLo
+        cHi := cHi + mfiClusterLr * (mfiRaw - cHi)
+    else
+        cMd := cMd + mfiClusterLr * (mfiRaw - cMd)
+    // keep order and spread
+    cLo := math.min(cLo, cMd - 3.0)
+    cHi := math.max(cHi, cMd + 3.0)
+
+mfiBull = useMfi and not na(mfiRaw) and mfiRaw > cMd
+mfiBear = useMfi and not na(mfiRaw) and mfiRaw < cMd
+
+// ═══════════════════════════════════════════════════════════
+// 9 raw factors
+// ═══════════════════════════════════════════════════════════
+bf1 = close > vwapV ? 1.0 : 0.0
+bf2 = rsiVal > 50 ? 1.0 : 0.0
+bf3 = macdM > macdS ? 1.0 : 0.0
+bf4 = ema9 > ema21 ? 1.0 : 0.0
+bf5 = adx > 25 and close > ema9 ? 1.0 : 0.0
+bf6 = volume > volAvg and close > open ? 1.0 : 0.0
+bf7 = rsiMtf > 50 ? 1.0 : 0.0
+bf8 = stBull ? 1.0 : 0.0
+bf9 = mfiBull ? 1.0 : 0.0
+
+rf1 = close < vwapV ? 1.0 : 0.0
+rf2 = rsiVal < 50 ? 1.0 : 0.0
+rf3 = macdM < macdS ? 1.0 : 0.0
+rf4 = ema9 < ema21 ? 1.0 : 0.0
+rf5 = adx > 25 and close < ema9 ? 1.0 : 0.0
+rf6 = volume > volAvg and close < open ? 1.0 : 0.0
+rf7 = rsiMtf < 50 ? 1.0 : 0.0
+rf8 = stBear ? 1.0 : 0.0
+rf9 = mfiBear ? 1.0 : 0.0
+
+float bSum = bf1+bf2+bf3+bf4+bf5+bf6+bf7+bf8+bf9
+float rSum = rf1+rf2+rf3+rf4+rf5+rf6+rf7+rf8+rf9
+bullPctRaw = (bSum / 9.0) * 100.0
+bearPctRaw = (rSum / 9.0) * 100.0
+
+// ═══════════════════════════════════════════════════════════
+// Weights & trust (9 factors)
+// ═══════════════════════════════════════════════════════════
+var float w1 = 1.0
+var float w2 = 1.0
+var float w3 = 1.0
+var float w4 = 1.0
+var float w5 = 1.0
+var float w6 = 1.0
+var float w7 = 1.0
+var float w8 = 1.0
+var float w9 = 1.0
+var float a1 = 0.5
+var float a2 = 0.5
+var float a3 = 0.5
+var float a4 = 0.5
+var float a5 = 0.5
+var float a6 = 0.5
+var float a7 = 0.5
+var float a8 = 0.5
+var float a9 = 0.5
+
+r1 = f_rel(a1, enableLearn and useFactorTrust)
+r2 = f_rel(a2, enableLearn and useFactorTrust)
+r3 = f_rel(a3, enableLearn and useFactorTrust)
+r4 = f_rel(a4, enableLearn and useFactorTrust)
+r5 = f_rel(a5, enableLearn and useFactorTrust)
+r6 = f_rel(a6, enableLearn and useFactorTrust)
+r7 = f_rel(a7, enableLearn and useFactorTrust)
+r8 = f_rel(a8, enableLearn and useFactorTrust)
+r9 = f_rel(a9, enableLearn and useFactorTrust)
+
+sumWt = w1*r1 + w2*r2 + w3*r3 + w4*r4 + w5*r5 + w6*r6 + w7*r7 + w8*r8 + w9*r9
+weightedBull = w1*r1*bf1 + w2*r2*bf2 + w3*r3*bf3 + w4*r4*bf4 + w5*r5*bf5 + w6*r6*bf6 + w7*r7*bf7 + w8*r8*bf8 + w9*r9*bf9
+weightedBear = w1*r1*rf1 + w2*r2*rf2 + w3*r3*rf3 + w4*r4*rf4 + w5*r5*rf5 + w6*r6*rf6 + w7*r7*rf7 + w8*r8*rf8 + w9*r9*rf9
+bullPctLearn = sumWt > 0 ? (weightedBull / sumWt) * 100.0 : bullPctRaw
+bearPctLearn = sumWt > 0 ? (weightedBear / sumWt) * 100.0 : bearPctRaw
+bullPct = enableLearn ? bullPctLearn : bullPctRaw
+bearPct = enableLearn ? bearPctLearn : bearPctRaw
+
+string biasText = (bullPct - bearPct) >= 40 ? "STRONG BULL" : (bearPct - bullPct) >= 40 ? "STRONG BEAR" : bullPct > bearPct ? "MILD BULL" : "MILD BEAR"
+color  biasCol  = biasText == "STRONG BULL" ? color.green : biasText == "STRONG BEAR" ? color.red : color.gray
+
+// ═══════════════════════════════════════════════════════════
+// FLOW PROXY (range-weighted delta, absorption, entropy)
+// ═══════════════════════════════════════════════════════════
+float rng = math.max(high - low, syminfo.mintick)
+float delta = rng > 0 ? volume * (close - open) / rng : 0.0
+float deltaEma = ta.ema(delta, flowLen)
+float deltaAbs = ta.ema(math.abs(delta), flowLen)
+float flowBias = deltaAbs > 0 ? deltaEma / deltaAbs : 0.0   // -1..+1
+
+// absorption: opposing-side volume vs close direction
+float absorp = 0.0
+if close > open and delta < 0
+    absorp := math.abs(delta)
+else if close < open and delta > 0
+    absorp := math.abs(delta)
+float absorpEma = ta.ema(absorp, flowAbsorpLen)
+float absorpAvg = ta.sma(absorpEma, 50)
+
+// flow confidence multiplier for learning steps
+float flowConf = useFlow ? f_clamp(0.75 + 0.5 * math.abs(flowBias), 0.75, 1.4) : 1.0
+// flow gate: directional nudge (light — does not hard-block)
+bool flowBullOk = not useFlow or flowBias >= -0.15
+bool flowBearOk = not useFlow or flowBias <=  0.15
+
+// ═══════════════════════════════════════════════════════════
+// DS-VWAP (Dynamic Swing VWAP)
+// ═══════════════════════════════════════════════════════════
+float ds_volMedian = nz(ta.median(volume, 50), 1.0)
+float ds_volSma20  = nz(ta.sma(volume, 20), 1.0)
+float ds_volCapV   = math.max(ds_volSma20 * 3.0, 1.0)
+
+ds_getVol(int offset) =>
+    float rawVol = nz(volume[offset], 0.0)
+    float floorVol = rawVol > 0 ? rawVol : ds_volMedian
+    float capped = math.min(floorVol, ds_volCapV)
+    math.max(capped, 1.0)
+
+int ds_b = bar_index
+var float ds_ph = na
+var float ds_pl = na
+var int   ds_phL = 0
+var int   ds_plL = 0
+hbars = ta.highestbars(high, ds_prd)
+lbars = ta.lowestbars(low,  ds_prd)
+bool ds_isSwingHigh = hbars == 0
+bool ds_isSwingLow  = lbars == 0
+ds_ph  := ds_isSwingHigh ? high : ds_ph
+ds_pl  := ds_isSwingLow  ? low  : ds_pl
+ds_phL := ds_isSwingHigh ? ds_b : ds_phL
+ds_plL := ds_isSwingLow  ? ds_b : ds_plL
+int ds_dir = ds_phL > ds_plL ? 1 : -1
+
+float ds_atr50 = nz(ta.atr(50), 0.0)
+float ds_ratio = nz(ta.rma(ds_atr50, 50), ds_atr50) > 0 ? ds_atr50 / nz(ta.rma(ds_atr50, 50), ds_atr50) : 1.0
+float ds_apt   = ds_baseApt / math.pow(math.max(ds_ratio, 0.1), 1.0)
+float ds_aptC  = math.max(5.0, math.min(300.0, ds_apt))
+float ds_alpha = 1.0 - math.exp(-math.log(2.0) / math.max(1.0, ds_aptC))
+
+var float ds_p = na
+var float ds_vol = na
+var float ds_ewmaAtr = na
+var int   ds_anchoredDir = 1
+if enableDsVwap and barstate.isfirst
+    ds_p := hlc3 * ds_getVol(0)
+    ds_vol := ds_getVol(0)
+    ds_ewmaAtr := ds_atr50
+if enableDsVwap and not barstate.isfirst and ds_dir != ds_dir[1]
+    ds_anchoredDir := ds_dir
+    float v0 = ds_getVol(0)
+    ds_p := hlc3 * v0
+    ds_vol := v0
+    ds_ewmaAtr := ds_atr50
+else if enableDsVwap
+    float v0 = ds_getVol(0)
+    ds_p       := (1.0 - ds_alpha) * ds_p       + ds_alpha * (hlc3 * v0)
+    ds_vol     := (1.0 - ds_alpha) * ds_vol     + ds_alpha * v0
+    ds_ewmaAtr := (1.0 - ds_alpha) * ds_ewmaAtr + ds_alpha * ds_atr50
+
+float ds_currentVwap = enableDsVwap and not na(ds_vol) and ds_vol > 0 ? ds_p / ds_vol : close
+float ds_bandW = enableDsVwap ? nz(ds_ewmaAtr, atr) * ds_bandMult : 0.0
+float ds_upper = ds_currentVwap + ds_bandW
+float ds_lower = ds_currentVwap - ds_bandW
+
+bool passDsBuy  = not enableDsVwap or eff_dsGate == "Off" or (eff_dsGate == "DS segment agrees" and ds_anchoredDir == 1) or (eff_dsGate == "DS segment + price vs DS-VWAP" and ds_anchoredDir == 1 and close > ds_currentVwap)
+bool passDsSell = not enableDsVwap or eff_dsGate == "Off" or (eff_dsGate == "DS segment agrees" and ds_anchoredDir == -1) or (eff_dsGate == "DS segment + price vs DS-VWAP" and ds_anchoredDir == -1 and close < ds_currentVwap)
+
+// ═══════════════════════════════════════════════════════════
+// KNN confirmation (3 features, rolling labeled history)
+// ═══════════════════════════════════════════════════════════
+float featRsiZ = f_zscore(rsiVal, 50)
+float featDevZ = f_zscore(close - ema50, 50)
+float featChop = f_zscore(100.0 - erVal * 100.0, 50)   // higher = chop
+
+var array<float> histR = array.new_float()
+var array<float> histD = array.new_float()
+var array<float> histC = array.new_float()
+var array<int>   histL = array.new_int()    // +1 bull, -1 bear, 0 neutral label
+
+// push labeled snapshot for bar that's now "matured" knnHoriz bars ago
+int matureIdx = knnHoriz
+if bar_index > matureIdx and not na(featRsiZ[matureIdx]) and not na(featDevZ[matureIdx]) and not na(featChop[matureIdx])
+    float fwdRet = (close - close[matureIdx]) / math.max(atr[matureIdx], syminfo.mintick)
+    int lbl = fwdRet > 0.5 ? 1 : fwdRet < -0.5 ? -1 : 0
+    array.push(histR, featRsiZ[matureIdx])
+    array.push(histD, featDevZ[matureIdx])
+    array.push(histC, featChop[matureIdx])
+    array.push(histL, lbl)
+    while array.size(histR) > knnLookback
+        array.shift(histR)
+        array.shift(histD)
+        array.shift(histC)
+        array.shift(histL)
+
+// Working buffers (declared at global scope, reused each bar)
+var array<float> dists = array.new_float()
+var array<int>   picks = array.new_int()
+
+// KNN vote on current features
+int knnVote = 0
+if eff_useKnn and array.size(histR) >= eff_knnK
+    int n = array.size(histR)
+    array.clear(dists)
+    for i = 0 to n - 1
+        float dr = featRsiZ - array.get(histR, i)
+        float dd = featDevZ - array.get(histD, i)
+        float dc = featChop - array.get(histC, i)
+        array.push(dists, dr*dr + dd*dd + dc*dc)
+    array.clear(picks)
+    for k = 0 to eff_knnK - 1
+        int bestI = -1
+        float bestD = 1e20
+        for i = 0 to n - 1
+            bool taken = false
+            if array.size(picks) > 0
+                for j = 0 to array.size(picks) - 1
+                    if array.get(picks, j) == i
+                        taken := true
+                        break
+            if not taken
+                float d = array.get(dists, i)
+                if d < bestD
+                    bestD := d
+                    bestI := i
+        if bestI >= 0
+            array.push(picks, bestI)
+    int agg = 0
+    if array.size(picks) > 0
+        for j = 0 to array.size(picks) - 1
+            agg += array.get(histL, array.get(picks, j))
+    knnVote := agg > 0 ? 1 : agg < 0 ? -1 : 0
+
+bool passKnnBuy  = not eff_useKnn or knnVote >= 0
+bool passKnnSell = not eff_useKnn or knnVote <= 0
+
+// ═══════════════════════════════════════════════════════════
+// Major-swing filter
+// ═══════════════════════════════════════════════════════════
+float swingLow  = ta.lowest(low,  swingLookback)
+float swingHigh = ta.highest(high, swingLookback)
+float legUpATR  = atr > 0 ? (close - swingLow)  / atr : 0.0
+float legDnATR  = atr > 0 ? (swingHigh - close) / atr : 0.0
+bool swingOkBuy  = legUpATR >= eff_minSwingATR
+bool swingOkSell = legDnATR >= eff_minSwingATR
+float rangeATR = atr > 0 ? (swingHigh - swingLow) / atr : 0.0
+bool keyLevelOk = rangeATR >= eff_keyLevelX
+
+// pivot freshness
+float pHi = ta.pivothigh(high, eff_pivotLen, eff_pivotLen)
+float pLo = ta.pivotlow (low,  eff_pivotLen, eff_pivotLen)
+var int lastPhBar = 0
+var int lastPlBar = 0
+if not na(pHi)
+    lastPhBar := bar_index - eff_pivotLen
+if not na(pLo)
+    lastPlBar := bar_index - eff_pivotLen
+bool freshPivotBuy  = (bar_index - lastPlBar) <= (swingLookback * 2)
+bool freshPivotSell = (bar_index - lastPhBar) <= (swingLookback * 2)
+
+// ═══════════════════════════════════════════════════════════
+// Adaptive learning bookkeeping
+// ═══════════════════════════════════════════════════════════
+var int   lastSignalState = 0
+var int   lastSignalBar   = -1000
+var float entryP = 0.0
+var float slP = 0.0
+var float t1 = 0.0
+var float t2 = 0.0
+var float t3 = 0.0
+var float t4 = 0.0
+var float t5 = 0.0
+var bool t1Hit = false
+var bool t2Hit = false
+var bool t3Hit = false
+var bool t4Hit = false
+var bool t5Hit = false
+
+var int   simWins = 0
+var int   simLoss = 0
+var int   simNeutral = 0
+var int   vtDir = 0
+var int   vtEntryBar = na
+var float vtSL = na
+var float vtTP1 = na
+var float eb1 = 0.0
+var float eb2 = 0.0
+var float eb3 = 0.0
+var float eb4 = 0.0
+var float eb5 = 0.0
+var float eb6 = 0.0
+var float eb7 = 0.0
+var float eb8 = 0.0
+var float eb9 = 0.0
+var float entryEbSum = 0.0
+var float perfEma = 0.5
+var int   lossStreak = 0
+var float entryAdx = 25.0
+var float entryFlowConf = 1.0
+var int   entrySigConf  = 0      // confidence % captured at entry
+var int   liveSigConf   = 0      // confidence % updated each bar while in trade
+var int   peakSigConf   = 0      // best confidence seen since entry
+
+// Adaptive SL multiplier (self-tunes from perfEma)
+float atrMultAdapt = adaptiveSlTp ? f_clamp(atrMultBase * (1.0 + slAdaptCap * (0.5 - perfEma) * 2.0), atrMultBase * (1.0 - slAdaptCap), atrMultBase * (1.0 + slAdaptCap)) : atrMultBase
+
+buyCond  = ta.crossover(ema9, ema21)
+sellCond = ta.crossunder(ema9, ema21)
+
+float loW = weightMin
+float hiW = weightMax
+float cs  = useConfScale and enableLearn ? (0.62 + 0.38 * (entryEbSum / 9.0)) : 1.0
+float lrEffWin  = enableLearn and enableMeta ? lrWin  * (0.62 + 0.76 * perfEma) : lrWin
+float baseLoss  = enableLearn and enableMeta ? lrLoss * (1.36 - 0.50 * perfEma) * (1.0 + lossStreakBoost * math.min(lossStreak, 10)) : lrLoss
+float chopMul   = regimeAware and entryAdx < trendAdxTh ? (1.0 + chopLossBoost) : 1.0
+float lrEffLoss = enableLearn ? baseLoss * chopMul * entryFlowConf : lrLoss
+
+// per-factor mults
+wm1 = f_winMult(eb1, a1, enableLearn and useFactorTrust)
+wm2 = f_winMult(eb2, a2, enableLearn and useFactorTrust)
+wm3 = f_winMult(eb3, a3, enableLearn and useFactorTrust)
+wm4 = f_winMult(eb4, a4, enableLearn and useFactorTrust)
+wm5 = f_winMult(eb5, a5, enableLearn and useFactorTrust)
+wm6 = f_winMult(eb6, a6, enableLearn and useFactorTrust)
+wm7 = f_winMult(eb7, a7, enableLearn and useFactorTrust)
+wm8 = f_winMult(eb8, a8, enableLearn and useFactorTrust)
+wm9 = f_winMult(eb9, a9, enableLearn and useFactorTrust)
+lm1 = f_lossMult(eb1, a1, enableLearn and useFactorTrust)
+lm2 = f_lossMult(eb2, a2, enableLearn and useFactorTrust)
+lm3 = f_lossMult(eb3, a3, enableLearn and useFactorTrust)
+lm4 = f_lossMult(eb4, a4, enableLearn and useFactorTrust)
+lm5 = f_lossMult(eb5, a5, enableLearn and useFactorTrust)
+lm6 = f_lossMult(eb6, a6, enableLearn and useFactorTrust)
+lm7 = f_lossMult(eb7, a7, enableLearn and useFactorTrust)
+lm8 = f_lossMult(eb8, a8, enableLearn and useFactorTrust)
+lm9 = f_lossMult(eb9, a9, enableLearn and useFactorTrust)
+
+// Resolve outcome flags (computed at global scope; applied inline below)
+bool vtCanResolve = enableLearn and vtDir != 0 and not na(vtEntryBar) and bar_index > vtEntryBar
+bool resWin     = false
+bool resLoss    = false
+bool resNeutral = false
+if enableLearn
+    if vtDir == 1 and vtCanResolve
+        bool touchSL = low  <= vtSL
+        bool touchTP = high >= vtTP1
+        if touchSL and touchTP
+            resLoss := true
+        else if touchSL
+            resLoss := true
+        else if touchTP
+            resWin := true
+    if vtDir == -1 and vtCanResolve
+        bool touchSLS = high >= vtSL
+        bool touchTPS = low  <= vtTP1
+        if touchSLS and touchTPS
+            resLoss := true
+        else if touchSLS
+            resLoss := true
+        else if touchTPS
+            resWin := true
+    if vtDir == 1  and sellCond and vtCanResolve and not resWin and not resLoss
+        resNeutral := true
+    if vtDir == -1 and buyCond  and vtCanResolve and not resWin and not resLoss
+        resNeutral := true
+
+// Apply LOSS (inline at global scope so var assignments are legal)
+if resLoss
+    w1 := f_clamp(w1 - lrEffLoss * cs * eb1 * lm1, loW, hiW)
+    w2 := f_clamp(w2 - lrEffLoss * cs * eb2 * lm2, loW, hiW)
+    w3 := f_clamp(w3 - lrEffLoss * cs * eb3 * lm3, loW, hiW)
+    w4 := f_clamp(w4 - lrEffLoss * cs * eb4 * lm4, loW, hiW)
+    w5 := f_clamp(w5 - lrEffLoss * cs * eb5 * lm5, loW, hiW)
+    w6 := f_clamp(w6 - lrEffLoss * cs * eb6 * lm6, loW, hiW)
+    w7 := f_clamp(w7 - lrEffLoss * cs * eb7 * lm7, loW, hiW)
+    w8 := f_clamp(w8 - lrEffLoss * cs * eb8 * lm8, loW, hiW)
+    w9 := f_clamp(w9 - lrEffLoss * cs * eb9 * lm9, loW, hiW)
+    simLoss := simLoss + 1
+    lossStreak := lossStreak + 1
+    perfEma := (1.0 - perfAlpha) * perfEma + perfAlpha * 0.0
+    a1 := eb1 > 0 ? (1.0 - trustAlpha) * a1 : a1
+    a2 := eb2 > 0 ? (1.0 - trustAlpha) * a2 : a2
+    a3 := eb3 > 0 ? (1.0 - trustAlpha) * a3 : a3
+    a4 := eb4 > 0 ? (1.0 - trustAlpha) * a4 : a4
+    a5 := eb5 > 0 ? (1.0 - trustAlpha) * a5 : a5
+    a6 := eb6 > 0 ? (1.0 - trustAlpha) * a6 : a6
+    a7 := eb7 > 0 ? (1.0 - trustAlpha) * a7 : a7
+    a8 := eb8 > 0 ? (1.0 - trustAlpha) * a8 : a8
+    a9 := eb9 > 0 ? (1.0 - trustAlpha) * a9 : a9
+    vtDir := 0
+    vtEntryBar := na
+
+// Apply WIN
+if resWin
+    w1 := f_clamp(w1 + lrEffWin * cs * eb1 * wm1, loW, hiW)
+    w2 := f_clamp(w2 + lrEffWin * cs * eb2 * wm2, loW, hiW)
+    w3 := f_clamp(w3 + lrEffWin * cs * eb3 * wm3, loW, hiW)
+    w4 := f_clamp(w4 + lrEffWin * cs * eb4 * wm4, loW, hiW)
+    w5 := f_clamp(w5 + lrEffWin * cs * eb5 * wm5, loW, hiW)
+    w6 := f_clamp(w6 + lrEffWin * cs * eb6 * wm6, loW, hiW)
+    w7 := f_clamp(w7 + lrEffWin * cs * eb7 * wm7, loW, hiW)
+    w8 := f_clamp(w8 + lrEffWin * cs * eb8 * wm8, loW, hiW)
+    w9 := f_clamp(w9 + lrEffWin * cs * eb9 * wm9, loW, hiW)
+    simWins := simWins + 1
+    lossStreak := 0
+    perfEma := (1.0 - perfAlpha) * perfEma + perfAlpha * 1.0
+    a1 := eb1 > 0 ? (1.0 - trustAlpha) * a1 + trustAlpha * 1.0 : a1
+    a2 := eb2 > 0 ? (1.0 - trustAlpha) * a2 + trustAlpha * 1.0 : a2
+    a3 := eb3 > 0 ? (1.0 - trustAlpha) * a3 + trustAlpha * 1.0 : a3
+    a4 := eb4 > 0 ? (1.0 - trustAlpha) * a4 + trustAlpha * 1.0 : a4
+    a5 := eb5 > 0 ? (1.0 - trustAlpha) * a5 + trustAlpha * 1.0 : a5
+    a6 := eb6 > 0 ? (1.0 - trustAlpha) * a6 + trustAlpha * 1.0 : a6
+    a7 := eb7 > 0 ? (1.0 - trustAlpha) * a7 + trustAlpha * 1.0 : a7
+    a8 := eb8 > 0 ? (1.0 - trustAlpha) * a8 + trustAlpha * 1.0 : a8
+    a9 := eb9 > 0 ? (1.0 - trustAlpha) * a9 + trustAlpha * 1.0 : a9
+    vtDir := 0
+    vtEntryBar := na
+
+// Apply NEUTRAL
+if resNeutral
+    if neutralPenalty
+        w1 := f_clamp(w1 - lrEffLoss * neutralScale * cs * eb1 * lm1, loW, hiW)
+        w2 := f_clamp(w2 - lrEffLoss * neutralScale * cs * eb2 * lm2, loW, hiW)
+        w3 := f_clamp(w3 - lrEffLoss * neutralScale * cs * eb3 * lm3, loW, hiW)
+        w4 := f_clamp(w4 - lrEffLoss * neutralScale * cs * eb4 * lm4, loW, hiW)
+        w5 := f_clamp(w5 - lrEffLoss * neutralScale * cs * eb5 * lm5, loW, hiW)
+        w6 := f_clamp(w6 - lrEffLoss * neutralScale * cs * eb6 * lm6, loW, hiW)
+        w7 := f_clamp(w7 - lrEffLoss * neutralScale * cs * eb7 * lm7, loW, hiW)
+        w8 := f_clamp(w8 - lrEffLoss * neutralScale * cs * eb8 * lm8, loW, hiW)
+        w9 := f_clamp(w9 - lrEffLoss * neutralScale * cs * eb9 * lm9, loW, hiW)
+    simNeutral := simNeutral + 1
+    perfEma := (1.0 - perfAlpha) * perfEma + perfAlpha * 0.42
+    vtDir := 0
+    vtEntryBar := na
+
+if enableLearn and weightDecayBar > 0.0 and barstate.isconfirmed
+    w1 := f_clamp(w1 + (1.0 - w1) * weightDecayBar, weightMin, weightMax)
+    w2 := f_clamp(w2 + (1.0 - w2) * weightDecayBar, weightMin, weightMax)
+    w3 := f_clamp(w3 + (1.0 - w3) * weightDecayBar, weightMin, weightMax)
+    w4 := f_clamp(w4 + (1.0 - w4) * weightDecayBar, weightMin, weightMax)
+    w5 := f_clamp(w5 + (1.0 - w5) * weightDecayBar, weightMin, weightMax)
+    w6 := f_clamp(w6 + (1.0 - w6) * weightDecayBar, weightMin, weightMax)
+    w7 := f_clamp(w7 + (1.0 - w7) * weightDecayBar, weightMin, weightMax)
+    w8 := f_clamp(w8 + (1.0 - w8) * weightDecayBar, weightMin, weightMax)
+    w9 := f_clamp(w9 + (1.0 - w9) * weightDecayBar, weightMin, weightMax)
+
+// ═══════════════════════════════════════════════════════════
+// ENTRY DECISION (all gates combined)
+// ═══════════════════════════════════════════════════════════
+passLearnBuy  = not useLearnFilter or not enableLearn or bullPctLearn >= eff_minLearnBull
+passLearnSell = not useLearnFilter or not enableLearn or bearPctLearn >= eff_minLearnBear
+
+float bullEdge = bullPct - bearPct
+float bearEdge = bearPct - bullPct
+bool scoreQualityBuy  = bullPct >= minLeadScore and bullEdge >= minScoreEdge
+bool scoreQualitySell = bearPct >= minLeadScore and bearEdge >= minScoreEdge
+
+bool pullbackBuy  = ema9 > ema21 and close > ema9 and low <= ema21 and close > open
+bool pullbackSell = ema9 < ema21 and close < ema9 and high >= ema21 and close < open
+float alphaRange = math.max(high - low, syminfo.mintick)
+float alphaBody = math.abs(close - open)
+float alphaCloseLocBuy = (close - low) / alphaRange
+float alphaCloseLocSell = (high - close) / alphaRange
+float alphaRejectBuy = (math.min(open, close) - low) / alphaRange
+float alphaRejectSell = (high - math.max(open, close)) / alphaRange
+float alphaEmaSlopeBuy = (ema9 - ema9[3]) / math.max(atr, syminfo.mintick)
+float alphaEmaSlopeSell = (ema9[3] - ema9) / math.max(atr, syminfo.mintick)
+float alphaAccelBuy = ((close - close[1]) + (close[1] - close[2])) / math.max(atr, syminfo.mintick)
+float alphaAccelSell = ((close[1] - close) + (close[2] - close[1])) / math.max(atr, syminfo.mintick)
+float alphaVwapDistBuy = (close - vwapV) / math.max(atr, syminfo.mintick)
+float alphaVwapDistSell = (vwapV - close) / math.max(atr, syminfo.mintick)
+float alphaVwapBuy = alphaVwapDistBuy >= 0 ? f_clamp(1.0 - math.abs(alphaVwapDistBuy - 0.35) / 1.35, 0.0, 1.0) : 0.0
+float alphaVwapSell = alphaVwapDistSell >= 0 ? f_clamp(1.0 - math.abs(alphaVwapDistSell - 0.35) / 1.35, 0.0, 1.0) : 0.0
+float alphaRelVol = volume / math.max(volAvg, 1.0)
+float alphaVolQuality = alphaRelVol >= 1.0 ? f_clamp((alphaRelVol - 1.0) / 2.5, 0.0, 1.0) : 0.0
+float alphaFlowBuy = f_clamp((flowBias + 0.15) / 0.75, 0.0, 1.0)
+float alphaFlowSell = f_clamp((-flowBias + 0.15) / 0.75, 0.0, 1.0)
+float alphaBreakBuy = f_clamp(((close - ta.highest(high, 20)[1]) / math.max(atr, syminfo.mintick) + 0.15) / 0.65, 0.0, 1.0)
+float alphaBreakSell = f_clamp(((ta.lowest(low, 20)[1] - close) / math.max(atr, syminfo.mintick) + 0.15) / 0.65, 0.0, 1.0)
+float alphaTrendBuy = ((ema9 > ema21 ? 1.0 : 0.0) + (ema21 > ema50 ? 1.0 : 0.0) + (close > vwapV ? 1.0 : 0.0)) / 3.0
+float alphaTrendSell = ((ema9 < ema21 ? 1.0 : 0.0) + (ema21 < ema50 ? 1.0 : 0.0) + (close < vwapV ? 1.0 : 0.0)) / 3.0
+float alphaChop = f_clamp((erVal - 0.08) / 0.35, 0.0, 1.0)
+float alphaBuyRaw = alphaBody / alphaRange * 0.12 + alphaCloseLocBuy * 0.13 + alphaRejectBuy * 0.08 + f_clamp((alphaEmaSlopeBuy + 0.05) / 0.45, 0.0, 1.0) * 0.13 + f_clamp((alphaAccelBuy + 0.10) / 0.85, 0.0, 1.0) * 0.13 + alphaVwapBuy * 0.11 + alphaVolQuality * 0.10 + alphaFlowBuy * 0.09 + alphaBreakBuy * 0.07 + alphaTrendBuy * 0.09 + alphaChop * 0.05
+float alphaSellRaw = alphaBody / alphaRange * 0.12 + alphaCloseLocSell * 0.13 + alphaRejectSell * 0.08 + f_clamp((alphaEmaSlopeSell + 0.05) / 0.45, 0.0, 1.0) * 0.13 + f_clamp((alphaAccelSell + 0.10) / 0.85, 0.0, 1.0) * 0.13 + alphaVwapSell * 0.11 + alphaVolQuality * 0.10 + alphaFlowSell * 0.09 + alphaBreakSell * 0.07 + alphaTrendSell * 0.09 + alphaChop * 0.05
+int alphaBuyQuality = int(math.round(f_clamp(alphaBuyRaw, 0.0, 1.0) * 100.0))
+int alphaSellQuality = int(math.round(f_clamp(alphaSellRaw, 0.0, 1.0) * 100.0))
+bool alphaBuyOk = not effectiveScalpUseAlphaQuality or alphaBuyQuality >= effectiveScalpMinAlphaQuality
+bool alphaSellOk = not effectiveScalpUseAlphaQuality or alphaSellQuality >= effectiveScalpMinAlphaQuality
+bool bullPctCross = ta.crossover(bullPct, minLeadScore)
+bool bullEdgeCross = ta.crossover(bullEdge, minScoreEdge)
+bool bearPctCross = ta.crossover(bearPct, minLeadScore)
+bool bearEdgeCross = ta.crossover(bearEdge, minScoreEdge)
+bool scoreShiftBuy  = bullPctCross or bullEdgeCross
+bool scoreShiftSell = bearPctCross or bearEdgeCross
+bool optVolOk = volume >= volAvg * optVolMult
+bool optAtrOk = regimeAtrRatio >= optMinAtrRatio
+bool trigVwapBuy = close[1] <= vwapV[1] and close > vwapV
+bool trigVwapSell = close[1] >= vwapV[1] and close < vwapV
+bool trigEmaReclaimBuy = close[1] <= ema21[1] and close > ema21
+bool trigEmaReclaimSell = close[1] >= ema21[1] and close < ema21
+float triggerHigh20 = ta.highest(high, 20)
+float triggerLow20 = ta.lowest(low, 20)
+bool trigBreakBuy = close > triggerHigh20[1] and close > vwapV
+bool trigBreakSell = close < triggerLow20[1] and close < vwapV
+bool trigFailedBuy = low[1] < triggerLow20[2] and close > triggerLow20[2] and (trigVwapBuy or trigEmaReclaimBuy or close > high[1])
+bool trigFailedSell = high[1] > triggerHigh20[2] and close < triggerHigh20[2] and (trigVwapSell or trigEmaReclaimSell or close < low[1])
+bool trigMomentumBuy = bullPct > bullPct[1] and optVolOk and flowBias >= 0.05 and macdM > macdS and close > close[1] and bullEdge > 0
+bool trigMomentumSell = bearPct > bearPct[1] and optVolOk and flowBias <= -0.05 and macdM < macdS and close < close[1] and bearEdge > 0
+bool trigMeanBuy = rsiVal[1] < 35 and rsiVal > rsiVal[1] and (trigVwapBuy or trigEmaReclaimBuy or close > high[1])
+bool trigMeanSell = rsiVal[1] > 65 and rsiVal < rsiVal[1] and (trigVwapSell or trigEmaReclaimSell or close < low[1])
+bool trigTrendBuy = ema9 > ema21 and ema21 > ema50 and pullbackBuy and close > vwapV
+bool trigTrendSell = ema9 < ema21 and ema21 < ema50 and pullbackSell and close < vwapV
+bool trigSqueezeBuy = regimeAtrRatio[1] <= 1.05 and erVal[1] < 0.22 and optAtrOk and optVolOk and flowBias >= 0.05 and macdM > macdS and close > high[1]
+bool trigSqueezeSell = regimeAtrRatio[1] <= 1.05 and erVal[1] < 0.22 and optAtrOk and optVolOk and flowBias <= -0.05 and macdM < macdS and close < low[1]
+bool trigVolumeBuy = volume >= volAvg * math.max(optVolMult * 1.5, 2.0) and flowBias > 0.15 and close > close[1]
+bool trigVolumeSell = volume >= volAvg * math.max(optVolMult * 1.5, 2.0) and flowBias < -0.15 and close < close[1]
+bool trigOptionsBuy = optAtrOk and optVolOk and bullEdge >= optMinScoreEdge * 1.5 and (trigBreakBuy or trigMomentumBuy or trigSqueezeBuy)
+bool trigOptionsSell = optAtrOk and optVolOk and bearEdge >= optMinScoreEdge * 1.5 and (trigBreakSell or trigMomentumSell or trigSqueezeSell)
+bool trigConfirmedBuy = close > ema21 and close > vwapV and flowBias >= 0 and bullPct >= bullPct[1]
+bool trigConfirmedSell = close < ema21 and close < vwapV and flowBias <= 0 and bearPct >= bearPct[1]
+int scalpBuyVotes = (buyCond ? 1 : 0) + (scoreShiftBuy ? 1 : 0) + (trigVwapBuy ? 1 : 0) + (pullbackBuy ? 1 : 0) + (trigBreakBuy ? 1 : 0) + (trigFailedBuy ? 1 : 0) + (trigMomentumBuy ? 1 : 0) + (trigMeanBuy ? 1 : 0) + (trigTrendBuy ? 1 : 0) + (trigSqueezeBuy ? 1 : 0) + (trigVolumeBuy ? 1 : 0) + (trigOptionsBuy ? 1 : 0)
+int scalpSellVotes = (sellCond ? 1 : 0) + (scoreShiftSell ? 1 : 0) + (trigVwapSell ? 1 : 0) + (pullbackSell ? 1 : 0) + (trigBreakSell ? 1 : 0) + (trigFailedSell ? 1 : 0) + (trigMomentumSell ? 1 : 0) + (trigMeanSell ? 1 : 0) + (trigTrendSell ? 1 : 0) + (trigSqueezeSell ? 1 : 0) + (trigVolumeSell ? 1 : 0) + (trigOptionsSell ? 1 : 0)
+bool scalpTriggerBuy = effectiveScalpTriggerMode == "Base" ? ((buyCond or scoreShiftBuy or trigVwapBuy) and close > ema9 and flowBias >= 0) : effectiveScalpTriggerMode == "EMA Cross" ? buyCond and close > ema9 : effectiveScalpTriggerMode == "Score Cross" ? scoreShiftBuy and flowBias >= 0 : effectiveScalpTriggerMode == "VWAP Reclaim" ? trigVwapBuy and close > ema9 : effectiveScalpTriggerMode == "EMA Pullback" ? pullbackBuy : effectiveScalpTriggerMode == "Breakout" ? trigBreakBuy : effectiveScalpTriggerMode == "Failed Reversal" ? trigFailedBuy : effectiveScalpTriggerMode == "Momentum Acceleration" ? trigMomentumBuy : effectiveScalpTriggerMode == "Mean Reversion" ? trigMeanBuy : effectiveScalpTriggerMode == "Trend Continuation" ? trigTrendBuy : effectiveScalpTriggerMode == "Squeeze Expansion" ? trigSqueezeBuy : effectiveScalpTriggerMode == "Volume Shock" ? trigVolumeBuy : effectiveScalpTriggerMode == "Options Burst" ? trigOptionsBuy : effectiveScalpTriggerMode == "Confirmed No-Repaint" ? trigConfirmedBuy : scalpBuyVotes >= 2 and trigConfirmedBuy
+bool scalpTriggerSell = effectiveScalpTriggerMode == "Base" ? ((sellCond or scoreShiftSell or trigVwapSell) and close < ema9 and flowBias <= 0) : effectiveScalpTriggerMode == "EMA Cross" ? sellCond and close < ema9 : effectiveScalpTriggerMode == "Score Cross" ? scoreShiftSell and flowBias <= 0 : effectiveScalpTriggerMode == "VWAP Reclaim" ? trigVwapSell and close < ema9 : effectiveScalpTriggerMode == "EMA Pullback" ? pullbackSell : effectiveScalpTriggerMode == "Breakout" ? trigBreakSell : effectiveScalpTriggerMode == "Failed Reversal" ? trigFailedSell : effectiveScalpTriggerMode == "Momentum Acceleration" ? trigMomentumSell : effectiveScalpTriggerMode == "Mean Reversion" ? trigMeanSell : effectiveScalpTriggerMode == "Trend Continuation" ? trigTrendSell : effectiveScalpTriggerMode == "Squeeze Expansion" ? trigSqueezeSell : effectiveScalpTriggerMode == "Volume Shock" ? trigVolumeSell : effectiveScalpTriggerMode == "Options Burst" ? trigOptionsSell : effectiveScalpTriggerMode == "Confirmed No-Repaint" ? trigConfirmedSell : scalpSellVotes >= 2 and trigConfirmedSell
+bool optTrendOk = adx >= optMinAdx and erVal >= optMinEr
+bool optBuyAlign = ema9 > ema21 and close > ema9 and alphaBuyOk and (not optNeedVwap or close > vwapV) and (not optNeedFlow or flowBias >= 0.10) and (not optNeedHtf or htfBull)
+bool optSellAlign = ema9 < ema21 and close < ema9 and alphaSellOk and (not optNeedVwap or close < vwapV) and (not optNeedFlow or flowBias <= -0.10) and (not optNeedHtf or not htfBull)
+bool optionsSniperBuy = (buyCond or pullbackBuy or scoreShiftBuy) and optBuyAlign and optVolOk and optAtrOk and optTrendOk and bullPct >= optMinLeadScore and bullEdge >= optMinScoreEdge
+bool optionsSniperSell = (sellCond or pullbackSell or scoreShiftSell) and optSellAlign and optVolOk and optAtrOk and optTrendOk and bearPct >= optMinLeadScore and bearEdge >= optMinScoreEdge
+bool entryBuyCore = runtimeEntryMode == "EMA cross only" ? buyCond : runtimeEntryMode == "Score regime shifts" ? scoreShiftBuy : runtimeEntryMode == "Options Sniper" ? optionsSniperBuy : runtimeEntryMode == "Scalp Trigger Engine" ? scalpTriggerBuy : (buyCond or pullbackBuy)
+bool entrySellCore = runtimeEntryMode == "EMA cross only" ? sellCond : runtimeEntryMode == "Score regime shifts" ? scoreShiftSell : runtimeEntryMode == "Options Sniper" ? optionsSniperSell : runtimeEntryMode == "Scalp Trigger Engine" ? scalpTriggerSell : (sellCond or pullbackSell)
+bool baseBuyTrigger  = entryBuyCore and scoreQualityBuy and alphaBuyOk and lastSignalState <= 0
+bool baseSellTrigger = entrySellCore and scoreQualitySell and alphaSellOk and lastSignalState >= 0
+
+// Gated checks — bypassed if gate master switch is OFF
+bool gatedCooldown     = not gate_cooldown    or (bar_index - lastSignalBar >= eff_minBarsBetween)
+bool gatedChopConv     = not gate_chopConv    or passChopConv
+bool gatedAdx          = not gate_adx         or passAdxOk
+bool gatedKeyLevelOk   = not gate_keyLevel    or keyLevelOk
+bool gatedFreshPivotB  = not gate_freshPivot  or freshPivotBuy
+bool gatedFreshPivotS  = not gate_freshPivot  or freshPivotSell
+bool gatedFlowBull     = not gate_flow        or flowBullOk
+bool gatedFlowBear     = not gate_flow        or flowBearOk
+
+rawBuy  = baseBuyTrigger  and passLearnBuy  and passDsBuy  and passHtfBuy  and gatedAdx and gatedChopConv and passKnnBuy  and gatedFlowBull and gatedCooldown and gatedFreshPivotB  and gatedKeyLevelOk
+rawSell = baseSellTrigger and passLearnSell and passDsSell and passHtfSell and gatedAdx and gatedChopConv and passKnnSell and gatedFlowBear and gatedCooldown and gatedFreshPivotS  and gatedKeyLevelOk
+
+bool bigMovesOnly = eff_swingMode == "Big moves only"
+bool preConfTriggerBuy  = rawBuy  and (not bigMovesOnly or swingOkBuy)
+bool preConfTriggerSell = rawSell and (not bigMovesOnly or swingOkSell)
+bool strongBuy  = rawBuy  and swingOkBuy
+bool strongSell = rawSell and swingOkSell
+
+// ═══════════════════════════════════════════════════════════
+// SIGNAL CONFIDENCE % (composite, 0–100)
+//   Blends: directional score Δ, ADX, ER, flow bias, ATR expansion,
+//   swing leg size, and learned-score strength. Weighted so that the
+//   BIGGEST upcoming moves tend to carry the HIGHEST %.
+// ═══════════════════════════════════════════════════════════
+f_01(float x) => math.max(0.0, math.min(1.0, x))
+
+// Normalize each ingredient to 0..1
+float sigScoreDelta = f_01(math.abs(bullPct - bearPct) / 80.0)           // 80+ spread = max
+float sigAdx        = f_01((adx - 10.0) / 30.0)                           // 10→0, 40→1
+float sigEr         = f_01((erVal - 0.10) / 0.50)                         // 0.10→0, 0.60→1
+float sigFlow       = f_01(math.abs(flowBias))                            // |bias| 0..1
+float sigAtrExp     = f_01((atr / math.max(atrSma, syminfo.mintick) - 0.9) / 0.6)  // 0.9→0, 1.5→1
+float sigSwing      = f_01((math.max(legUpATR, legDnATR) - 0.3) / 1.7)    // 0.3→0, 2.0→1
+float sigLearn      = f_01((math.max(bullPct, bearPct) - 45.0) / 40.0)    // 45→0, 85→1
+float sigAlpha      = f_01(math.max(alphaBuyQuality, alphaSellQuality) / 100.0)
+
+// Composite weighting (sum = 1.0)
+float compositeConf = sigScoreDelta * 0.22 + sigAdx * 0.12 + sigEr * 0.09 + sigFlow * 0.12 + sigAtrExp * 0.09 + sigSwing * 0.12 + sigLearn * 0.10 + sigAlpha * 0.14
+int sigConfPct = int(math.round(compositeConf * 100.0))
+sigConfPct := math.max(0, math.min(100, sigConfPct))
+
+// Tier helper → "+++", "++", "+"
+f_tier(int pct) => pct >= 80 ? "+++" : pct >= 65 ? "++" : pct >= 50 ? "+" : ""
+
+// Density tier thresholds
+bool isDensMed  = runtimeSignalDensity == "Medium moves"
+bool isDensBig  = runtimeSignalDensity == "Big moves only"
+bool isDensMega = runtimeSignalDensity == "Mega moves only"
+float densMinAtr = isDensMega ? minMoveAtrMega : isDensBig ? minMoveAtrBig : isDensMed ? minMoveAtrMed : 0.0
+bool densMegaHtfOk = not isDensMega or not megaReqHtf or (preConfTriggerBuy ? htfBull : not htfBull)
+
+// Density checks — require candidate to exceed move threshold
+bool densBuyOk  = densMinAtr <= 0.0 or legUpATR >= densMinAtr
+bool densSellOk = densMinAtr <= 0.0 or legDnATR >= densMinAtr
+
+// Trend-lock state: after a BUY, suppress BUYs; after SELL, suppress SELLs — unless unlocked.
+var int   lockDir    = 0          // +1 = locked long side, -1 = locked short side, 0 = unlocked
+var float lockPrice  = na         // entry price when locked
+var float lockBest   = na         // best price achieved since lock (high for long, low for short)
+var float lockRisk   = na         // risk (atr * atrMultAdapt) at time of lock
+
+bool lockBuyActive  = trendLockEnable and lockDir == 1
+bool lockSellActive = trendLockEnable and lockDir == -1
+
+// Unlock condition: price has retraced retraceGiveR × lockRisk from best, OR HTF trend flipped
+float retracedLong  = lockDir == 1  and not na(lockBest) and not na(lockRisk) ? (lockBest - close) / math.max(lockRisk, syminfo.mintick) : 0.0
+float retracedShort = lockDir == -1 and not na(lockBest) and not na(lockRisk) ? (close - lockBest) / math.max(lockRisk, syminfo.mintick) : 0.0
+bool unlockByRetrace = (lockDir == 1 and retracedLong >= retraceGiveR) or (lockDir == -1 and retracedShort >= retraceGiveR)
+bool unlockByHtfFlip = (lockDir == 1 and not htfBull) or (lockDir == -1 and htfBull)
+if trendLockEnable and lockDir != 0 and (unlockByRetrace or unlockByHtfFlip)
+    lockDir := 0
+    lockPrice := na
+    lockBest := na
+    lockRisk := na
+
+// Optimized scalp filters learned by local sweeps
+var int scalpLossCooldownUntil = na
+var int scalpConsecLosses = 0
+if scalpFilterEnable and resLoss and scalpLossCooldownBars > 0
+    scalpLossCooldownUntil := bar_index + scalpLossCooldownBars
+if scalpFilterEnable and resWin
+    scalpConsecLosses := 0
+if scalpFilterEnable and resLoss and scalpMaxConsecLosses > 0
+    scalpConsecLosses += 1
+    if scalpConsecLosses >= scalpMaxConsecLosses
+        scalpLossCooldownUntil := bar_index + scalpClusterCooldownBars
+        scalpConsecLosses := 0
+
+bool scalpInSession = effectiveScalpSession == "All" ? true : effectiveScalpSession == "Open" ? not na(time(timeframe.period, "0930-1100")) : effectiveScalpSession == "Open 9:30-10" ? not na(time(timeframe.period, "0930-1000")) : effectiveScalpSession == "Open 10-10:30" ? not na(time(timeframe.period, "1000-1030")) : effectiveScalpSession == "Open 10:30-11" ? not na(time(timeframe.period, "1030-1100")) : effectiveScalpSession == "Midday" ? not na(time(timeframe.period, "1100-1430")) : effectiveScalpSession == "Power hour" ? not na(time(timeframe.period, "1500-1600")) : effectiveScalpSession == "Morning" ? not na(time(timeframe.period, "0930-1200")) : not na(time(timeframe.period, "1200-1600"))
+bool scalpAllowBuy = effectiveScalpDirection != "Short only"
+bool scalpAllowSell = effectiveScalpDirection != "Long only"
+bool scalpVwapDistanceOk = scalpMaxVwapAtr <= 0.0 or math.abs(close - vwapV) / math.max(atr, syminfo.mintick) <= scalpMaxVwapAtr
+bool scalpBuyConfRising = not effectiveScalpRequireConfRising or (bullPct > bullPct[1] and (bullPct - bearPct) >= (bullPct[1] - bearPct[1]))
+bool scalpSellConfRising = not effectiveScalpRequireConfRising or (bearPct > bearPct[1] and (bearPct - bullPct) >= (bearPct[1] - bullPct[1]))
+bool scalpCooldownOk = na(scalpLossCooldownUntil) or bar_index > scalpLossCooldownUntil
+var float scalpOrHigh15 = na
+var float scalpOrLow15 = na
+bool scalpNewDay = timeframe.change("D")
+bool scalpInFirst15 = not na(time(timeframe.period, "0930-0945"))
+if scalpNewDay
+    scalpOrHigh15 := na
+    scalpOrLow15 := na
+if scalpInFirst15
+    scalpOrHigh15 := na(scalpOrHigh15) ? high : math.max(scalpOrHigh15, high)
+    scalpOrLow15 := na(scalpOrLow15) ? low : math.min(scalpOrLow15, low)
+bool scalpOrReady = not na(scalpOrHigh15) and not na(scalpOrLow15) and not scalpInFirst15
+bool scalpOrBuyOk = scalpOpeningRange == "Off" or (scalpOrReady and (scalpOpeningRange == "Break 15m" ? close > scalpOrHigh15 : math.min(math.abs(close - scalpOrHigh15), math.abs(close - scalpOrLow15)) <= atr))
+bool scalpOrSellOk = scalpOpeningRange == "Off" or (scalpOrReady and (scalpOpeningRange == "Break 15m" ? close < scalpOrLow15 : math.min(math.abs(close - scalpOrHigh15), math.abs(close - scalpOrLow15)) <= atr))
+bool scalpHtfBuyOk = scalpHtfMode == "Off" or (scalpHtfMode == "Align EMA50" ? close > ema50 and ema50 >= ema50[6] : not (close < ema50 and ema50 <= ema50[6]))
+bool scalpHtfSellOk = scalpHtfMode == "Off" or (scalpHtfMode == "Align EMA50" ? close < ema50 and ema50 <= ema50[6] : not (close > ema50 and ema50 >= ema50[6]))
+float scalpVolumeSma3 = ta.sma(volume, 3)
+bool scalpVolumeOk = scalpVolumeQuality == "Off" or (scalpVolumeSma3 >= volAvg * 0.90 and volume <= scalpVolumeSma3 * 3.0)
+float scalpTargetR = powerhourMode or councilMode or phase17Mode or optionsBurstMode or profitMaxMode ? effectiveScalpTargetR : scalpAdaptiveTarget ? (atr / math.max(atrSma, syminfo.mintick) >= 1.20 ? math.max(tpLadderRR, 0.75) : atr / math.max(atrSma, syminfo.mintick) <= 0.90 ? math.min(tpLadderRR, 0.35) : tpLadderRR) : tpLadderRR
+float scalpRoundTripCost = close * (scalpSpreadBps + 2.0 * scalpSlippageBps) / 10000.0
+bool scalpCostOk = scalpMinMoveToCost <= 0.0 or scalpRoundTripCost <= 0.0 or (atr * atrMultAdapt * scalpTargetR) / scalpRoundTripCost >= scalpMinMoveToCost
+float scalpPrevDayHigh = request.security(syminfo.tickerid, "D", high[1], barmerge.gaps_off, barmerge.lookahead_off)
+float scalpPrevDayLow = request.security(syminfo.tickerid, "D", low[1], barmerge.gaps_off, barmerge.lookahead_off)
+float scalpPrevDayClose = request.security(syminfo.tickerid, "D", close[1], barmerge.gaps_off, barmerge.lookahead_off)
+float scalpPrevDayRange = math.max(scalpPrevDayHigh - scalpPrevDayLow, syminfo.mintick)
+float scalpDayOpen = ta.valuewhen(timeframe.change("D"), open, 0)
+float scalpGapR = (scalpDayOpen - scalpPrevDayClose) / scalpPrevDayRange
+bool scalpPriceOk = (scalpMinPrice <= 0.0 or close >= scalpMinPrice) and (scalpMaxPrice <= 0.0 or close <= scalpMaxPrice)
+bool scalpDollarVolOk = scalpMinDollarVol <= 0.0 or close * volAvg >= scalpMinDollarVol
+bool scalpGapBuyOk = scalpGapMode == "Off" or (scalpGapMode == "With gap" ? scalpGapR > 0.15 : math.abs(scalpGapR) < 0.60)
+bool scalpGapSellOk = scalpGapMode == "Off" or (scalpGapMode == "With gap" ? scalpGapR < -0.15 : math.abs(scalpGapR) < 0.60)
+float scalpDayRange = high - low
+float scalpDailyRangeRatio = scalpDayRange / math.max(scalpPrevDayRange, syminfo.mintick)
+bool scalpDailyBuyOk = scalpDailyContext == "Off" or (scalpDailyContext == "Range expansion" ? scalpDailyRangeRatio >= 0.9 : scalpDailyRangeRatio >= 0.9 and close >= scalpDayOpen)
+bool scalpDailySellOk = scalpDailyContext == "Off" or (scalpDailyContext == "Range expansion" ? scalpDailyRangeRatio >= 0.9 : scalpDailyRangeRatio >= 0.9 and close <= scalpDayOpen)
+bool scalpPdBuyOk = scalpPriorDayMode == "Off" or (scalpPriorDayMode == "Break PD" ? close > scalpPrevDayHigh : math.min(math.abs(close - scalpPrevDayHigh), math.abs(close - scalpPrevDayLow)) <= atr)
+bool scalpPdSellOk = scalpPriorDayMode == "Off" or (scalpPriorDayMode == "Break PD" ? close < scalpPrevDayLow : math.min(math.abs(close - scalpPrevDayHigh), math.abs(close - scalpPrevDayLow)) <= atr)
+float scalpSpyClose = request.security("SPY", timeframe.period, close, barmerge.gaps_off, barmerge.lookahead_off)
+float scalpSpyEma21 = request.security("SPY", timeframe.period, ta.ema(close, 21), barmerge.gaps_off, barmerge.lookahead_off)
+float scalpSpyEma50 = request.security("SPY", timeframe.period, ta.ema(close, 50), barmerge.gaps_off, barmerge.lookahead_off)
+float scalpQqqClose = request.security("QQQ", timeframe.period, close, barmerge.gaps_off, barmerge.lookahead_off)
+float scalpQqqEma21 = request.security("QQQ", timeframe.period, ta.ema(close, 21), barmerge.gaps_off, barmerge.lookahead_off)
+float scalpQqqEma50 = request.security("QQQ", timeframe.period, ta.ema(close, 50), barmerge.gaps_off, barmerge.lookahead_off)
+bool scalpSpyBuyOk = scalpSpyClose > scalpSpyEma21 and scalpSpyClose > scalpSpyEma50
+bool scalpSpySellOk = scalpSpyClose < scalpSpyEma21 and scalpSpyClose < scalpSpyEma50
+bool scalpQqqBuyOk = scalpQqqClose > scalpQqqEma21 and scalpQqqClose > scalpQqqEma50
+bool scalpQqqSellOk = scalpQqqClose < scalpQqqEma21 and scalpQqqClose < scalpQqqEma50
+bool scalpMarketBuyOk = scalpMarketMode == "Off" or (scalpMarketMode == "SPY" ? scalpSpyBuyOk : scalpMarketMode == "QQQ" ? scalpQqqBuyOk : scalpSpyBuyOk and scalpQqqBuyOk)
+bool scalpMarketSellOk = scalpMarketMode == "Off" or (scalpMarketMode == "SPY" ? scalpSpySellOk : scalpMarketMode == "QQQ" ? scalpQqqSellOk : scalpSpySellOk and scalpQqqSellOk)
+bool scalpRelVolOk = scalpRelVolMode == "Off" or volume / math.max(volAvg, 1.0) >= scalpMinRelVol
+bool scalpPeerBuyOk = scalpPeerMode == "Off" or scalpQqqBuyOk
+bool scalpPeerSellOk = scalpPeerMode == "Off" or scalpQqqSellOk
+bool scalpNewsAvoidOk = scalpNewsMode == "Off" or scalpNewsMode == "Momentum only" or (math.abs(scalpGapR) < 1.0 and volume / math.max(volAvg, 1.0) < 5.0)
+bool scalpNewsMomentumOk = scalpNewsMode != "Momentum only" or math.abs(scalpGapR) >= 0.4 or volume / math.max(volAvg, 1.0) >= 2.5
+bool scalpGateBuy = not scalpFilterEnable or (activeSpecialistTickerOk and scalpInSession and scalpAllowBuy and scalpVwapDistanceOk and scalpBuyConfRising and scalpCooldownOk and scalpOrBuyOk and scalpHtfBuyOk and scalpVolumeOk and scalpCostOk and scalpPriceOk and scalpDollarVolOk and scalpGapBuyOk and scalpDailyBuyOk and scalpPdBuyOk and scalpMarketBuyOk and scalpRelVolOk and scalpPeerBuyOk and scalpNewsAvoidOk and scalpNewsMomentumOk)
+bool scalpGateSell = not scalpFilterEnable or (activeSpecialistTickerOk and scalpInSession and scalpAllowSell and scalpVwapDistanceOk and scalpSellConfRising and scalpCooldownOk and scalpOrSellOk and scalpHtfSellOk and scalpVolumeOk and scalpCostOk and scalpPriceOk and scalpDollarVolOk and scalpGapSellOk and scalpDailySellOk and scalpPdSellOk and scalpMarketSellOk and scalpRelVolOk and scalpPeerSellOk and scalpNewsAvoidOk and scalpNewsMomentumOk)
+string specialistTickerBlockReason = powerhourMode ? "not Powerhour whitelist" : councilMode ? "not Champion Council whitelist" : phase17Mode ? "not Phase17 whitelist" : "specialist ticker"
+string noTradeBuyReason = not scalpFilterEnable ? "filters off" : not activeSpecialistTickerOk ? specialistTickerBlockReason : not scalpInSession ? "session blocked" : not scalpAllowBuy ? "long disabled" : not scalpVwapDistanceOk ? "VWAP distance" : not scalpBuyConfRising ? "confidence not rising" : not scalpCooldownOk ? "loss cooldown" : not scalpOrBuyOk ? "opening range" : not scalpHtfBuyOk ? "HTF permission" : not scalpVolumeOk ? "volume quality" : not scalpCostOk ? "cost > target" : not scalpPriceOk ? "price/liquidity" : not scalpDollarVolOk ? "$ volume" : not scalpGapBuyOk ? "gap context" : not scalpDailyBuyOk ? "daily context" : not scalpPdBuyOk ? "prior-day level" : not scalpMarketBuyOk ? "market permission" : not scalpRelVolOk ? "relative volume" : not scalpPeerBuyOk ? "peer confirm" : not scalpNewsAvoidOk ? "news spike" : not scalpNewsMomentumOk ? "news momentum" : "ready"
+string noTradeSellReason = not scalpFilterEnable ? "filters off" : not activeSpecialistTickerOk ? specialistTickerBlockReason : not scalpInSession ? "session blocked" : not scalpAllowSell ? "short disabled" : not scalpVwapDistanceOk ? "VWAP distance" : not scalpSellConfRising ? "confidence not rising" : not scalpCooldownOk ? "loss cooldown" : not scalpOrSellOk ? "opening range" : not scalpHtfSellOk ? "HTF permission" : not scalpVolumeOk ? "volume quality" : not scalpCostOk ? "cost > target" : not scalpPriceOk ? "price/liquidity" : not scalpDollarVolOk ? "$ volume" : not scalpGapSellOk ? "gap context" : not scalpDailySellOk ? "daily context" : not scalpPdSellOk ? "prior-day level" : not scalpMarketSellOk ? "market permission" : not scalpRelVolOk ? "relative volume" : not scalpPeerSellOk ? "peer confirm" : not scalpNewsAvoidOk ? "news spike" : not scalpNewsMomentumOk ? "news momentum" : "ready"
+string noTradeReason = forwardQuarantine ? "forward quarantine" : bullPct >= bearPct ? noTradeBuyReason : noTradeSellReason
+bool debugOn = visualDebugMode != "Off"
+bool debugCandidateDots = debugOn and (debugShowCandidateDots or visualDebugMode == "Show candidate dots" or visualDebugMode == "Force visual markers")
+bool debugForceVisual = visualDebugMode == "Force visual markers"
+bool debugBullLeans = bullPct >= bearPct
+string debugBiasSide = debugBullLeans ? "BUY side" : "SELL side"
+
+// Final trigger: apply min-confidence floor + density + trend lock
+bool passMinConf = effectiveRuntimeMinConf <= 0 or sigConfPct >= effectiveRuntimeMinConf
+bool densPassBuy  = densBuyOk  and (not isDensMega or densMegaHtfOk)
+bool densPassSell = densSellOk and (not isDensMega or densMegaHtfOk)
+triggerBuy  = preConfTriggerBuy  and passMinConf and densPassBuy  and scalpGateBuy  and not lockBuyActive and not forwardQuarantine
+triggerSell = preConfTriggerSell and passMinConf and densPassSell and scalpGateSell and not lockSellActive and not forwardQuarantine
+string debugRealState = triggerBuy ? "REAL BUY" : triggerSell ? "REAL SELL" : preConfTriggerBuy ? "BUY candidate" : preConfTriggerSell ? "SELL candidate" : "blocked"
+string debugGateSummary = "State: " + debugRealState + "\n" + debugBiasSide + " · conf " + str.tostring(sigConfPct) + "% · " + effectiveScalpTriggerMode + "\nBlock: " + noTradeReason + "\nB/S score " + str.tostring(bullPct, "#") + "/" + str.tostring(bearPct, "#") + " · alpha " + str.tostring(alphaBuyQuality) + "/" + str.tostring(alphaSellQuality)
+
+// Engage trend lock on new trigger
+if trendLockEnable and triggerBuy
+    lockDir := 1
+    lockPrice := close
+    lockBest := close
+    lockRisk := atr * atrMultAdapt
+if trendLockEnable and triggerSell
+    lockDir := -1
+    lockPrice := close
+    lockBest := close
+    lockRisk := atr * atrMultAdapt
+// Track best price while locked
+if lockDir == 1
+    lockBest := math.max(nz(lockBest, close), high)
+if lockDir == -1
+    lockBest := math.min(nz(lockBest, close), low)
+
+// ═══════════════════════════════════════════════════════════
+// Trade setup on trigger
+// ═══════════════════════════════════════════════════════════
+if triggerBuy or triggerSell
+    lastSignalState := triggerBuy ? 1 : -1
+    lastSignalBar   := bar_index
+    entryP := close
+    float risk = atr * atrMultAdapt
+    slP := triggerBuy ? entryP - risk : entryP + risk
+    t1  := triggerBuy ? entryP + risk * scalpTargetR : entryP - risk * scalpTargetR
+    t2  := triggerBuy ? entryP + risk * 2.0 : entryP - risk * 2.0
+    t3  := triggerBuy ? entryP + risk * 3.0 : entryP - risk * 3.0
+    t4  := triggerBuy ? entryP + risk * 4.0 : entryP - risk * 4.0
+    t5  := triggerBuy ? entryP + risk * 5.0 : entryP - risk * 5.0
+    t1Hit := false
+    t2Hit := false
+    t3Hit := false
+    t4Hit := false
+    t5Hit := false
+    if enableLearn
+        vtDir := triggerBuy ? 1 : -1
+        vtEntryBar := bar_index
+        vtSL := slP
+        vtTP1 := t1
+        eb1 := triggerBuy ? bf1 : rf1
+        eb2 := triggerBuy ? bf2 : rf2
+        eb3 := triggerBuy ? bf3 : rf3
+        eb4 := triggerBuy ? bf4 : rf4
+        eb5 := triggerBuy ? bf5 : rf5
+        eb6 := triggerBuy ? bf6 : rf6
+        eb7 := triggerBuy ? bf7 : rf7
+        eb8 := triggerBuy ? bf8 : rf8
+        eb9 := triggerBuy ? bf9 : rf9
+        entryEbSum := eb1+eb2+eb3+eb4+eb5+eb6+eb7+eb8+eb9
+        entryAdx := adx
+        entryFlowConf := flowConf
+    entrySigConf := sigConfPct
+    liveSigConf  := sigConfPct
+    peakSigConf  := sigConfPct
+
+// Update live confidence each bar while in an active trade
+if lastSignalState != 0
+    liveSigConf := sigConfPct
+    peakSigConf := math.max(peakSigConf, sigConfPct)
+
+if lastSignalState == 1
+    if high >= t1
+        t1Hit := true
+    if high >= t2
+        t2Hit := true
+    if high >= t3
+        t3Hit := true
+    if high >= t4
+        t4Hit := true
+    if high >= t5
+        t5Hit := true
+if lastSignalState == -1
+    if low <= t1
+        t1Hit := true
+    if low <= t2
+        t2Hit := true
+    if low <= t3
+        t3Hit := true
+    if low <= t4
+        t4Hit := true
+    if low <= t5
+        t5Hit := true
+
+// ═══════════════════════════════════════════════════════════
+// OPTIONS HELPER (dashboard only)
+// ═══════════════════════════════════════════════════════════
+int optDir = bullPct > bearPct ? 1 : bearPct > bullPct ? -1 : 0
+float optConf = math.abs(bullPct - bearPct)    // 0–100
+string dteBucket = optConf >= 65 and adx >= trendAdxTh and passChopConv ? "0DTE / 1DTE" : optConf >= 50 ? "2–3 DTE" : optConf >= 35 ? "5–7 DTE" : "SKIP"
+float atmStrike = math.round(close / strikeStep) * strikeStep
+float suggStrike = optDir == 1 ? atmStrike : optDir == -1 ? atmStrike : atmStrike
+string strikeTag = optConf >= 65 ? "ATM" : optConf >= 50 ? (optDir == 1 ? "+1 OTM" : "-1 OTM") : optConf >= 35 ? (optDir == 1 ? "+2 OTM" : "-2 OTM") : "—"
+float sessHi = request.security(syminfo.tickerid, "D", high, barmerge.gaps_off, barmerge.lookahead_off)
+float sessLo = request.security(syminfo.tickerid, "D", low,  barmerge.gaps_off, barmerge.lookahead_off)
+bool nearSessHi = useSessionHigh and high >= sessHi * 0.999
+bool nearSessLo = useSessionHigh and low  <= sessLo * 1.001
+string exitAdvice = (lastSignalState == 1 and (t3Hit or nearSessHi or ds_anchoredDir == -1)) ? "SCALE OUT / TRAIL" : (lastSignalState == -1 and (t3Hit or nearSessLo or ds_anchoredDir == 1)) ? "SCALE OUT / TRAIL" : (lastSignalState != 0 and t1Hit) ? "MOVE SL → BE" : "HOLD"
+
+// ═══════════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════════
+int closedSim = simWins + simLoss
+float simWinPct = closedSim > 0 ? 100.0 * simWins / closedSim : na
+float trustAvg = enableLearn and useFactorTrust ? (a1+a2+a3+a4+a5+a6+a7+a8+a9) / 9.0 : na
+
+var table d = table.new(dashPosVal, 2, 46, bgcolor=color.new(#FFF9C4, 10), border_width=1, border_color=color.new(color.gray, 60))
+if barstate.islast
+    table.clear(d, 0, 0, 1, 45)
+    bool fullDash = dashboardMode == "Full"
+    int confDelta = liveSigConf - entrySigConf
+    string confTrendStr = lastSignalState != 0 ? str.tostring(entrySigConf) + "% → " + str.tostring(liveSigConf) + "%  peak " + str.tostring(peakSigConf) + "%  Δ " + (confDelta >= 0 ? "+" : "") + str.tostring(confDelta) : "—"
+    color confTrendCol = lastSignalState == 0 ? color.gray : confDelta >= 5 ? color.green : confDelta <= -8 ? color.red : color.orange
+    string lockStatus = not trendLockEnable ? "OFF" : lockDir == 0 ? "UNLOCKED" : lockDir == 1 ? "LONG locked · retrc " + str.tostring(retracedLong, "#.##") + "R" : "SHORT locked · retrc " + str.tostring(retracedShort, "#.##") + "R"
+    string holdAdvice = lastSignalState == 0 ? "—" : confDelta >= 10 and liveSigConf >= 70 ? "HOLD · strength building" : confDelta <= -10 ? "WATCH · strength fading" : liveSigConf <= 40 ? "EXIT CONSIDER · thesis weakening" : "HOLD"
+    color holdAdvCol = holdAdvice == "HOLD · strength building" ? color.green : holdAdvice == "EXIT CONSIDER · thesis weakening" ? color.red : holdAdvice == "WATCH · strength fading" ? color.orange : color.gray
+    table.cell(d, 0, 0, "BULL SCORE", text_color=color.white, bgcolor=color.green, text_size=dashTextSize)
+    table.cell(d, 1, 0, str.tostring(bullPct, "#") + "%" + (enableLearn ? " adj" : "") + (showScoreMeters ? "  " + f_scoreMeter(bullPct) : "") + "  raw " + str.tostring(bullPctRaw, "#") + "%", text_color=color.white, bgcolor=color.green, text_size=dashTextSize)
+    table.cell(d, 0, 1, "BEAR SCORE", text_color=color.white, bgcolor=color.red, text_size=dashTextSize)
+    table.cell(d, 1, 1, str.tostring(bearPct, "#") + "%" + (enableLearn ? " adj" : "") + (showScoreMeters ? "  " + f_scoreMeter(bearPct) : "") + "  raw " + str.tostring(bearPctRaw, "#") + "%", text_color=color.white, bgcolor=color.red, text_size=dashTextSize)
+    table.cell(d, 0, 2, "MARKET BIAS", text_color=color.white, bgcolor=color.black, text_size=dashTextSize)
+    table.cell(d, 1, 2, biasText + " (Δ " + str.tostring(bullPct - bearPct, "#") + ")", text_color=color.white, bgcolor=biasCol, text_size=dashTextSize)
+    f_addDashRow(d, 3,  "Price / VWAP", close > vwapV ? "ABOVE" : "BELOW", close > vwapV ? color.green : color.red, dashTextSize)
+    f_addDashRow(d, 4,  "RSI 14",       str.tostring(rsiVal, "#.#"), rsiVal > 50 ? color.green : color.red, dashTextSize)
+    f_addDashRow(d, 5,  "MACD",         macdM > macdS ? "BULL" : "BEAR", macdM > macdS ? color.green : color.red, dashTextSize)
+    f_addDashRow(d, 6,  "ADX",          str.tostring(adx, "#.#") + (passAdxOk ? "" : " (LOW)"), adx > 25 ? color.green : color.gray, dashTextSize)
+    f_addDashRow(d, 7,  "EMA 9/21",     ema9 > ema21 ? "BULL" : "BEAR", ema9 > ema21 ? color.green : color.red, dashTextSize)
+    f_addDashRow(d, 8,  "ATR 14",       str.tostring(atr, "#.##") + (passAtrExpand ? " exp" : " flat"), passAtrExpand ? color.black : color.orange, dashTextSize)
+    f_addDashRow(d, 9,  "ER",           str.tostring(erVal, "#.##"), passErOk ? color.green : color.red, dashTextSize)
+    f_addDashRow(d, 10, "HTF " + htfTf, eff_useHtf ? (htfBull ? "BULL" : "BEAR") : "OFF", eff_useHtf ? (htfBull ? color.green : color.red) : color.gray, dashTextSize)
+    f_addDashRow(d, 11, "SuperTrend",   useSt ? (stBull ? "BULL" : "BEAR") : "OFF", useSt ? (stBull ? color.green : color.red) : color.gray, dashTextSize)
+    if fullDash
+        f_addDashRow(d, 12, "MFI cluster",  useMfi ? ("Lo " + str.tostring(cLo,"#.#") + " Md " + str.tostring(cMd,"#.#") + " Hi " + str.tostring(cHi,"#.#")) : "OFF", color.black, dashTextSize)
+        f_addDashRow(d, 13, "KNN vote",     eff_useKnn ? (knnVote == 1 ? "BULL" : knnVote == -1 ? "BEAR" : "—") + " (" + str.tostring(array.size(histR)) + "/" + str.tostring(knnLookback) + ")" : "OFF", eff_useKnn ? (knnVote == 1 ? color.green : knnVote == -1 ? color.red : color.gray) : color.gray, dashTextSize)
+        f_addDashRow(d, 14, "DS-VWAP",      enableDsVwap ? (ds_anchoredDir > 0 ? "BULL seg" : "BEAR seg") + "  " + str.tostring(ds_currentVwap, format.mintick) : "OFF", enableDsVwap ? (ds_anchoredDir > 0 ? color.green : color.red) : color.gray, dashTextSize)
+        f_addDashRow(d, 15, "Flow bias",    useFlow ? str.tostring(flowBias, "#.##") + (math.abs(flowBias) > 0.25 ? " strong" : "") : "OFF", useFlow ? (flowBias > 0.1 ? color.green : flowBias < -0.1 ? color.red : color.gray) : color.gray, dashTextSize)
+        f_addDashRow(d, 16, "Absorption",   useFlow ? str.tostring(absorpEma, "#") : "OFF", useFlow ? (absorpEma > absorpAvg ? color.orange : color.gray) : color.gray, dashTextSize)
+    f_addDashRow(d, 17, "Swing leg ↑/↓", str.tostring(legUpATR, "#.##") + " / " + str.tostring(legDnATR, "#.##"), keyLevelOk ? color.black : color.gray, dashTextSize)
+    f_addDashRow(d, 18, "Range × ATR",  str.tostring(rangeATR, "#.##") + (keyLevelOk ? " ok" : " small"), keyLevelOk ? color.green : color.orange, dashTextSize)
+    f_addDashRow(d, 19, "Alpha quality", "B " + str.tostring(alphaBuyQuality) + "% / S " + str.tostring(alphaSellQuality) + "%", math.max(alphaBuyQuality, alphaSellQuality) >= scalpMinAlphaQuality ? color.green : color.orange, dashTextSize)
+    if fullDash
+        f_addDashRow(d, 20, "Sim W/L/N",    enableLearn ? str.tostring(simWins) + "/" + str.tostring(simLoss) + "/" + str.tostring(simNeutral) + (closedSim > 0 ? "  " + str.tostring(simWinPct, "#.#") + "%" : "") : "-", color.black, dashTextSize)
+        f_addDashRow(d, 21, "Meta perf",    enableLearn and enableMeta ? str.tostring(perfEma * 100.0, "#.#") + "%  strk " + str.tostring(lossStreak) : "-", enableLearn ? color.black : color.gray, dashTextSize)
+        f_addDashRow(d, 22, "Trust Ø",      enableLearn and useFactorTrust ? str.tostring(trustAvg, "#.##") : "-", not enableLearn or not useFactorTrust ? color.gray : trustAvg >= 0.52 ? color.green : trustAvg <= 0.48 ? color.red : color.black, dashTextSize)
+        f_addDashRow(d, 23, "Weights 1-5",  enableLearn ? str.tostring(w1,"#.##")+"|"+str.tostring(w2,"#.##")+"|"+str.tostring(w3,"#.##")+"|"+str.tostring(w4,"#.##")+"|"+str.tostring(w5,"#.##") : "-", color.black, dashTextSize)
+        f_addDashRow(d, 24, "Weights 6-9",  enableLearn ? str.tostring(w6,"#.##")+"|"+str.tostring(w7,"#.##")+"|"+str.tostring(w8,"#.##")+"|"+str.tostring(w9,"#.##") : "-", color.black, dashTextSize)
+    int statusRow = fullDash ? 25 : 12
+    f_addDashRow(d, statusRow, "Status", triggerBuy ? "NEW BUY" : triggerSell ? "NEW SELL" : lastSignalState == 1 ? "IN LONG" : lastSignalState == -1 ? "IN SHORT" : "WAIT", triggerBuy ? color.green : triggerSell ? color.red : color.gray, dashTextSize)
+    if showOptionsBox and fullDash
+        f_addDashRow(d, 26, "Opt dir / conf",  (optDir == 1 ? "CALL" : optDir == -1 ? "PUT" : "—") + "  " + str.tostring(optConf, "#.#") + "%", optDir == 1 ? color.green : optDir == -1 ? color.red : color.gray, dashTextSize)
+        f_addDashRow(d, 27, "DTE / strike",    dteBucket + "  " + strikeTag + " @ " + str.tostring(suggStrike, format.mintick), dteBucket == "SKIP" ? color.gray : color.blue, dashTextSize)
+        f_addDashRow(d, 28, "Exit advice",     exitAdvice, exitAdvice == "HOLD" ? color.gray : exitAdvice == "SCALE OUT / TRAIL" ? color.orange : color.blue, dashTextSize)
+    int confRow = fullDash ? 29 : 13
+    f_addDashRow(d, confRow, "Signal conf (live)", str.tostring(sigConfPct) + "%" + (f_tier(sigConfPct) == "" ? "" : " " + f_tier(sigConfPct)), sigConfPct >= 80 ? color.lime : sigConfPct >= 65 ? color.green : sigConfPct >= 50 ? color.olive : color.gray, dashTextSize)
+    f_addDashRow(d, confRow + 1, "Conf evolution", confTrendStr, confTrendCol, dashTextSize)
+    f_addDashRow(d, confRow + 2, "Density / lock", runtimeSignalDensity + " · " + lockStatus, lockDir != 0 ? color.blue : color.gray, dashTextSize)
+    f_addDashRow(d, confRow + 3, "Hold advice", holdAdvice, holdAdvCol, dashTextSize)
+    if showChampionContext
+        f_addDashRow(d, confRow + 4, "Champion route", effectiveChampionRouteName, effectiveChampionStatus == "Forward Proven" ? color.green : effectiveChampionStatus == "Quarantined" ? color.red : color.orange, dashTextSize)
+        f_addDashRow(d, confRow + 5, "Target / proof", effectiveChampionTargetMode + " · BT " + str.tostring(effectiveChampionBacktestWr, "#.#") + "%" + (effectiveChampionForwardWr > 0 ? " FW " + str.tostring(effectiveChampionForwardWr, "#.#") + "%" : " FW n/a"), effectiveChampionForwardWr > 0 ? color.green : color.gray, dashTextSize)
+        string modeProof = selectedScalpMode == "High Win Main" ? "BT " + str.tostring(highWinBacktestWr, "#.#") + "% · FW " + str.tostring(highWinForwardWr, "#.#") + "%" : selectedScalpMode == "Champion Council Fusion" ? "BT " + str.tostring(councilBacktestWr, "#.#") + "% · holdout " + str.tostring(councilHoldoutWr, "#.#") + "% · FW " + (councilForwardWr > 0 ? str.tostring(councilForwardWr, "#.#") + "%" : "n/a") : selectedScalpMode == "Phase17 High Win Router" ? "BT " + str.tostring(phase17BacktestWr, "#.#") + "% · holdout " + str.tostring(phase17HoldoutWr, "#.#") + "% · FW " + str.tostring(phase17ForwardWr, "#.#") + "%" : selectedScalpMode == "Powerhour Momentum" ? "BT " + str.tostring(powerhourBacktestWr, "#.#") + "% · holdout " + str.tostring(powerhourHoldoutWr, "#.#") + "%" : selectedScalpMode == "Options Burst Specialist" ? "BT " + str.tostring(optionsBurstBacktestWr, "#.#") + "% · FW " + str.tostring(optionsBurstForwardWr, "#.#") + "%" : "BT " + str.tostring(profitMaxBacktestWr, "#.#") + "% · FW " + str.tostring(profitMaxForwardWr, "#.#") + "%"
+        color modeCol = effectiveChampionStatus == "Forward Proven" ? color.lime : effectiveChampionStatus == "Quarantined" ? color.red : selectedScalpMode == "High Win Main" or selectedScalpMode == "Champion Council Fusion" or selectedScalpMode == "Phase17 High Win Router" ? color.green : color.orange
+        f_addDashRow(d, confRow + 6, "Active mode", (autoMode ? "AUTO → " : "") + selectedScalpMode, modeCol, dashTextSize)
+        f_addDashRow(d, confRow + 7, "Forward proof", modeProof + " · n " + str.tostring(forwardSampleTrades), forwardSampleTrades >= 30 and effectiveChampionForwardWr >= 80 ? color.green : color.orange, dashTextSize)
+        f_addDashRow(d, confRow + 8, "Quarantine", forwardQuarantine ? "ACTIVE · no new signals" : effectiveChampionStatus == "Quarantined" ? "SPECIALIST QUARANTINED" : effectiveChampionStatus == "Watchlist" ? "WATCHLIST ONLY" : "clear", forwardQuarantine or effectiveChampionStatus == "Quarantined" ? color.red : effectiveChampionStatus == "Watchlist" ? color.orange : color.green, dashTextSize)
+        f_addDashRow(d, confRow + 9, "Why blocked", noTradeReason, noTradeReason == "ready" and not forwardQuarantine ? color.green : color.orange, dashTextSize)
+        if debugOn
+            f_addDashRow(d, confRow + 10, "Debug state", debugRealState, triggerBuy ? color.green : triggerSell ? color.red : color.orange, dashTextSize)
+            f_addDashRow(d, confRow + 11, "Debug reason", noTradeReason, noTradeReason == "ready" ? color.green : color.orange, dashTextSize)
+            f_addDashRow(d, confRow + 12, "Debug route", effectiveScalpTriggerMode + " · " + selectedScalpMode, color.blue, dashTextSize)
+    int modeRow = showChampionContext ? (debugOn ? confRow + 13 : confRow + 10) : confRow + 4
+    table.cell(d, 0, modeRow, "Mode / preset", text_color=color.black, text_halign=text.align_left, text_size=dashTextSize)
+    table.cell(d, 1, modeRow, "v03.2 · " + presetMode + " · " + runtimeEntryMode + " · " + selectedScalpMode + (useRegimeProfile ? " · " + regimeTag : ""), text_color=color.blue, text_halign=text.align_right, text_size=dashTextSize)
+
+// ═══════════════════════════════════════════════════════════
+// PLOTTING
+// ═══════════════════════════════════════════════════════════
+p9  = plot(ema9,  color=color.new(color.green, 20), title="EMA 9")
+p21 = plot(ema21, color=color.new(color.red,   20), title="EMA 21")
+fill(p9, p21, color = ema9 > ema21 ? color.new(color.green, 100 - ribbonOpacity) : color.new(color.red, 100 - ribbonOpacity))
+
+// DS-VWAP plot + bands
+color dsCol = ds_anchoredDir > 0 ? color.lime : color.red
+p_ds   = plot(enableDsVwap and ds_showLine ? ds_currentVwap : na, title="DS-VWAP", color=dsCol, linewidth=2)
+p_dsU  = plot(enableDsVwap and ds_showLine ? ds_upper : na,       title="DS upper", color=color.new(dsCol, 75), linewidth=1)
+p_dsL  = plot(enableDsVwap and ds_showLine ? ds_lower : na,       title="DS lower", color=color.new(dsCol, 75), linewidth=1)
+fill(p_dsU, p_dsL, color=color.new(dsCol, 90))
+
+// Barcolor
+isRetest = (lastSignalState == 1 and low <= ema9 and low > ema21) or (lastSignalState == -1 and high >= ema9 and high < ema21)
+barcolor((triggerBuy or triggerSell) ? color.black : isRetest ? color.orange : na)
+
+// Shapes
+// Dynamic BUY/SELL labels that print the confidence %
+// Size scales with confidence; "+" tier appended for big signals
+f_labelSize(int pct) => pct >= 80 ? size.large : pct >= 65 ? size.normal : size.small
+
+if triggerBuy
+    string tag = "BUY " + str.tostring(sigConfPct) + "%" + (f_tier(sigConfPct) == "" ? "" : " " + f_tier(sigConfPct)) + (showChampionContext ? "\n" + effectiveScalpTriggerMode + " · " + effectiveChampionTargetMode : "")
+    color  bgCol = sigConfPct >= 80 ? color.new(color.lime, 0) : sigConfPct >= 65 ? color.new(color.green, 10) : color.new(color.green, 25)
+    label.new(bar_index, low - atr * 0.25, tag, xloc=xloc.bar_index, yloc=yloc.price, color=bgCol, textcolor=color.white, style=label.style_label_up, size=f_labelSize(sigConfPct))
+if triggerSell
+    string tag = "SELL " + str.tostring(sigConfPct) + "%" + (f_tier(sigConfPct) == "" ? "" : " " + f_tier(sigConfPct)) + (showChampionContext ? "\n" + effectiveScalpTriggerMode + " · " + effectiveChampionTargetMode : "")
+    color  bgCol = sigConfPct >= 80 ? color.new(color.red, 0) : sigConfPct >= 65 ? color.new(color.red, 10) : color.new(color.red, 25)
+    label.new(bar_index, high + atr * 0.25, tag, xloc=xloc.bar_index, yloc=yloc.price, color=bgCol, textcolor=color.white, style=label.style_label_down, size=f_labelSize(sigConfPct))
+
+plotshape(debugCandidateDots and preConfTriggerBuy and not triggerBuy, title="Debug BUY candidate", style=shape.circle, location=location.belowbar, color=color.new(color.lime, 25), size=size.tiny, text="B?")
+plotshape(debugCandidateDots and preConfTriggerSell and not triggerSell, title="Debug SELL candidate", style=shape.circle, location=location.abovebar, color=color.new(color.red, 25), size=size.tiny, text="S?")
+plotshape(debugForceVisual and not triggerBuy and not triggerSell and debugBullLeans, title="Debug BUY lean", style=shape.triangleup, location=location.belowbar, color=color.new(color.green, 65), size=size.tiny, text="DBG")
+plotshape(debugForceVisual and not triggerBuy and not triggerSell and not debugBullLeans, title="Debug SELL lean", style=shape.triangledown, location=location.abovebar, color=color.new(color.red, 65), size=size.tiny, text="DBG")
+
+var label debugLatestLabel = na
+bool debugLabelRefresh = debugOn and debugShowLastBarLabel and barstate.islast and (bar_index % debugLabelEveryBars == 0 or barstate.isrealtime)
+if debugLabelRefresh
+    label.delete(debugLatestLabel)
+    color debugBg = triggerBuy ? color.new(color.green, 0) : triggerSell ? color.new(color.red, 0) : noTradeReason == "ready" ? color.new(color.blue, 0) : color.new(color.orange, 0)
+    float debugY = debugBullLeans ? low - atr * 0.55 : high + atr * 0.55
+    debugLatestLabel := label.new(bar_index, debugY, debugGateSummary, xloc=xloc.bar_index, yloc=yloc.price, color=debugBg, textcolor=color.white, style=debugBullLeans ? label.style_label_up : label.style_label_down, size=size.small)
+
+// ═══════════════════════════════════════════════════════════
+// Trade lines & labels
+// ═══════════════════════════════════════════════════════════
+int lineEndX = bar_index + labelOffset
+var line lE  = na
+var line lSL = na
+var line lT1 = na, var line lT2 = na, var line lT3 = na, var line lT4 = na, var line lT5 = na
+var label lbE  = label.new(na, na, "", color=color.blue, textcolor=color.white, style=label.style_label_left, size=tradeTextSize)
+var label lbSL = label.new(na, na, "", color=color.red,  textcolor=color.white, style=label.style_label_left, size=tradeTextSize)
+var label lbT1 = label.new(na, na, "", color=color.green, textcolor=color.white, style=label.style_label_left, size=tradeTextSize)
+var label lbT2 = label.new(na, na, "", color=color.green, textcolor=color.white, style=label.style_label_left, size=tradeTextSize)
+var label lbT3 = label.new(na, na, "", color=color.green, textcolor=color.white, style=label.style_label_left, size=tradeTextSize)
+var label lbT4 = label.new(na, na, "", color=color.rgb(0,100,0), textcolor=color.white, style=label.style_label_left, size=tradeTextSize)
+var label lbT5 = label.new(na, na, "", color=color.rgb(0,70,0),  textcolor=color.white, style=label.style_label_left, size=tradeTextSize)
+
+if triggerBuy or triggerSell
+    line.delete(lE)
+    line.delete(lSL)
+    line.delete(lT1)
+    line.delete(lT2)
+    line.delete(lT3)
+    line.delete(lT4)
+    line.delete(lT5)
+    lE  := line.new(bar_index, entryP, lineEndX, entryP, color=color.blue, width=2, extend=extend.right)
+    lSL := line.new(bar_index, slP,    lineEndX, slP,    color=color.red,  width=2, extend=extend.right)
+    lT1 := line.new(bar_index, t1, lineEndX, t1, color=color.green, style=line.style_dashed, extend=extend.right)
+    lT2 := line.new(bar_index, t2, lineEndX, t2, color=color.green, style=line.style_dashed, extend=extend.right)
+    lT3 := line.new(bar_index, t3, lineEndX, t3, color=color.green, style=line.style_dashed, extend=extend.right)
+    lT4 := line.new(bar_index, t4, lineEndX, t4, color=color.rgb(0,100,0), width=2, extend=extend.right)
+    lT5 := line.new(bar_index, t5, lineEndX, t5, color=color.rgb(0,70,0),  width=3, extend=extend.right)
+
+if lastSignalState != 0
+    int tX = bar_index + labelOffset
+    line.set_x2(lE, lineEndX)
+    line.set_x2(lSL, lineEndX)
+    line.set_x2(lT1, lineEndX)
+    line.set_x2(lT2, lineEndX)
+    line.set_x2(lT3, lineEndX)
+    line.set_x2(lT4, lineEndX)
+    line.set_x2(lT5, lineEndX)
+    line.set_color(lT1, t1Hit ? c_turquoise : color.green)
+    line.set_color(lT2, t2Hit ? c_turquoise : color.green)
+    line.set_color(lT3, t3Hit ? c_turquoise : color.green)
+    line.set_color(lT4, t4Hit ? c_turquoise : color.rgb(0,100,0))
+    line.set_color(lT5, t5Hit ? c_turquoise : color.rgb(0,70,0))
+    label.set_xy(lbE, tX, entryP)
+    label.set_text(lbE, "ENTRY: " + str.tostring(entryP, format.mintick))
+    if showSlLabel
+        label.set_xy(lbSL, tX, slP)
+        label.set_text(lbSL, "SL: " + str.tostring(slP, format.mintick))
+    else
+        label.set_text(lbSL, "")
+    label.set_xy(lbT1, tX, t1)
+    label.set_text(lbT1, "TP1: " + str.tostring(t1, format.mintick) + (t1Hit ? " 🔥" : ""))
+    label.set_xy(lbT2, tX, t2)
+    label.set_text(lbT2, "TP2: " + str.tostring(t2, format.mintick) + (t2Hit ? " 🔥" : ""))
+    label.set_xy(lbT3, tX, t3)
+    label.set_text(lbT3, "TP3: " + str.tostring(t3, format.mintick) + (t3Hit ? " 🔥" : ""))
+    label.set_xy(lbT4, tX, t4)
+    label.set_text(lbT4, "TP4: " + str.tostring(t4, format.mintick) + (t4Hit ? " 🔥" : ""))
+    label.set_xy(lbT5, tX, t5)
+    label.set_text(lbT5, "TP5: " + str.tostring(t5, format.mintick) + (t5Hit ? " 🔥" : ""))
+
+// ═══════════════════════════════════════════════════════════
+// ALERTS
+// ═══════════════════════════════════════════════════════════
+string closedLoopSide = triggerBuy ? "BUY" : triggerSell ? "SELL" : "NONE"
+string closedLoopRouteKey = syminfo.ticker + "|" + effectiveRouteArchetype + "|" + effectiveScalpTriggerMode + "|" + effectiveScalpSession + "|" + effectiveScalpDirection + "|" + str.tostring(scalpTargetR, "#.##") + "|" + str.tostring(closedLoopTimeStopBars) + "|" + effectiveStructureExit
+string closedLoopPayload = '{"event":"fusion_signal","schema":"' + closedLoopAlertVersion + '","model":"' + closedLoopModelId + '","symbol":"' + syminfo.ticker + '","tickerid":"' + syminfo.tickerid + '","side":"' + closedLoopSide + '","mode":"' + selectedScalpMode + '","triggerMode":"' + effectiveScalpTriggerMode + '","archetype":"' + effectiveRouteArchetype + '","session":"' + effectiveScalpSession + '","direction":"' + effectiveScalpDirection + '","routeKey":"' + closedLoopRouteKey + '","regime":"' + regimeTag + '","confidence":' + str.tostring(sigConfPct) + ',"bullPct":' + str.tostring(bullPct, "#.##") + ',"bearPct":' + str.tostring(bearPct, "#.##") + ',"alphaBuy":' + str.tostring(alphaBuyQuality) + ',"alphaSell":' + str.tostring(alphaSellQuality) + ',"entry":' + str.tostring(entryP, format.mintick) + ',"sl":' + str.tostring(slP, format.mintick) + ',"tp1":' + str.tostring(t1, format.mintick) + ',"targetR":' + str.tostring(scalpTargetR, "#.##") + ',"timeStopBars":' + str.tostring(closedLoopTimeStopBars) + ',"barTime":' + str.tostring(time) + ',"timeframe":"' + timeframe.period + '","status":"' + effectiveChampionStatus + '","noTradeReason":"' + noTradeReason + '"}'
+if enableClosedLoopAlerts and (triggerBuy or triggerSell)
+    alert(closedLoopPayload, alert.freq_once_per_bar_close)
+
+alertcondition(triggerBuy,  title="v03 Fusion: BUY",  message="BUY — place SL/TP from lines.")
+alertcondition(triggerSell, title="v03 Fusion: SELL", message="SELL — place SL/TP from lines.")
+alertcondition(triggerBuy  and sigConfPct >= 80, title="v03 Fusion: BUY high-conf",  message="High-confidence BUY (≥80%).")
+alertcondition(triggerSell and sigConfPct >= 80, title="v03 Fusion: SELL high-conf", message="High-confidence SELL (≥80%).")
+alertcondition(strongBuy  and eff_swingMode == "Highlight big moves", title="v03 Fusion: BUY+ swing",  message="Strong BUY on major swing leg.")
+alertcondition(strongSell and eff_swingMode == "Highlight big moves", title="v03 Fusion: SELL+ swing", message="Strong SELL on major swing leg.")
+alertcondition(lastSignalState != 0 and t1Hit and not t1Hit[1], title="v03 Fusion: TP1 hit → BE", message="TP1 hit — move SL to breakeven.")
+alertcondition(lastSignalState != 0 and t3Hit and not t3Hit[1], title="v03 Fusion: TP3 hit → scale", message="TP3 hit — scale out / trail remainder.")

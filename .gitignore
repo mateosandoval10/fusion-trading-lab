@@ -1,0 +1,16 @@
+.DS_Store
+node_modules/
+*.log
+
+# Heavy/transient local market cache
+ledgers/*.jsonl
+ledgers/*.jsonl.gz
+optimization-results/data-cache/
+optimization-results/local-runs/
+optimization-results/runs/
+optimization-results/shard-runs/
+optimization-results/datasets/
+
+# Keep forward summaries and compressed ledgers, avoid accidental huge raw dumps.
+*.tmp
+*.bak

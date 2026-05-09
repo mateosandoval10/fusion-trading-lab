@@ -1,0 +1,22 @@
+{
+  "name": "fusion-trading-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Fusion Trading Lab: backtests, pattern recognition, specialist registry, TradingView Pine exports, and dashboard.",
+  "scripts": {
+    "lab:pattern": "node packages/pattern-lab/pattern_lab.js",
+    "lab:dashboard": "node scripts/build_dashboard_data.js",
+    "lab:nightly": "node scripts/lab_nightly.js",
+    "lab:report": "npm run lab:pattern && npm run lab:dashboard",
+    "scalp:phase19": "node scripts/phase19_champion_council_fusion.js",
+    "scalp:closed-loop:start": "bash scripts/start_live_closed_loop.sh",
+    "scalp:closed-loop:stop": "bash scripts/stop_live_closed_loop.sh",
+    "scalp:closed-loop:update": "node scripts/phase18_forward_proven_router.js && npm run lab:report",
+    "pine:export": "node packages/pine-export/sync_pine_metadata.js",
+    "test": "npm run lab:report && node scripts/validate_lab_outputs.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "generatedAt": "2026-05-05T21:34:17.438Z",
+  "targetDate": "2026-05-05",
+  "mode": "current-champion-current-window-forward-test",
+  "window": "9:30-16:00 ET",
+  "championPath": "optimization-results/models/playbooks/current-master-scalp-champion.json",
+  "summaryPath": "/Users/mateosandoval/Documents/New project/tradingview-mcp/optimization-results/local-summaries/local-fusion-2026-05-05T21-11-17-965Z-summary.json",
+  "tradesPath": "/Users/mateosandoval/Documents/New project/tradingview-mcp/optimization-results/local-runs/local-fusion-2026-05-05T21-11-17-965Z-trades.jsonl",
+  "universe": {
+    "symbols": 21,
+    "triggers": [
+      "base",
+      "breakout",
+      "confirmed-no-repaint",
+      "ema-pullback",
+      "hybrid-consensus",
+      "momentum-acceleration",
+      "opening-drive-continuation",
+      "options-burst",
+      "relative-strength-reclaim",
+      "trend-pullback-burst",
+      "volume-shock",
+      "vwap-reclaim"
+    ],
+    "directions": [
+      "both",
+      "long",
+      "short"
+    ],
+    "championRouteKeys": 32
+  },
+  "guardrails": {
+    "duplicatePolicy": "one canonical trade per symbol/trigger/side/entry-time",
+    "lateSessionMode": "block",
+    "lateSessionStart": "15:00 ET",
+    "matchedTrades": 0,
+    "canonicalTrades": 0,
+    "blockedTrades": 0
+  },
+  "metrics": {
+    "trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "winRate": 0,
+    "profitFactor": 0,
+    "netDollars": 0,
+    "projectedNet": 0,
+    "avgDollars": 0,
+    "projectedAvgDollars": 0
+  },
+  "trades": [],
+  "blockedTrades": []
+}

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fusion Trading Lab</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Fusion Trading Lab</p>
+        <h1>Champion, specialists, pattern lab, and TradingView forward proof.</h1>
+      </div>
+      <div class="status-pill" id="updatedAt">Loading…</div>
+    </header>
+
+    <main>
+      <section class="grid cards" id="summaryCards"></section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Current Champion</p>
+            <h2 id="championTitle">Loading champion…</h2>
+          </div>
+          <span class="badge" id="championBadge">—</span>
+        </div>
+        <div class="metric-grid" id="championMetrics"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Specialists</p>
+            <h2>Backtest / holdout / stress leaderboard</h2>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Specialist</th>
+                <th>Status</th>
+                <th>Trades</th>
+                <th>Win</th>
+                <th>Net</th>
+                <th>PF</th>
+                <th>Holdout</th>
+                <th>Stress Net</th>
+              </tr>
+            </thead>
+            <tbody id="specialistsTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="grid two">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Pattern Lab</p>
+              <h2>Top discovered patterns</h2>
+            </div>
+          </div>
+          <div id="patternCards" class="stack"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Pine Export</p>
+              <h2>TradingView update status</h2>
+            </div>
+          </div>
+          <div id="pineStatus" class="stack"></div>
+        </section>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Pattern Specialists</p>
+            <h2>Generated candidates from winner/loser prototypes</h2>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Candidate</th>
+                <th>Status</th>
+                <th>Symbol</th>
+                <th>Trigger</th>
+                <th>Trades</th>
+                <th>Win</th>
+                <th>Net</th>
+                <th>Target</th>
+                <th>Top Tags</th>
+              </tr>
+            </thead>
+            <tbody id="candidateTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Daily Performance</p>
+            <h2>Specialists by day / family</h2>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Specialist</th>
+                <th>Family</th>
+                <th>Trades</th>
+                <th>Win</th>
+                <th>Net</th>
+                <th>Avg</th>
+                <th>PF</th>
+              </tr>
+            </thead>
+            <tbody id="dailyTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Forward Proof</p>
+            <h2>Live/paper trust snapshot</h2>
+          </div>
+        </div>
+        <div id="forwardStatus" class="stack"></div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

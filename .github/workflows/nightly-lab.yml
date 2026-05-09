@@ -1,0 +1,57 @@
+name: Nightly Fusion Lab
+
+on:
+  workflow_dispatch:
+    inputs:
+      backtest:
+        description: Run Phase19 backtest before Pattern Lab
+        type: boolean
+        default: false
+  schedule:
+    - cron: "30 7 * * 1-5"
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  nightly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install
+        run: npm install
+
+      - name: Run lab
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.event.inputs.backtest || 'false' }}" = "true" ]; then
+            npm run lab:nightly -- --backtest
+          else
+            npm run lab:nightly
+          fi
+
+      - name: Compress ledgers and reports
+        run: |
+          mkdir -p artifacts
+          tar -czf artifacts/fusion-lab-reports.tgz reports models generated apps/dashboard/public/data || true
+          tar -czf artifacts/fusion-lab-ledgers.tgz ledgers optimization-results/forward-tests optimization-results/local-runs || true
+
+      - name: Upload reports artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: fusion-lab-reports
+          path: artifacts/fusion-lab-reports.tgz
+          retention-days: 30
+
+      - name: Upload ledgers artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: fusion-lab-ledgers
+          path: artifacts/fusion-lab-ledgers.tgz
+          retention-days: 14

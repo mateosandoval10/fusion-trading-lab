@@ -1,0 +1,315 @@
+{
+  "updatedAt": "2026-05-05T06:34:18.510Z",
+  "routes": {
+    "DAL|breakout_expansion|breakout|morning|long|0.5|9|loose": {
+      "routeId": "DAL|breakout_expansion|breakout|morning|long|0.5|9|loose",
+      "symbol": "DAL",
+      "triggerMode": "breakout",
+      "session": "morning",
+      "direction": "long",
+      "trades": 1,
+      "wins": 0,
+      "netDollars": -659.5027051103832,
+      "grossWin": 0,
+      "grossLoss": 659.5027051103832,
+      "lastSeen": "2026-05-05T02:06:48.404Z",
+      "signalIds": [
+        "2026-05-04|DAL|breakout_expansion|breakout|morning|long|0.5|9|loose|DAL|long|2026-05-04T13:30:00.000Z"
+      ],
+      "winRate": 0,
+      "profitFactor": 0
+    },
+    "PANW|structure_reclaim|relative-strength-reclaim|morning|both|0.5|6|loose": {
+      "routeId": "PANW|structure_reclaim|relative-strength-reclaim|morning|both|0.5|6|loose",
+      "symbol": "PANW",
+      "triggerMode": "relative-strength-reclaim",
+      "session": "morning",
+      "direction": "both",
+      "trades": 1,
+      "wins": 0,
+      "netDollars": -630.8027417412403,
+      "grossWin": 0,
+      "grossLoss": 630.8027417412403,
+      "lastSeen": "2026-05-05T02:06:48.404Z",
+      "signalIds": [
+        "2026-05-04|PANW|structure_reclaim|relative-strength-reclaim|morning|both|0.5|6|loose|PANW|long|2026-05-04T13:30:00.000Z"
+      ],
+      "winRate": 0,
+      "profitFactor": 0
+    },
+    "QS|profit_momentum|momentum-acceleration|morning|long|0.5|9|loose": {
+      "routeId": "QS|profit_momentum|momentum-acceleration|morning|long|0.5|9|loose",
+      "symbol": "QS",
+      "triggerMode": "momentum-acceleration",
+      "session": "morning",
+      "direction": "long",
+      "trades": 1,
+      "wins": 0,
+      "netDollars": -994.5539656776893,
+      "grossWin": 0,
+      "grossLoss": 994.5539656776893,
+      "lastSeen": "2026-05-05T02:06:48.404Z",
+      "signalIds": [
+        "2026-05-04|QS|profit_momentum|momentum-acceleration|morning|long|0.5|9|loose|QS|long|2026-05-04T13:30:00.000Z"
+      ],
+      "winRate": 0,
+      "profitFactor": 0
+    },
+    "OPEN|structure_reclaim|vwap-reclaim|morning|both|0.35|6|loose": {
+      "routeId": "OPEN|structure_reclaim|vwap-reclaim|morning|both|0.35|6|loose",
+      "symbol": "OPEN",
+      "triggerMode": "vwap-reclaim",
+      "session": "morning",
+      "direction": "both",
+      "trades": 1,
+      "wins": 1,
+      "netDollars": 765.1133447384289,
+      "grossWin": 765.1133447384289,
+      "grossLoss": 0,
+      "lastSeen": "2026-05-05T02:06:48.404Z",
+      "signalIds": [
+        "2026-05-04|OPEN|structure_reclaim|vwap-reclaim|morning|both|0.35|6|loose|OPEN|short|2026-05-04T13:35:00.000Z"
+      ],
+      "winRate": 100,
+      "profitFactor": 999
+    },
+    "PLTR|structure_reclaim|vwap-reclaim|morning|long|0.35|6|loose": {
+      "routeId": "PLTR|structure_reclaim|vwap-reclaim|morning|long|0.35|6|loose",
+      "symbol": "PLTR",
+      "triggerMode": "vwap-reclaim",
+      "session": "morning",
+      "direction": "long",
+      "trades": 1,
+      "wins": 0,
+      "netDollars": -1135.960725747996,
+      "grossWin": 0,
+      "grossLoss": 1135.960725747996,
+      "lastSeen": "2026-05-05T02:06:48.404Z",
+      "signalIds": [
+        "2026-05-04|PLTR|structure_reclaim|vwap-reclaim|morning|long|0.35|6|loose|PLTR|long|2026-05-04T13:35:00.000Z"
+      ],
+      "winRate": 0,
+      "profitFactor": 0
+    },
+    "IONQ|profit_momentum|options-burst|morning|long|0.5|9|loose": {
+      "routeId": "IONQ|profit_momentum|options-burst|morning|long|0.5|9|loose",
+      "symbol": "IONQ",
+      "triggerMode": "options-burst",
+      "session": "morning",
+      "direction": "long",
+      "trades": 2,
+      "wins": 2,
+      "netDollars": 2218.223225034897,
+      "grossWin": 2218.223225034897,
+      "grossLoss": 0,
+      "lastSeen": "2026-05-05T02:06:48.404Z",
+      "signalIds": [
+        "2026-05-04|IONQ|profit_momentum|options-burst|morning|long|0.5|9|loose|IONQ|long|2026-05-04T13:50:00.000Z",
+        "2026-05-04|IONQ|profit_momentum|options-burst|morning|long|0.5|9|loose|IONQ|long|2026-05-04T14:10:00.000Z"
+      ],
+      "winRate": 100,
+      "profitFactor": 999
+    },
+    "DAL|breakout_expansion|breakout|morning|long|0.75|9|loose": {
+      "routeId": "DAL|breakout_expansion|breakout|morning|long|0.75|9|loose",
+      "symbol": "DAL",
+      "triggerMode": "breakout",
+      "session": "morning",
+      "direction": "long",
+      "trades": 1,
+      "wins": 0,
+      "netDollars": -659.5027051103832,
+      "grossWin": 0,
+      "grossLoss": 659.5027051103832,
+      "lastSeen": "2026-05-05T02:27:37.621Z",
+      "signalIds": [
+        "2026-05-04|DAL|breakout_expansion|breakout|morning|long|0.75|9|loose|DAL|long|2026-05-04T13:30:00.000Z"
+      ],
+      "winRate": 0,
+      "profitFactor": 0
+    },
+    "TSLA|high_win_confirmed|confirmed-no-repaint|open-0930|short|0.35|6|strict": {
+      "routeId": "TSLA|high_win_confirmed|confirmed-no-repaint|open-0930|short|0.35|6|strict",
+      "symbol": "TSLA",
+      "triggerMode": "confirmed-no-repaint",
+      "session": "open-0930",
+      "direction": "short",
+      "trades": 1,
+      "wins": 0,
+      "netDollars": -658.504027695045,
+      "grossWin": 0,
+      "grossLoss": 658.504027695045,
+      "lastSeen": "2026-05-05T02:27:37.621Z",
+      "signalIds": [
+        "2026-05-04|TSLA|high_win_confirmed|confirmed-no-repaint|open-0930|short|0.35|6|strict|TSLA|short|2026-05-04T13:30:00.000Z"
+      ],
+      "winRate": 0,
+      "profitFactor": 0
+    },
+    "CLSK|breakout_expansion|breakout|morning|long|0.75|9|loose": {
+      "routeId": "CLSK|breakout_expansion|breakout|morning|long|0.75|9|loose",
+      "symbol": "CLSK",
+      "triggerMode": "breakout",
+      "session": "morning",
+      "direction": "long",
+      "trades": 1,
+      "wins": 0,
+      "netDollars": -1361.9392211007187,
+      "grossWin": 0,
+      "grossLoss": 1361.9392211007187,
+      "lastSeen": "2026-05-05T02:27:37.621Z",
+      "signalIds": [
+        "2026-05-04|CLSK|breakout_expansion|breakout|morning|long|0.75|9|loose|CLSK|long|2026-05-04T15:10:00.000Z"
+      ],
+      "winRate": 0,
+      "profitFactor": 0
+    },
+    "IREN|profit_momentum|momentum-acceleration|open-0930|long|0.5|9|loose": {
+      "routeId": "IREN|profit_momentum|momentum-acceleration|open-0930|long|0.5|9|loose",
+      "symbol": "IREN",
+      "triggerMode": "momentum-acceleration",
+      "session": "open-0930",
+      "direction": "long",
+      "trades": 2,
+      "wins": 2,
+      "netDollars": 3053.660444895412,
+      "grossWin": 3053.660444895412,
+      "grossLoss": 0,
+      "lastSeen": "2026-05-05T02:33:04.605Z",
+      "signalIds": [
+        "2026-05-04|IREN|profit_momentum|momentum-acceleration|open-0930|long|0.5|9|loose|IREN|long|2026-05-04T13:30:00.000Z",
+        "2026-05-04|IREN|profit_momentum|momentum-acceleration|open-0930|long|0.5|9|loose|IREN|long|2026-05-04T13:45:00.000Z"
+      ],
+      "winRate": 100,
+      "profitFactor": 999
+    },
+    "QBTS|profit_momentum|volume-shock|morning|long|0.5|9|loose": {
+      "routeId": "QBTS|profit_momentum|volume-shock|morning|long|0.5|9|loose",
+      "symbol": "QBTS",
+      "triggerMode": "volume-shock",
+      "session": "morning",
+      "direction": "long",
+      "trades": 1,
+      "wins": 1,
+      "netDollars": 498.9136140313967,
+      "grossWin": 498.9136140313967,
+      "grossLoss": 0,
+      "lastSeen": "2026-05-05T02:33:04.605Z",
+      "signalIds": [
+        "2026-05-04|QBTS|profit_momentum|volume-shock|morning|long|0.5|9|loose|QBTS|long|2026-05-04T13:30:00.000Z"
+      ],
+      "winRate": 100,
+      "profitFactor": 999
+    },
+    "SMCI|profit_momentum|options-burst|open-0930|long|0.5|9|loose": {
+      "routeId": "SMCI|profit_momentum|options-burst|open-0930|long|0.5|9|loose",
+      "symbol": "SMCI",
+      "triggerMode": "options-burst",
+      "session": "open-0930",
+      "direction": "long",
+      "trades": 2,
+      "wins": 2,
+      "netDollars": 1618.2400573236996,
+      "grossWin": 1618.2400573236996,
+      "grossLoss": 0,
+      "lastSeen": "2026-05-05T02:33:04.605Z",
+      "signalIds": [
+        "2026-05-04|SMCI|profit_momentum|options-burst|open-0930|long|0.5|9|loose|SMCI|long|2026-05-04T13:30:00.000Z",
+        "2026-05-04|SMCI|profit_momentum|options-burst|open-0930|long|0.5|9|loose|SMCI|long|2026-05-04T13:55:00.000Z"
+      ],
+      "winRate": 100,
+      "profitFactor": 999
+    },
+    "TSLA|breakout_expansion|breakout|morning|short|0.75|9|loose": {
+      "routeId": "TSLA|breakout_expansion|breakout|morning|short|0.75|9|loose",
+      "symbol": "TSLA",
+      "triggerMode": "breakout",
+      "session": "morning",
+      "direction": "short",
+      "trades": 1,
+      "wins": 0,
+      "netDollars": -658.504027695045,
+      "grossWin": 0,
+      "grossLoss": 658.504027695045,
+      "lastSeen": "2026-05-05T02:33:04.605Z",
+      "signalIds": [
+        "2026-05-04|TSLA|breakout_expansion|breakout|morning|short|0.75|9|loose|TSLA|short|2026-05-04T13:30:00.000Z"
+      ],
+      "winRate": 0,
+      "profitFactor": 0
+    },
+    "UAL|breakout_expansion|breakout|morning|long|0.75|9|loose": {
+      "routeId": "UAL|breakout_expansion|breakout|morning|long|0.75|9|loose",
+      "symbol": "UAL",
+      "triggerMode": "breakout",
+      "session": "morning",
+      "direction": "long",
+      "trades": 1,
+      "wins": 0,
+      "netDollars": -685.2904848205659,
+      "grossWin": 0,
+      "grossLoss": 685.2904848205659,
+      "lastSeen": "2026-05-05T02:33:04.605Z",
+      "signalIds": [
+        "2026-05-04|UAL|breakout_expansion|breakout|morning|long|0.75|9|loose|UAL|long|2026-05-04T13:30:00.000Z"
+      ],
+      "winRate": 0,
+      "profitFactor": 0
+    },
+    "SMCI|profit_momentum|options-burst|morning|long|0.5|9|loose": {
+      "routeId": "SMCI|profit_momentum|options-burst|morning|long|0.5|9|loose",
+      "symbol": "SMCI",
+      "triggerMode": "options-burst",
+      "session": "morning",
+      "direction": "long",
+      "trades": 1,
+      "wins": 0,
+      "netDollars": -480.6196496772766,
+      "grossWin": 0,
+      "grossLoss": 480.6196496772766,
+      "lastSeen": "2026-05-05T02:33:04.605Z",
+      "signalIds": [
+        "2026-05-04|SMCI|profit_momentum|options-burst|morning|long|0.5|9|loose|SMCI|long|2026-05-04T14:10:00.000Z"
+      ],
+      "winRate": 0,
+      "profitFactor": 0
+    },
+    "TSLA|high_win_confirmed|hybrid-consensus|open-0930|short|0.35|6|strict": {
+      "routeId": "TSLA|high_win_confirmed|hybrid-consensus|open-0930|short|0.35|6|strict",
+      "symbol": "TSLA",
+      "triggerMode": "hybrid-consensus",
+      "session": "open-0930",
+      "direction": "short",
+      "trades": 1,
+      "wins": 0,
+      "netDollars": -658.504027695045,
+      "grossWin": 0,
+      "grossLoss": 658.504027695045,
+      "lastSeen": "2026-05-05T02:37:42.494Z",
+      "signalIds": [
+        "2026-05-04|TSLA|high_win_confirmed|hybrid-consensus|open-0930|short|0.35|6|strict|TSLA|short|2026-05-04T13:30:00.000Z"
+      ],
+      "winRate": 0,
+      "profitFactor": 0
+    },
+    "UAL|profit_momentum|options-burst|morning|long|0.5|9|loose": {
+      "routeId": "UAL|profit_momentum|options-burst|morning|long|0.5|9|loose",
+      "symbol": "UAL",
+      "triggerMode": "options-burst",
+      "session": "morning",
+      "direction": "long",
+      "trades": 1,
+      "wins": 0,
+      "netDollars": -685.2904848205659,
+      "grossWin": 0,
+      "grossLoss": 685.2904848205659,
+      "lastSeen": "2026-05-05T02:37:42.494Z",
+      "signalIds": [
+        "2026-05-04|UAL|profit_momentum|options-burst|morning|long|0.5|9|loose|UAL|long|2026-05-04T13:30:00.000Z"
+      ],
+      "winRate": 0,
+      "profitFactor": 0
+    }
+  },
+  "outcomesPath": "/Users/mateosandoval/Documents/New project/tradingview-mcp/optimization-results/forward-tests/phase18-forward-outcomes.jsonl"
+}

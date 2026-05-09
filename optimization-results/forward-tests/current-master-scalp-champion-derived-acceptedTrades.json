@@ -1,0 +1,337 @@
+{
+  "derivedAt": "2026-05-01T23:38:05.109Z",
+  "source": "optimization-results/models/playbooks/current-master-scalp-champion.json",
+  "champion": {
+    "name": "openOnly-derived-acceptedTrades",
+    "acceptedTrades": [
+      {
+        "symbol": "MRVL",
+        "triggerMode": "relative-strength-reclaim",
+        "direction": "both",
+        "routeWinRate": 100,
+        "routeAvgDollars": 1696.0690920902996,
+        "sourceRouteId": "MRVL|open-0930|both|relative-strength-reclaim",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "OKLO",
+        "triggerMode": "base",
+        "direction": "long",
+        "routeWinRate": 100,
+        "routeAvgDollars": 1523.2176650410956,
+        "sourceRouteId": "OKLO|open-0930|long|base",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "EOSE",
+        "triggerMode": "volume-shock",
+        "direction": "long",
+        "routeWinRate": 100,
+        "routeAvgDollars": 1468.877743535786,
+        "sourceRouteId": "EOSE|open-0930|long|volume-shock",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "CONL",
+        "triggerMode": "breakout",
+        "direction": "short",
+        "routeWinRate": 100,
+        "routeAvgDollars": 840.893362185631,
+        "sourceRouteId": "CONL|open-0930|short|breakout",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "CONL",
+        "triggerMode": "breakout",
+        "direction": "both",
+        "routeWinRate": 100,
+        "routeAvgDollars": 872.0187345769398,
+        "sourceRouteId": "CONL|open-0930|both|breakout",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "IREN",
+        "triggerMode": "opening-drive-continuation",
+        "direction": "both",
+        "routeWinRate": 100,
+        "routeAvgDollars": 922.4718234780084,
+        "sourceRouteId": "IREN|open-0930|both|opening-drive-continuation",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "IREN",
+        "triggerMode": "opening-drive-continuation",
+        "direction": "long",
+        "routeWinRate": 100,
+        "routeAvgDollars": 922.4718234780084,
+        "sourceRouteId": "IREN|open-0930|long|opening-drive-continuation",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "AMC",
+        "triggerMode": "momentum-acceleration",
+        "direction": "both",
+        "routeWinRate": 100,
+        "routeAvgDollars": 636.476199153567,
+        "sourceRouteId": "AMC|open-0930|both|momentum-acceleration",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "ASTS",
+        "triggerMode": "momentum-acceleration",
+        "direction": "short",
+        "routeWinRate": 100,
+        "routeAvgDollars": 956.6038035987433,
+        "sourceRouteId": "ASTS|open-0930|short|momentum-acceleration",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "CRWV",
+        "triggerMode": "momentum-acceleration",
+        "direction": "long",
+        "routeWinRate": 100,
+        "routeAvgDollars": 430.05825799505345,
+        "sourceRouteId": "CRWV|open-0930|long|momentum-acceleration",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "CRWV",
+        "triggerMode": "volume-shock",
+        "direction": "both",
+        "routeWinRate": 100,
+        "routeAvgDollars": 427.528886748876,
+        "sourceRouteId": "CRWV|open-0930|both|volume-shock",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "CDNS",
+        "triggerMode": "breakout",
+        "direction": "both",
+        "routeWinRate": 100,
+        "routeAvgDollars": 448.05806209217207,
+        "sourceRouteId": "CDNS|open-0930|both|breakout",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "BB",
+        "triggerMode": "volume-shock",
+        "direction": "both",
+        "routeWinRate": 100,
+        "routeAvgDollars": 569.771932370677,
+        "sourceRouteId": "BB|open-0930|both|volume-shock",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "BB",
+        "triggerMode": "volume-shock",
+        "direction": "long",
+        "routeWinRate": 100,
+        "routeAvgDollars": 569.771932370677,
+        "sourceRouteId": "BB|open-0930|long|volume-shock",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "NVTS",
+        "triggerMode": "volume-shock",
+        "direction": "both",
+        "routeWinRate": 66.66666666666666,
+        "routeAvgDollars": 1329.2982857810389,
+        "sourceRouteId": "NVTS|open-0930|both|volume-shock",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "DELL",
+        "triggerMode": "volume-shock",
+        "direction": "both",
+        "routeWinRate": 100,
+        "routeAvgDollars": 508.030657935328,
+        "sourceRouteId": "DELL|open-0930|both|volume-shock",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "SNDK",
+        "triggerMode": "base",
+        "direction": "long",
+        "routeWinRate": 100,
+        "routeAvgDollars": 488.05129494861984,
+        "sourceRouteId": "SNDK|open-0930|long|base",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "IGV",
+        "triggerMode": "momentum-acceleration",
+        "direction": "both",
+        "routeWinRate": 100,
+        "routeAvgDollars": 408.9137816645223,
+        "sourceRouteId": "IGV|open-0930|both|momentum-acceleration",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "MPWR",
+        "triggerMode": "breakout",
+        "direction": "both",
+        "routeWinRate": 100,
+        "routeAvgDollars": 568.5911994959966,
+        "sourceRouteId": "MPWR|open-0930|both|breakout",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "SNDK",
+        "triggerMode": "relative-strength-reclaim",
+        "direction": "both",
+        "routeWinRate": 100,
+        "routeAvgDollars": 421.98441624617544,
+        "sourceRouteId": "SNDK|open-0930|both|relative-strength-reclaim",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "GME",
+        "triggerMode": "options-burst",
+        "direction": "both",
+        "routeWinRate": 100,
+        "routeAvgDollars": 302.09041692862763,
+        "sourceRouteId": "GME|open-0930|both|options-burst",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "HIVE",
+        "triggerMode": "base",
+        "direction": "both",
+        "routeWinRate": 66.66666666666666,
+        "routeAvgDollars": 852.2314232892722,
+        "sourceRouteId": "HIVE|open-0930|both|base",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "NVTS",
+        "triggerMode": "breakout",
+        "direction": "long",
+        "routeWinRate": 100,
+        "routeAvgDollars": 2944.0253735610677,
+        "sourceRouteId": "NVTS|open-0930|long|breakout",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "ASTS",
+        "triggerMode": "hybrid-consensus",
+        "direction": "both",
+        "routeWinRate": 100,
+        "routeAvgDollars": 1120.0576358537714,
+        "sourceRouteId": "ASTS|open-0930|both|hybrid-consensus",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "NOW",
+        "triggerMode": "ema-pullback",
+        "direction": "both",
+        "routeWinRate": 66.66666666666666,
+        "routeAvgDollars": 394.6173862122896,
+        "sourceRouteId": "NOW|open-0930|both|ema-pullback",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "AAL",
+        "triggerMode": "confirmed-no-repaint",
+        "direction": "both",
+        "routeWinRate": 100,
+        "routeAvgDollars": 890.055004135182,
+        "sourceRouteId": "AAL|open-0930|both|confirmed-no-repaint",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "CLSK",
+        "triggerMode": "hybrid-consensus",
+        "direction": "long",
+        "routeWinRate": 50,
+        "routeAvgDollars": -34.542306384852,
+        "sourceRouteId": "CLSK|open-0930|long|hybrid-consensus",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "NOW",
+        "triggerMode": "vwap-reclaim",
+        "direction": "long",
+        "routeWinRate": 50,
+        "routeAvgDollars": -12.811743406108747,
+        "sourceRouteId": "NOW|open-0930|long|vwap-reclaim",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "GME",
+        "triggerMode": "options-burst",
+        "direction": "long",
+        "routeWinRate": 100,
+        "routeAvgDollars": 385.10014307749606,
+        "sourceRouteId": "GME|open-0930|long|options-burst",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "NOW",
+        "triggerMode": "hybrid-consensus",
+        "direction": "short",
+        "routeWinRate": 50,
+        "routeAvgDollars": -136.74075708870436,
+        "sourceRouteId": "NOW|open-0930|short|hybrid-consensus",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "MDB",
+        "triggerMode": "trend-pullback-burst",
+        "direction": "both",
+        "routeWinRate": 50,
+        "routeAvgDollars": -216.7462751352694,
+        "sourceRouteId": "MDB|open-0930|both|trend-pullback-burst",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      },
+      {
+        "symbol": "MRVL",
+        "triggerMode": "confirmed-no-repaint",
+        "direction": "long",
+        "routeWinRate": 100,
+        "routeAvgDollars": 563.2017968859553,
+        "sourceRouteId": "MRVL|open-0930|long|confirmed-no-repaint",
+        "sourceStatus": "candidate",
+        "session": "open-0930"
+      }
+    ]
+  },
+  "derivation": {
+    "routeCount": 32,
+    "notes": [
+      "Derived for paper-only forward validation.",
+      "Route win/avg dollars prefer recent stats, then forward stats, then test stats.",
+      "No live trading endpoints invoked."
+    ]
+  }
+}

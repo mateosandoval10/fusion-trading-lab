@@ -1,0 +1,44 @@
+{
+  "generatedAt": "2026-04-30T17:45:46.996Z",
+  "targetDate": "2026-05-01",
+  "mode": "current-champion-open-hour-forward-test",
+  "window": "9:30-10:30 ET",
+  "championPath": "/Users/mateosandoval/Documents/New project/tradingview-mcp/optimization-results/models/playbooks/current-trigger-champion.json",
+  "summaryPath": "/Users/mateosandoval/Documents/New project/tradingview-mcp/optimization-results/local-summaries/local-fusion-2026-04-30T14-42-46-046Z-summary.json",
+  "tradesPath": "/Users/mateosandoval/Documents/New project/tradingview-mcp/optimization-results/local-runs/local-fusion-2026-04-30T14-42-46-046Z-trades.jsonl",
+  "universe": {
+    "symbols": 127,
+    "triggers": [
+      "base",
+      "breakout",
+      "confirmed-no-repaint",
+      "ema-cross",
+      "ema-pullback",
+      "hybrid-consensus",
+      "momentum-acceleration",
+      "opening-range",
+      "options-burst",
+      "score-cross",
+      "volume-shock",
+      "vwap-reclaim"
+    ],
+    "directions": [
+      "both",
+      "long",
+      "short"
+    ],
+    "championRouteKeys": 167
+  },
+  "metrics": {
+    "trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "winRate": 0,
+    "profitFactor": 0,
+    "netDollars": 0,
+    "projectedNet": 0,
+    "avgDollars": 0,
+    "projectedAvgDollars": 0
+  },
+  "trades": []
+}

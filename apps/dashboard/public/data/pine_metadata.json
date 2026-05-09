@@ -1,0 +1,60 @@
+{
+  "updatedAt": "2026-05-09T20:34:23.500Z",
+  "pinePath": "/Users/mateosandoval/Documents/New project/fusion-trading-lab/generated/fusionv3_codex_clean_tradingview.pine",
+  "pineBytes": 116979,
+  "hasClosedLoopAlert": true,
+  "closedLoopModelId": "fusionv3-phase19",
+  "activeScalpModes": [
+    "Auto Specialist",
+    "Champion Council Fusion",
+    "High Win Main",
+    "Phase17 High Win Router",
+    "Profit Max Specialist",
+    "Powerhour Momentum",
+    "Options Burst Specialist"
+  ],
+  "champion": {
+    "phase": "phase19-champion-council-fusion",
+    "updatedAt": "2026-05-09T19:59:37.017Z",
+    "bestVariant": "profit_guarded_fusion",
+    "qualified": true,
+    "metrics": {
+      "trades": 504,
+      "wins": 457,
+      "losses": 47,
+      "winRate": 90.67460317460318,
+      "profitFactor": 7.1793312827044735,
+      "netDollars": 303117.03170672234,
+      "projectedNet": 30311.703170672234,
+      "avgDollars": 601.4226819577824,
+      "projectedAvgDollars": 60.14226819577824,
+      "maxDrawdownDollars": 6315.536909175309,
+      "maxLossStreak": 2,
+      "avgMfeR": 1.2403242300460766,
+      "avgMaeR": 0.4550798529845329,
+      "optionWorthyRate": 17.063492063492063,
+      "fastMoveRate": 47.61904761904761,
+      "uniqueDays": 62,
+      "uniqueWeeks": 14
+    },
+    "holdout": {
+      "trades": 142,
+      "wins": 141,
+      "losses": 1,
+      "winRate": 99.29577464788733,
+      "profitFactor": 202.9635745270053,
+      "netDollars": 109851.1627175852,
+      "projectedNet": 10985.116271758521,
+      "avgDollars": 773.5997374477831,
+      "projectedAvgDollars": 77.35997374477832,
+      "maxDrawdownDollars": 543.9157183410643,
+      "maxLossStreak": 1,
+      "avgMfeR": 1.3191160119999534,
+      "avgMaeR": 0.3536281220978007,
+      "optionWorthyRate": 17.6056338028169,
+      "fastMoveRate": 50.70422535211267,
+      "uniqueDays": 32,
+      "uniqueWeeks": 9
+    }
+  }
+}

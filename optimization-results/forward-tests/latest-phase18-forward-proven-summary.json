@@ -1,0 +1,20 @@
+{
+  "updatedAt": "2026-05-05T06:34:18.510Z",
+  "ledgerPath": "/Users/mateosandoval/Documents/New project/tradingview-mcp/optimization-results/live-alerts/tradingview-alert-ledger.jsonl",
+  "outcomesPath": "/Users/mateosandoval/Documents/New project/tradingview-mcp/optimization-results/forward-tests/phase18-forward-outcomes.jsonl",
+  "trustPath": "/Users/mateosandoval/Documents/New project/tradingview-mcp/optimization-results/forward-tests/phase18-forward-route-trust.json",
+  "phase17TrustPath": "/Users/mateosandoval/Documents/New project/tradingview-mcp/optimization-results/forward-tests/phase17-forward-route-trust.json",
+  "alerts": 0,
+  "pending": 0,
+  "scored": 0,
+  "errors": 0,
+  "metrics": {
+    "trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "winRate": 0,
+    "profitFactor": 0,
+    "netDollars": 0,
+    "avgDollars": 0
+  }
+}
