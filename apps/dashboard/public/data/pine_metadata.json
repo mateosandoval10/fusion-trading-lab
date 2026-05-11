@@ -1,11 +1,12 @@
 {
-  "updatedAt": "2026-05-11T06:09:25.127Z",
+  "updatedAt": "2026-05-11T11:14:53.758Z",
   "pinePath": "/Users/mateosandoval/Documents/New project/fusion-trading-lab/generated/fusionv3_codex_clean_tradingview.pine",
-  "pineBytes": 116979,
+  "pineBytes": 123679,
   "hasClosedLoopAlert": true,
   "closedLoopModelId": "fusionv3-phase19",
   "activeScalpModes": [
     "Auto Specialist",
+    "Phase23 Intelligence Specialist",
     "Champion Council Fusion",
     "High Win Main",
     "Phase17 High Win Router",
@@ -103,6 +104,736 @@
       "optionWorthyRate": 7.5566750629722925,
       "maxDrawdownDollars": 1881.1947980996556,
       "maxLossStreak": 1
+    }
+  },
+  "phase23": {
+    "phase": "Phase23 Intelligence Specialist Tournament",
+    "updatedAt": "2026-05-11T11:14:53.439Z",
+    "runId": "phase23-2026-05-11T11-14-53-435Z",
+    "recommendedId": "phase23__phase23_vwap_reclaim__phase22-main__q44__fb50__vw52__vol0__rs0__anyvwap__looseguard",
+    "metrics": {
+      "trades": 223,
+      "wins": 211,
+      "losses": 12,
+      "winRate": 94.61883408071749,
+      "profitFactor": 13.851160406734627,
+      "netDollars": 131062.81679730701,
+      "avgDollars": 587.7256358623632,
+      "avgMfeR": 0.8016129880344947,
+      "avgMaeR": 0.3642079887499966,
+      "optionWorthyRate": 7.174887892376682,
+      "maxDrawdownDollars": 1150.918678491209,
+      "maxLossStreak": 1
+    },
+    "holdout": {
+      "trades": 56,
+      "wins": 53,
+      "losses": 3,
+      "winRate": 94.64285714285714,
+      "profitFactor": 14.58034148508366,
+      "netDollars": 40021.19164171484,
+      "avgDollars": 714.6641364591935,
+      "avgMfeR": 0.8505025146158667,
+      "avgMaeR": 0.452689690910436,
+      "optionWorthyRate": 7.142857142857142,
+      "maxDrawdownDollars": 1135.9607257479947,
+      "maxLossStreak": 1
+    },
+    "stress": {
+      "trades": 223,
+      "wins": 211,
+      "losses": 12,
+      "winRate": 94.61883408071749,
+      "profitFactor": 12.475770964336823,
+      "netDollars": 122681.61966022156,
+      "avgDollars": 550.1417921983029,
+      "avgMfeR": 0.8016129880344947,
+      "avgMaeR": 0.3642079887499966,
+      "optionWorthyRate": 7.174887892376682,
+      "maxDrawdownDollars": 1197.9370520610355,
+      "maxLossStreak": 1
+    },
+    "elitePrecision": {
+      "id": "phase23__phase23_elite_chop_vwap_guard__phase22-main__chopQuality_0.9__vwapPressure_0.9",
+      "profile": "phase23_elite_chop_vwap_guard",
+      "goal": "Ultra-high-win overlay: avoid the Phase22 loss cluster caused by high chop/late VWAP pressure.",
+      "routeSet": "phase22-main",
+      "threshold": null,
+      "metrics": {
+        "trades": 137,
+        "wins": 136,
+        "losses": 1,
+        "winRate": 99.27007299270073,
+        "profitFactor": 90.35186559467749,
+        "netDollars": 83754.82464251676,
+        "avgDollars": 611.3490849818742,
+        "avgMfeR": 0.9947077121892367,
+        "avgMaeR": 0.31351612558037534,
+        "optionWorthyRate": 10.218978102189782,
+        "maxDrawdownDollars": 937.3595513097607,
+        "maxLossStreak": 1
+      },
+      "holdout": {
+        "trades": 35,
+        "wins": 35,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 22512.017685085953,
+        "avgDollars": 643.2005052881701,
+        "avgMfeR": 0.798658997098564,
+        "avgMaeR": 0.3368884872011594,
+        "optionWorthyRate": 8.571428571428571,
+        "maxDrawdownDollars": 0,
+        "maxLossStreak": 0
+      },
+      "stress": {
+        "trades": 137,
+        "wins": 136,
+        "losses": 1,
+        "winRate": 99.27007299270073,
+        "profitFactor": 81.35271095055809,
+        "netDollars": 78754.233767614,
+        "avgDollars": 574.8484216614161,
+        "avgMfeR": 0.9947077121892367,
+        "avgMaeR": 0.31351612558037534,
+        "optionWorthyRate": 10.218978102189782,
+        "maxDrawdownDollars": 980.1067423359564,
+        "maxLossStreak": 1
+      },
+      "diagnostics": {
+        "tradePenalty": 0,
+        "drawdownPenalty": 0.727,
+        "guards": [
+          {
+            "feature": "chopQuality",
+            "op": "<=",
+            "value": 0.9
+          },
+          {
+            "feature": "vwapPressure",
+            "op": "<=",
+            "value": 0.9
+          }
+        ]
+      },
+      "topSymbols": [
+        {
+          "name": "RDDT",
+          "metrics": {
+            "trades": 6,
+            "wins": 6,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 8164.110425445752,
+            "avgDollars": 1360.6850709076255,
+            "avgMfeR": 1.950562039756095,
+            "avgMaeR": 0.35692667765541036,
+            "optionWorthyRate": 50,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "QBTS",
+          "metrics": {
+            "trades": 10,
+            "wins": 10,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 6887.502847035776,
+            "avgDollars": 688.7502847035776,
+            "avgMfeR": 0.650199250949207,
+            "avgMaeR": 0.30096347654376815,
+            "optionWorthyRate": 0,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "QS",
+          "metrics": {
+            "trades": 14,
+            "wins": 14,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 6294.665198255438,
+            "avgDollars": 449.61894273253125,
+            "avgMfeR": 0.7438654693707764,
+            "avgMaeR": 0.3044315104213024,
+            "optionWorthyRate": 0,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "EOSE",
+          "metrics": {
+            "trades": 7,
+            "wins": 7,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 5405.625640198199,
+            "avgDollars": 772.2322343140285,
+            "avgMfeR": 0.7136112527114225,
+            "avgMaeR": 0.3981022740330663,
+            "optionWorthyRate": 0,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "SOFI",
+          "metrics": {
+            "trades": 7,
+            "wins": 7,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 5251.304772709162,
+            "avgDollars": 750.1863961013088,
+            "avgMfeR": 1.8791224076798774,
+            "avgMaeR": 0.4419077865021586,
+            "optionWorthyRate": 28.57142857142857,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "AFRM",
+          "metrics": {
+            "trades": 7,
+            "wins": 7,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 5071.111707069289,
+            "avgDollars": 724.444529581327,
+            "avgMfeR": 1.950712046336637,
+            "avgMaeR": 0.385676408180184,
+            "optionWorthyRate": 14.285714285714285,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "OPEN",
+          "metrics": {
+            "trades": 5,
+            "wins": 5,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 4704.449454900203,
+            "avgDollars": 940.8898909800406,
+            "avgMfeR": 0.7609447241586043,
+            "avgMaeR": 0.15814738589522032,
+            "optionWorthyRate": 20,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "PANW",
+          "metrics": {
+            "trades": 11,
+            "wins": 11,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 4245.208375493275,
+            "avgDollars": 385.9280341357522,
+            "avgMfeR": 0.8224754403214921,
+            "avgMaeR": 0.2513431787252547,
+            "optionWorthyRate": 9.090909090909092,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        }
+      ],
+      "topRoutes": [
+        {
+          "name": "QBTS|general|base|open|long",
+          "metrics": {
+            "trades": 6,
+            "wins": 6,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 5472.7897893413065,
+            "avgDollars": 912.1316315568844,
+            "avgMfeR": 0.6880540887625943,
+            "avgMaeR": 0.33085726311928004,
+            "optionWorthyRate": 0,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "EOSE|general|base|all|long",
+          "metrics": {
+            "trades": 7,
+            "wins": 7,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 5405.625640198199,
+            "avgDollars": 772.2322343140285,
+            "avgMfeR": 0.7136112527114225,
+            "avgMaeR": 0.3981022740330663,
+            "optionWorthyRate": 0,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "SOFI|high-beta-growth|base|all|short",
+          "metrics": {
+            "trades": 7,
+            "wins": 7,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 5251.304772709162,
+            "avgDollars": 750.1863961013088,
+            "avgMfeR": 1.8791224076798774,
+            "avgMaeR": 0.4419077865021586,
+            "optionWorthyRate": 28.57142857142857,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "RDDT|high-beta-growth|base|open-0930|short",
+          "metrics": {
+            "trades": 4,
+            "wins": 4,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 4855.937411266686,
+            "avgDollars": 1213.9843528166714,
+            "avgMfeR": 1.0272419576867957,
+            "avgMaeR": 0.3050855859998262,
+            "optionWorthyRate": 25,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "OPEN|high-beta-growth|base|open-0930|short",
+          "metrics": {
+            "trades": 5,
+            "wins": 5,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 4704.449454900203,
+            "avgDollars": 940.8898909800406,
+            "avgMfeR": 0.7609447241586043,
+            "avgMaeR": 0.15814738589522032,
+            "optionWorthyRate": 20,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "PANW|general|base|morning|short",
+          "metrics": {
+            "trades": 9,
+            "wins": 9,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 3772.8232413872292,
+            "avgDollars": 419.2025823763588,
+            "avgMfeR": 0.8509457086984193,
+            "avgMaeR": 0.307197218441978,
+            "optionWorthyRate": 11.11111111111111,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "AI|general|base|open|short",
+          "metrics": {
+            "trades": 4,
+            "wins": 4,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 3652.000080213936,
+            "avgDollars": 913.000020053484,
+            "avgMfeR": 0.5383000478169839,
+            "avgMaeR": 0.07795612348230031,
+            "optionWorthyRate": 0,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "RDDT|high-beta-growth|base|afternoon|long",
+          "metrics": {
+            "trades": 2,
+            "wins": 2,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 3308.173014179067,
+            "avgDollars": 1654.0865070895336,
+            "avgMfeR": 3.7972022038946935,
+            "avgMaeR": 0.46060886096657866,
+            "optionWorthyRate": 100,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        }
+      ]
+    },
+    "highWinGuarded": {
+      "id": "phase23__phase23_highwin_vwap_compression_guard__phase22-main__vwapPressure_0.8__compressionRelease_0.5",
+      "profile": "phase23_highwin_vwap_compression_guard",
+      "goal": "Higher-trade high-win overlay: prefer compression releases without stretched VWAP pressure.",
+      "routeSet": "phase22-main",
+      "threshold": null,
+      "metrics": {
+        "trades": 154,
+        "wins": 152,
+        "losses": 2,
+        "winRate": 98.7012987012987,
+        "profitFactor": 42.92011042201126,
+        "netDollars": 96631.92581837004,
+        "avgDollars": 627.4800377816237,
+        "avgMfeR": 0.8305981771970289,
+        "avgMaeR": 0.3471613637365462,
+        "optionWorthyRate": 7.792207792207792,
+        "maxDrawdownDollars": 1169.1841043961322,
+        "maxLossStreak": 1
+      },
+      "holdout": {
+        "trades": 39,
+        "wins": 38,
+        "losses": 1,
+        "winRate": 97.43589743589743,
+        "profitFactor": 22.749799250329374,
+        "netDollars": 24706.91774127738,
+        "avgDollars": 633.5107113148046,
+        "avgMfeR": 0.7381669398661944,
+        "avgMaeR": 0.3150328375744875,
+        "optionWorthyRate": 7.6923076923076925,
+        "maxDrawdownDollars": 1135.9607257479947,
+        "maxLossStreak": 1
+      },
+      "stress": {
+        "trades": 154,
+        "wins": 152,
+        "losses": 2,
+        "winRate": 98.7012987012987,
+        "profitFactor": 38.8914942776908,
+        "netDollars": 90911.08150879684,
+        "avgDollars": 590.3316981090703,
+        "avgMfeR": 0.8305981771970289,
+        "avgMaeR": 0.3471613637365462,
+        "optionWorthyRate": 7.792207792207792,
+        "maxDrawdownDollars": 1216.5677864840545,
+        "maxLossStreak": 1
+      },
+      "diagnostics": {
+        "tradePenalty": 0,
+        "drawdownPenalty": 0.786,
+        "guards": [
+          {
+            "feature": "vwapPressure",
+            "op": "<=",
+            "value": 0.8
+          },
+          {
+            "feature": "compressionRelease",
+            "op": ">=",
+            "value": 0.5
+          }
+        ]
+      },
+      "topSymbols": [
+        {
+          "name": "EOSE",
+          "metrics": {
+            "trades": 11,
+            "wins": 11,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 11886.015098609758,
+            "avgDollars": 1080.5468271463417,
+            "avgMfeR": 0.7136825414391271,
+            "avgMaeR": 0.4029378076516039,
+            "optionWorthyRate": 9.090909090909092,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "PLTR",
+          "metrics": {
+            "trades": 25,
+            "wins": 24,
+            "losses": 1,
+            "winRate": 96,
+            "profitFactor": 9.809054460509913,
+            "netDollars": 10006.739898114462,
+            "avgDollars": 400.2695959245785,
+            "avgMfeR": 0.6179853521547162,
+            "avgMaeR": 0.39343357393475537,
+            "optionWorthyRate": 4,
+            "maxDrawdownDollars": 1135.9607257479965,
+            "maxLossStreak": 1
+          }
+        },
+        {
+          "name": "AMC",
+          "metrics": {
+            "trades": 7,
+            "wins": 7,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 7394.032991583174,
+            "avgDollars": 1056.2904273690249,
+            "avgMfeR": 0.9107975031872556,
+            "avgMaeR": 0.3999003634411214,
+            "optionWorthyRate": 14.285714285714285,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "QBTS",
+          "metrics": {
+            "trades": 8,
+            "wins": 8,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 6269.354729999252,
+            "avgDollars": 783.6693412499066,
+            "avgMfeR": 0.6193764375491946,
+            "avgMaeR": 0.21929089699866344,
+            "optionWorthyRate": 0,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "OKTA",
+          "metrics": {
+            "trades": 9,
+            "wins": 9,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 6098.905181270702,
+            "avgDollars": 677.6561312523003,
+            "avgMfeR": 1.4267714526506456,
+            "avgMaeR": 0.43118174332832065,
+            "optionWorthyRate": 22.22222222222222,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "ZS",
+          "metrics": {
+            "trades": 10,
+            "wins": 10,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 4641.209236093335,
+            "avgDollars": 464.1209236093335,
+            "avgMfeR": 0.6592788376121266,
+            "avgMaeR": 0.4640988509500878,
+            "optionWorthyRate": 0,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "RDDT",
+          "metrics": {
+            "trades": 3,
+            "wins": 3,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 4001.0448493242457,
+            "avgDollars": 1333.6816164414151,
+            "avgMfeR": 1.0552596078178773,
+            "avgMaeR": 0.47756901488687314,
+            "optionWorthyRate": 33.33333333333333,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "AFRM",
+          "metrics": {
+            "trades": 3,
+            "wins": 3,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 3904.6554541131895,
+            "avgDollars": 1301.5518180377298,
+            "avgMfeR": 3.580956574488798,
+            "avgMaeR": 0.11715211423332633,
+            "optionWorthyRate": 33.33333333333333,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        }
+      ],
+      "topRoutes": [
+        {
+          "name": "EOSE|general|base|all|long",
+          "metrics": {
+            "trades": 11,
+            "wins": 11,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 11886.015098609758,
+            "avgDollars": 1080.5468271463417,
+            "avgMfeR": 0.7136825414391271,
+            "avgMaeR": 0.4029378076516039,
+            "optionWorthyRate": 9.090909090909092,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "PLTR|high-beta-growth|base|open|short",
+          "metrics": {
+            "trades": 16,
+            "wins": 16,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 7975.089347494902,
+            "avgDollars": 498.44308421843135,
+            "avgMfeR": 0.6705064502707417,
+            "avgMaeR": 0.3474454402657412,
+            "optionWorthyRate": 6.25,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "QBTS|general|base|open|long",
+          "metrics": {
+            "trades": 6,
+            "wins": 6,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 5433.71950020309,
+            "avgDollars": 905.6199167005151,
+            "avgMfeR": 0.6516822895049866,
+            "avgMaeR": 0.18490970313561964,
+            "optionWorthyRate": 0,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "AMC|low-priced|base|all|long",
+          "metrics": {
+            "trades": 5,
+            "wins": 5,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 5000.757999248891,
+            "avgDollars": 1000.1515998497782,
+            "avgMfeR": 1.0343309496460993,
+            "avgMaeR": 0.3878700066946055,
+            "optionWorthyRate": 20,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "AFRM|high-beta-growth|base|all|short",
+          "metrics": {
+            "trades": 3,
+            "wins": 3,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 3904.6554541131895,
+            "avgDollars": 1301.5518180377298,
+            "avgMfeR": 3.580956574488798,
+            "avgMaeR": 0.11715211423332633,
+            "optionWorthyRate": 33.33333333333333,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "OKTA|general|base|morning|long",
+          "metrics": {
+            "trades": 6,
+            "wins": 6,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 3497.55998828304,
+            "avgDollars": 582.9266647138401,
+            "avgMfeR": 0.8960000088125181,
+            "avgMaeR": 0.4618149012231972,
+            "optionWorthyRate": 16.666666666666664,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "BB|low-priced|base|all|long",
+          "metrics": {
+            "trades": 6,
+            "wins": 6,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 3285.03139096788,
+            "avgDollars": 547.50523182798,
+            "avgMfeR": 0.654756054120697,
+            "avgMaeR": 0.326295117031693,
+            "optionWorthyRate": 0,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        },
+        {
+          "name": "RDDT|high-beta-growth|base|open-0930|short",
+          "metrics": {
+            "trades": 2,
+            "wins": 2,
+            "losses": 0,
+            "winRate": 100,
+            "profitFactor": 999,
+            "netDollars": 3139.296586247043,
+            "avgDollars": 1569.6482931235214,
+            "avgMfeR": 0.7213798843057082,
+            "avgMaeR": 0.255744661363731,
+            "optionWorthyRate": 0,
+            "maxDrawdownDollars": 0,
+            "maxLossStreak": 0
+          }
+        }
+      ]
     }
   }
 }

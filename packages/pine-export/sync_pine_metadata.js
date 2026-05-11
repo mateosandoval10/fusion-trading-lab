@@ -14,11 +14,30 @@ mkdirSync(dashboardDataDir, { recursive: true });
 const pinePath = join(generatedDir, 'fusionv3_codex_clean_tradingview.pine');
 const championPath = join(root, 'models', 'champions', 'current-phase19-champion-council-fusion.json');
 const phase22Path = join(root, 'models', 'champions', 'current-phase22-deep-specialist-tournament.json');
+const phase23Path = join(root, 'models', 'champions', 'current-phase23-intelligence-specialist.json');
 const champion = existsSync(championPath) ? JSON.parse(readFileSync(championPath, 'utf8')) : null;
 const phase22 = existsSync(phase22Path) ? JSON.parse(readFileSync(phase22Path, 'utf8')) : null;
+const phase23 = existsSync(phase23Path) ? JSON.parse(readFileSync(phase23Path, 'utf8')) : null;
 const pine = existsSync(pinePath) ? readFileSync(pinePath, 'utf8') : '';
 const activeModeSource = pine.split('\n').find((line) => line.includes('activeScalpMode = input.string')) || '';
 const activeModeMatch = activeModeSource.match(/activeScalpMode\s*=\s*input\.string\("([^"]+)".*options=\[([^\]]+)/);
+
+function compactVariant(variant) {
+  if (!variant || typeof variant !== 'object') return null;
+  return {
+    id: variant.id,
+    profile: variant.profile,
+    goal: variant.goal,
+    routeSet: variant.routeSet,
+    threshold: variant.threshold,
+    metrics: variant.metrics || null,
+    holdout: variant.holdout || null,
+    stress: variant.stress || null,
+    diagnostics: variant.diagnostics || null,
+    topSymbols: variant.topSymbols?.slice(0, 8) || [],
+    topRoutes: variant.topRoutes?.slice(0, 8) || [],
+  };
+}
 
 const metadata = {
   updatedAt: new Date().toISOString(),
@@ -47,6 +66,17 @@ const metadata = {
     metrics: phase22.recommendedChampion?.metrics || null,
     holdout: phase22.recommendedChampion?.holdout || null,
     stress: phase22.recommendedChampion?.stress || null,
+  } : null,
+  phase23: phase23 ? {
+    phase: phase23.phase,
+    updatedAt: phase23.updatedAt,
+    runId: phase23.runId,
+    recommendedId: phase23.recommendedChampion?.id || null,
+    metrics: phase23.recommendedChampion?.metrics || null,
+    holdout: phase23.recommendedChampion?.holdout || null,
+    stress: phase23.recommendedChampion?.stress || null,
+    elitePrecision: compactVariant(phase23.categoryChampions?.elitePrecision),
+    highWinGuarded: compactVariant(phase23.categoryChampions?.highWinGuarded),
   } : null,
 };
 

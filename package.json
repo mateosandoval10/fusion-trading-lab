@@ -16,7 +16,8 @@
     "scalp:closed-loop:stop": "bash scripts/stop_live_closed_loop.sh",
     "scalp:closed-loop:update": "node scripts/phase18_forward_proven_router.js && npm run lab:report",
     "pine:export": "node packages/pine-export/sync_pine_metadata.js",
-    "test": "npm run lab:report && node scripts/validate_lab_outputs.js"
+    "scalp:phase23": "node scripts/phase23_intelligence_specialist_tournament.js",
+    "test": "npm run pine:export && npm run lab:dashboard && node scripts/validate_lab_outputs.js"
   },
   "engines": {
     "node": ">=20"

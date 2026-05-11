@@ -61,6 +61,52 @@ function metricCompact(metrics = {}) {
   };
 }
 
+function compactTournamentVariant(variant, options = {}) {
+  if (!variant || typeof variant !== 'object') return variant || null;
+  const topLimit = options.topLimit ?? 12;
+  const tradeLimit = options.tradeLimit ?? 8;
+  return {
+    id: variant.id,
+    profile: variant.profile,
+    goal: variant.goal,
+    universe: variant.universe,
+    sessionGroup: variant.sessionGroup,
+    triggerGroup: variant.triggerGroup,
+    routeSet: variant.routeSet,
+    threshold: variant.threshold,
+    maxFailedBreak: variant.maxFailedBreak,
+    maxVwapExtension: variant.maxVwapExtension,
+    minVolumeScore: variant.minVolumeScore,
+    minRelativeScore: variant.minRelativeScore,
+    requireCleanVwap: variant.requireCleanVwap,
+    requireTrapGuard: variant.requireTrapGuard,
+    score: variant.score,
+    routeCount: variant.routeCount || variant.topRoutes?.length || 0,
+    metrics: metricCompact(variant.metrics || {}),
+    train: metricCompact(variant.train || {}),
+    test: metricCompact(variant.test || {}),
+    holdout: metricCompact(variant.holdout || {}),
+    stress: metricCompact(variant.stress || {}),
+    consistency: variant.consistency,
+    diagnostics: variant.diagnostics,
+    engineAverages: variant.engineAverages,
+    monteCarlo: variant.monteCarlo,
+    topSymbols: variant.topSymbols?.slice(0, topLimit) || [],
+    topFamilies: variant.topFamilies?.slice(0, topLimit) || [],
+    topTriggers: variant.topTriggers?.slice(0, topLimit) || [],
+    topRoutes: variant.topRoutes?.slice(0, topLimit) || [],
+    topTrades: variant.topTrades?.slice(0, tradeLimit) || [],
+    tradeSample: variant.tradeSample?.slice(0, tradeLimit) || [],
+  };
+}
+
+function compactCategoryMap(map = {}, options = {}) {
+  return Object.fromEntries(Object.entries(map || {}).map(([key, value]) => [
+    key,
+    compactTournamentVariant(value, options),
+  ]));
+}
+
 function sideText(trade = {}) {
   return trade.side || (trade.dir === 1 ? 'long' : trade.dir === -1 ? 'short' : 'unknown');
 }
@@ -314,6 +360,8 @@ const canonicalData = readJson(join(root, 'data', 'canonical', 'canonical-summar
 const specialistFactory = readJson(join(root, 'models', 'specialists', 'phase21-specialist-factory.json'), { candidates: [] });
 const phase22 = readJson(join(root, 'models', 'champions', 'current-phase22-deep-specialist-tournament.json'), null)
   || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'phase22-deep-specialist-tournament.json'), null);
+const phase23 = readJson(join(root, 'models', 'champions', 'current-phase23-intelligence-specialist.json'), null)
+  || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'phase23-intelligence-specialist.json'), null);
 const phase17 = readJson(join(root, 'models', 'specialists', 'current-phase17-specialist-tournament.json'), null);
 const championSummary = summarizeChampion(champion);
 
@@ -354,9 +402,22 @@ const dashboard = {
     runId: phase22.runId,
     phase: phase22.phase,
     config: phase22.config,
-    recommendedChampion: phase22.recommendedChampion,
-    categoryChampions: phase22.categoryChampions,
-    rankedVariants: phase22.rankedVariants?.slice(0, 40) || [],
+    recommendedChampion: compactTournamentVariant(phase22.recommendedChampion, { topLimit: 16, tradeLimit: 10 }),
+    categoryChampions: compactCategoryMap(phase22.categoryChampions, { topLimit: 10, tradeLimit: 5 }),
+    rankedVariants: phase22.rankedVariants?.slice(0, 40).map((variant) => compactTournamentVariant(variant, { topLimit: 6, tradeLimit: 0 })) || [],
+  } : null,
+  phase23: phase23 ? {
+    updatedAt: phase23.updatedAt,
+    runId: phase23.runId,
+    phase: phase23.phase,
+    goal: phase23.goal,
+    config: phase23.config,
+    baselinePhase22: phase23.baselinePhase22,
+    recommendedChampion: compactTournamentVariant(phase23.recommendedChampion, { topLimit: 16, tradeLimit: 10 }),
+    categoryChampions: compactCategoryMap(phase23.categoryChampions, { topLimit: 10, tradeLimit: 5 }),
+    featureBlueprints: phase23.featureBlueprints,
+    machineLearningDraft: phase23.machineLearningDraft,
+    rankedVariants: phase23.rankedVariants?.slice(0, 40).map((variant) => compactTournamentVariant(variant, { topLimit: 6, tradeLimit: 0 })) || [],
   } : null,
   forward: summarizeForward(),
   pine: pineStatus(),

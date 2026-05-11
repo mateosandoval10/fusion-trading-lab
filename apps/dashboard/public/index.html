@@ -238,6 +238,78 @@
       <section class="panel">
         <div class="panel-head">
           <div>
+            <p class="eyebrow">Phase23 Intelligence Layer</p>
+            <h2>Market-structure features added on top of the champion</h2>
+          </div>
+          <span class="badge" id="phase23Badge">Loading…</span>
+        </div>
+        <div class="metric-grid" id="phase23Metrics"></div>
+        <div class="grid two">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Specialist</th>
+                  <th>Purpose</th>
+                  <th>Trades</th>
+                  <th>Win</th>
+                  <th>Net</th>
+                  <th>Holdout</th>
+                  <th>Guard / Threshold</th>
+                </tr>
+              </thead>
+              <tbody id="phase23CategoryTable"></tbody>
+            </table>
+          </div>
+          <div class="stack" id="phase23FeatureCards"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Phase23 Intelligence Trades</p>
+            <h2>Exact trades taken by each intelligence overlay</h2>
+          </div>
+          <span class="badge" id="phase23TradeCount">Loading…</span>
+        </div>
+        <div class="controls">
+          <label>
+            Overlay
+            <select id="phase23TradeLedgerSelect"></select>
+          </label>
+          <label>
+            Symbol / engine filter
+            <input id="phase23TradeSearch" type="search" placeholder="e.g. ZS, vwap, short, compression" />
+          </label>
+        </div>
+        <div class="metric-grid" id="phase23TradeMetrics"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Symbol</th>
+                <th>Side / Trigger</th>
+                <th>Entry → Exit</th>
+                <th>Hold</th>
+                <th>Prices</th>
+                <th>PnL</th>
+                <th>10k Scale</th>
+                <th>MFE / MAE</th>
+                <th>Score</th>
+                <th>Top Engines</th>
+              </tr>
+            </thead>
+            <tbody id="phase23TradeTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
             <p class="eyebrow">Phase22 Trade Ledger</p>
             <h2>Every trade taken by each Phase22 winner</h2>
           </div>

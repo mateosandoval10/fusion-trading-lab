@@ -46,6 +46,12 @@ async function loadDashboard() {
   } catch {
     data.phase22TradeLedgers = null;
   }
+  try {
+    const phase23TradeResponse = await fetch('./data/phase23-intelligence-trade-ledgers.json', { cache: 'no-store' });
+    data.phase23TradeLedgers = phase23TradeResponse.ok ? await phase23TradeResponse.json() : null;
+  } catch {
+    data.phase23TradeLedgers = null;
+  }
   return data;
 }
 
@@ -367,6 +373,137 @@ function renderPhase22TradeLedger(data) {
   draw();
 }
 
+function renderPhase23(data) {
+  const phase23 = data.phase23;
+  const champion = phase23?.recommendedChampion;
+  const elite = phase23?.categoryChampions?.elitePrecision;
+  const guarded = phase23?.categoryChampions?.highWinGuarded;
+  document.getElementById('phase23Badge').textContent = phase23?.updatedAt
+    ? `Updated ${new Date(phase23.updatedAt).toLocaleString()}`
+    : 'No Phase23 run yet';
+  document.getElementById('phase23Metrics').innerHTML = champion ? [
+    metric('Variants Kept', num(phase23.config?.variantsKept || 0)),
+    metric('Balanced Trades', num(champion.metrics?.trades || 0)),
+    metric('Balanced Win', pct(champion.metrics?.winRate || 0), champion.metrics?.winRate >= 90 ? 'good' : 'warn'),
+    metric('Balanced Net', money(champion.metrics?.netDollars || 0), colorForNet(champion.metrics?.netDollars)),
+    metric('High-Win Guard', guarded ? pct(guarded.metrics?.winRate || 0) : 'n/a', 'good'),
+    metric('Elite Precision', elite ? pct(elite.metrics?.winRate || 0) : 'n/a', 'good'),
+    metric('Elite Trades', num(elite?.metrics?.trades || 0)),
+    metric('Elite Net', money(elite?.metrics?.netDollars || 0), colorForNet(elite?.metrics?.netDollars)),
+    metric('Baseline P22 Win', pct(phase23.baselinePhase22?.metrics?.winRate || 0)),
+    metric('Baseline P22 Net', money(phase23.baselinePhase22?.metrics?.netDollars || 0), colorForNet(phase23.baselinePhase22?.metrics?.netDollars)),
+    metric('Feature Groups', num(Object.keys(phase23.featureBlueprints || {}).length)),
+    metric('ML Draft', phase23.machineLearningDraft?.status || 'n/a'),
+  ].join('') : '<p class="muted">Run `npm run scalp:phase23` to build the intelligence layer.</p>';
+
+  const categories = Object.entries(phase23?.categoryChampions || {}).filter(([, variant]) => variant);
+  document.getElementById('phase23CategoryTable').innerHTML = categories.map(([name, variant]) => {
+    const guards = variant.diagnostics?.guards?.map((guard) => `${guard.feature} ${guard.op} ${guard.value}`).join('<br>') || `score ≥ ${variant.threshold ?? 'n/a'}`;
+    return row([
+      `<strong>${name}</strong><br><span class="muted">${variant.profile}</span>`,
+      `<span class="muted">${variant.goal || 'n/a'}</span>`,
+      num(variant.metrics?.trades || 0),
+      pct(variant.metrics?.winRate || 0),
+      `<span class="${colorForNet(variant.metrics?.netDollars)}">${money(variant.metrics?.netDollars)}</span>`,
+      `${num(variant.holdout?.trades || 0)} / ${pct(variant.holdout?.winRate || 0)}`,
+      `<span class="muted">${guards}</span>`,
+    ]);
+  }).join('') || row(['No Phase23 categories yet', '', '', '', '', '', '']);
+
+  const blueprints = Object.entries(phase23?.featureBlueprints || {});
+  document.getElementById('phase23FeatureCards').innerHTML = blueprints.slice(0, 10).map(([name, blueprint]) => `
+    <div class="mini-card">
+      <strong>${name}</strong>
+      <p class="muted">${blueprint.description}</p>
+      <p class="muted">Weights: ${Object.entries(blueprint.weights || {}).slice(0, 6).map(([feature, weight]) => `${feature} ${Number(weight).toFixed(2)}`).join(', ')}</p>
+    </div>
+  `).join('') || '<p class="muted">No Phase23 feature cards yet.</p>';
+}
+
+function topPhase23Engines(trade) {
+  return Object.entries(trade.phase23Engines || {})
+    .sort(([, a], [, b]) => Number(b || 0) - Number(a || 0))
+    .slice(0, 3)
+    .map(([name, value]) => `${name}: ${Number(value || 0).toFixed(2)}`)
+    .join('<br>') || 'n/a';
+}
+
+function renderPhase23TradeLedger(data) {
+  const payload = data.phase23TradeLedgers;
+  const select = document.getElementById('phase23TradeLedgerSelect');
+  const search = document.getElementById('phase23TradeSearch');
+  const table = document.getElementById('phase23TradeTable');
+  const count = document.getElementById('phase23TradeCount');
+  const metricsEl = document.getElementById('phase23TradeMetrics');
+
+  if (!payload?.ledgers || !Object.keys(payload.ledgers).length) {
+    count.textContent = 'No trade ledger yet';
+    metricsEl.innerHTML = '<p class="muted">Run `npm run scalp:phase23` to export exact Phase23 intelligence trades.</p>';
+    table.innerHTML = row(['No Phase23 trades yet', '', '', '', '', '', '', '', '', '', '', '']);
+    return;
+  }
+
+  const categories = Object.entries(payload.categoryMap || {}).filter(([, id]) => payload.ledgers[id]);
+  select.innerHTML = categories.map(([category, id]) => {
+    const ledger = payload.ledgers[id];
+    return `<option value="${category}">${ledgerLabel(category, ledger)}</option>`;
+  }).join('');
+  if ([...select.options].some((option) => option.value === 'elitePrecision')) {
+    select.value = 'elitePrecision';
+  }
+
+  function draw() {
+    const category = select.value || categories[0]?.[0];
+    const id = payload.categoryMap?.[category] || categories[0]?.[1];
+    const ledger = payload.ledgers[id];
+    const query = (search.value || '').trim().toLowerCase();
+    const trades = (ledger?.trades || []).filter((trade) => {
+      if (!query) return true;
+      return [
+        trade.symbol,
+        trade.family,
+        trade.side,
+        trade.trigger,
+        trade.session,
+        trade.selectedRouteKey,
+        trade.outcome,
+        ...Object.keys(trade.phase23Engines || {}),
+      ].join(' ').toLowerCase().includes(query);
+    });
+
+    count.textContent = `${num(trades.length)} shown / ${num(ledger?.trades?.length || 0)} trades`;
+    metricsEl.innerHTML = [
+      metric('Overlay', category),
+      metric('Trades', num(ledger?.metrics?.trades || 0)),
+      metric('Win Rate', pct(ledger?.metrics?.winRate || 0), ledger?.metrics?.winRate >= 90 ? 'good' : 'warn'),
+      metric('Net', money(ledger?.metrics?.netDollars || 0), colorForNet(ledger?.metrics?.netDollars)),
+      metric('Avg / Trade', money(ledger?.metrics?.avgDollars || 0), colorForNet(ledger?.metrics?.avgDollars)),
+      metric('Holdout Win', pct(ledger?.holdout?.winRate || 0), ledger?.holdout?.winRate >= 90 ? 'good' : 'warn'),
+      metric('Stress Net', money(ledger?.stress?.netDollars || 0), colorForNet(ledger?.stress?.netDollars)),
+      metric('Avg MFE / MAE', `${Number(ledger?.metrics?.avgMfeR || 0).toFixed(2)}R / ${Number(ledger?.metrics?.avgMaeR || 0).toFixed(2)}R`),
+    ].join('');
+
+    table.innerHTML = trades.map((trade) => row([
+      trade.index,
+      trade.date,
+      `<strong>${trade.symbol}</strong><br><span class="muted">${trade.family}</span>`,
+      `${trade.side}<br><span class="muted">${trade.trigger} · ${trade.session}</span>`,
+      `${shortTime(trade.entryTime)}<br><span class="muted">→ ${shortTime(trade.exitTime)}</span>`,
+      trade.minutesHeld === null || trade.minutesHeld === undefined ? 'n/a' : `${trade.minutesHeld}m`,
+      `${price(trade.entry)}<br><span class="muted">→ ${price(trade.exit)}</span>`,
+      `<span class="${colorForNet(trade.pnlDollars)}">${money(trade.pnlDollars)}</span><br><span class="muted">${trade.outcome}</span>`,
+      `<span class="${colorForNet(trade.modeledPnlScaledTo10k)}">${money(trade.modeledPnlScaledTo10k)}</span>`,
+      `${Number(trade.mfeR || 0).toFixed(2)}R / ${Number(trade.maeR || 0).toFixed(2)}R`,
+      `${Number(trade.phase23Score || 0).toFixed(3)}<br><span class="muted">conf ${trade.confidence || 0}</span>`,
+      `<span class="muted">${topPhase23Engines(trade)}</span>`,
+    ])).join('') || row(['No matching trades', '', '', '', '', '', '', '', '', '', '', '']);
+  }
+
+  select.onchange = draw;
+  search.oninput = draw;
+  draw();
+}
+
 function renderDaily(data) {
   const daily = data.patternLab?.dailyPerformance || [];
   document.getElementById('dailyTable').innerHTML = daily.slice(-120).reverse().map((item) => row([
@@ -405,6 +542,8 @@ loadDashboard()
     renderCandidates(data);
     renderFactory(data);
     renderPhase22(data);
+    renderPhase23(data);
+    renderPhase23TradeLedger(data);
     renderPhase22TradeLedger(data);
     renderDaily(data);
     renderForward(data);

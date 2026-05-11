@@ -26,7 +26,8 @@ flowchart LR
   SF --> SP
   SP --> TO["Tournaments"]
   TO --> P22["Phase22 Deep Specialist Tournament"]
-  P22 --> CH
+  P22 --> P23["Phase23 Intelligence Specialist"]
+  P23 --> CH
   TO --> CH["Champion Registry"]
   CH --> PE["Pine Export"]
   CH --> DB["Dashboard"]
@@ -38,6 +39,8 @@ flowchart LR
 npm run lab:report
 npm run lab:phase21
 npm run scalp:phase22
+npm run scalp:phase23
+npm run pine:export
 npm run lab:nightly
 npm run scalp:phase19 -- --fresh-data=false
 npm run scalp:closed-loop:start
@@ -74,6 +77,19 @@ GitHub stores code, models, reports, Pine exports, canonical summaries, speciali
 - Runs Monte Carlo drawdown checks on top variants.
 - Writes the current Phase22 champion to `models/champions/current-phase22-deep-specialist-tournament.json`.
 - Writes exact selected trade ledgers to `apps/dashboard/public/data/phase22-trade-ledgers.json` for the dashboard trade viewer.
+
+## Phase23 Intelligence Specialist
+
+`npm run scalp:phase23` applies the new logic layer to exact Phase22 winner trades:
+
+- Adds liquidity sweep, VWAP reclaim quality, compression breakout, trend pullback, exhaustion reversal, failed-breakout trap, relative strength, volume quality, candle-location, and VWAP-distance engines.
+- Mutates feature weights and guard thresholds across thousands of challenger overlays.
+- Promotes category winners instead of blindly replacing the main champion: balanced/profit, high-win guarded, and elite precision.
+- Writes the Phase23 model to `models/champions/current-phase23-intelligence-specialist.json`.
+- Writes Phase23 trade ledgers to `apps/dashboard/public/data/phase23-intelligence-trade-ledgers.json`.
+- Exports Pine metadata so TradingView can show `Phase23 Intelligence Specialist` as a selectable/auto-selected specialist mode.
+
+Phase23 is an intelligence overlay, not a live-trading bot. It is paper/backtest analytics until forward evidence promotes it.
 
 ## TradingView Connection
 
