@@ -233,6 +233,35 @@ th {
   font-size: 0.86rem;
 }
 
+.controls {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.45fr) minmax(260px, 0.55fr);
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.controls label {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.controls select,
+.controls input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 0.75rem 0.85rem;
+  color: var(--text);
+  background: rgba(2, 6, 23, 0.68);
+  font: inherit;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
 .trade-line {
   display: flex;
   justify-content: space-between;
@@ -260,7 +289,8 @@ th {
   .cards,
   .two,
   .specialist-grid,
-  .metric-grid {
+  .metric-grid,
+  .controls {
     grid-template-columns: 1fr 1fr;
   }
 }
@@ -273,7 +303,8 @@ th {
   .cards,
   .two,
   .specialist-grid,
-  .metric-grid {
+  .metric-grid,
+  .controls {
     grid-template-columns: 1fr;
   }
 }

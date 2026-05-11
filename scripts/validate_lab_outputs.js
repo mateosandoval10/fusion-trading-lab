@@ -13,6 +13,7 @@ const required = [
   'data/canonical/canonical-summary.json',
   'apps/dashboard/public/data/dashboard.json',
   'apps/dashboard/public/data/canonical-data.json',
+  'apps/dashboard/public/data/phase22-trade-ledgers.json',
   'apps/dashboard/public/index.html',
   'generated/fusionv3_codex_clean_tradingview.pine',
 ];
@@ -28,5 +29,7 @@ if (!dashboard.champion?.bestVariant) throw new Error('Dashboard has no champion
 if (!dashboard.pine?.hasClosedLoopAlert) throw new Error('Pine export does not expose closed-loop alert payload');
 if (!dashboard.canonical?.stats?.canonicalTrades) throw new Error('Dashboard has no canonical trade spine');
 if (!Array.isArray(dashboard.specialistFactory)) throw new Error('Dashboard has no Phase21 specialist factory list');
+const phase22Trades = JSON.parse(readFileSync(join(root, 'apps/dashboard/public/data/phase22-trade-ledgers.json'), 'utf8'));
+if (!phase22Trades.ledgers || !Object.keys(phase22Trades.ledgers).length) throw new Error('Phase22 trade ledgers are empty');
 
 console.log('Lab validation passed');

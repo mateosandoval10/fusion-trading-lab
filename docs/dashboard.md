@@ -29,3 +29,4 @@ The dashboard now includes a canonical data panel and specialist factory table:
 - `Phase21 Specialist Factory` shows deduped specialist candidates with consistency, outlier, drawdown, feature-boost, and target suggestions.
 - `Biggest Stock Hits` now prefers the canonical symbol manifest when available, so repeated ledger rows do not inflate the leaderboard.
 - `Phase22 Deep Tournament` shows the newest fused challenger champion, category winners, stress metrics, Monte Carlo risk, and top routes.
+- `Phase22 Trade Ledger` shows every exact backtest trade selected by each Phase22 winner category, with entry/exit time, prices, modeled PnL, 10k-scaled PnL, MFE/MAE, confidence, and selected route.

@@ -39,7 +39,14 @@ function colorForQuality(value) {
 async function loadDashboard() {
   const response = await fetch('./data/dashboard.json', { cache: 'no-store' });
   if (!response.ok) throw new Error(`dashboard.json ${response.status}`);
-  return response.json();
+  const data = await response.json();
+  try {
+    const tradeResponse = await fetch('./data/phase22-trade-ledgers.json', { cache: 'no-store' });
+    data.phase22TradeLedgers = tradeResponse.ok ? await tradeResponse.json() : null;
+  } catch {
+    data.phase22TradeLedgers = null;
+  }
+  return data;
 }
 
 function renderSummary(data) {
@@ -280,6 +287,86 @@ function renderPhase22(data) {
   `).join('') || '<p class="muted">No Phase22 routes yet.</p>';
 }
 
+function ledgerLabel(category, ledger) {
+  return `${category} · ${ledger.profile} · ${num(ledger.metrics?.trades || ledger.trades?.length || 0)} trades · ${pct(ledger.metrics?.winRate || 0)} · ${money(ledger.metrics?.netDollars || 0)}`;
+}
+
+function renderPhase22TradeLedger(data) {
+  const payload = data.phase22TradeLedgers;
+  const select = document.getElementById('phase22TradeLedgerSelect');
+  const search = document.getElementById('phase22TradeSearch');
+  const table = document.getElementById('phase22TradeTable');
+  const count = document.getElementById('phase22TradeCount');
+  const metricsEl = document.getElementById('phase22TradeMetrics');
+
+  if (!payload?.ledgers || !Object.keys(payload.ledgers).length) {
+    count.textContent = 'No trade ledger yet';
+    metricsEl.innerHTML = '<p class="muted">Run `npm run scalp:phase22` to export exact trade ledgers.</p>';
+    table.innerHTML = row(['No Phase22 trades yet', '', '', '', '', '', '', '', '', '', '', '']);
+    return;
+  }
+
+  const categories = Object.entries(payload.categoryMap || {}).filter(([, id]) => payload.ledgers[id]);
+  select.innerHTML = categories.map(([category, id]) => {
+    const ledger = payload.ledgers[id];
+    return `<option value="${category}">${ledgerLabel(category, ledger)}</option>`;
+  }).join('');
+  if ([...select.options].some((option) => option.value === 'mainMinimum150')) {
+    select.value = 'mainMinimum150';
+  }
+
+  function draw() {
+    const category = select.value || categories[0]?.[0];
+    const id = payload.categoryMap?.[category] || categories[0]?.[1];
+    const ledger = payload.ledgers[id];
+    const query = (search.value || '').trim().toLowerCase();
+    const trades = (ledger?.trades || []).filter((trade) => {
+      if (!query) return true;
+      return [
+        trade.symbol,
+        trade.family,
+        trade.side,
+        trade.trigger,
+        trade.session,
+        trade.selectedRouteKey,
+        trade.outcome,
+        ...(trade.tags || []),
+      ].join(' ').toLowerCase().includes(query);
+    });
+
+    count.textContent = `${num(trades.length)} shown / ${num(ledger?.trades?.length || 0)} trades`;
+    metricsEl.innerHTML = [
+      metric('Winner', category),
+      metric('Trades', num(ledger?.metrics?.trades || 0)),
+      metric('Win Rate', pct(ledger?.metrics?.winRate || 0), ledger?.metrics?.winRate >= 80 ? 'good' : 'warn'),
+      metric('Net', money(ledger?.metrics?.netDollars || 0), colorForNet(ledger?.metrics?.netDollars)),
+      metric('Avg / Trade', money(ledger?.metrics?.avgDollars || 0), colorForNet(ledger?.metrics?.avgDollars)),
+      metric('Holdout Win', pct(ledger?.holdout?.winRate || 0), ledger?.holdout?.winRate >= 80 ? 'good' : 'warn'),
+      metric('Stress Net', money(ledger?.stress?.netDollars || 0), colorForNet(ledger?.stress?.netDollars)),
+      metric('Routes', num(ledger?.routeCount || 0)),
+    ].join('');
+
+    table.innerHTML = trades.map((trade) => row([
+      trade.index,
+      trade.date,
+      `<strong>${trade.symbol}</strong><br><span class="muted">${trade.family}</span>`,
+      `${trade.side}<br><span class="muted">${trade.trigger} · ${trade.session}</span>`,
+      `${shortTime(trade.entryTime)}<br><span class="muted">→ ${shortTime(trade.exitTime)}</span>`,
+      trade.minutesHeld === null || trade.minutesHeld === undefined ? 'n/a' : `${trade.minutesHeld}m`,
+      `${price(trade.entry)}<br><span class="muted">→ ${price(trade.exit)}</span>`,
+      `<span class="${colorForNet(trade.pnlDollars)}">${money(trade.pnlDollars)}</span><br><span class="muted">${trade.outcome}</span>`,
+      `<span class="${colorForNet(trade.modeledPnlScaledTo10k)}">${money(trade.modeledPnlScaledTo10k)}</span>`,
+      `${Number(trade.mfeR || 0).toFixed(2)}R / ${Number(trade.maeR || 0).toFixed(2)}R`,
+      trade.confidence || 0,
+      `<span class="muted">${trade.selectedRouteKey || 'n/a'}</span>`,
+    ])).join('') || row(['No matching trades', '', '', '', '', '', '', '', '', '', '', '']);
+  }
+
+  select.onchange = draw;
+  search.oninput = draw;
+  draw();
+}
+
 function renderDaily(data) {
   const daily = data.patternLab?.dailyPerformance || [];
   document.getElementById('dailyTable').innerHTML = daily.slice(-120).reverse().map((item) => row([
@@ -318,6 +405,7 @@ loadDashboard()
     renderCandidates(data);
     renderFactory(data);
     renderPhase22(data);
+    renderPhase22TradeLedger(data);
     renderDaily(data);
     renderForward(data);
   })

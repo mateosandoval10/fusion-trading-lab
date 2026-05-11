@@ -73,6 +73,7 @@ GitHub stores code, models, reports, Pine exports, canonical summaries, speciali
 - Resolves route conflicts so overlapping routes do not double-count the same underlying trade.
 - Runs Monte Carlo drawdown checks on top variants.
 - Writes the current Phase22 champion to `models/champions/current-phase22-deep-specialist-tournament.json`.
+- Writes exact selected trade ledgers to `apps/dashboard/public/data/phase22-trade-ledgers.json` for the dashboard trade viewer.
 
 ## TradingView Connection
 

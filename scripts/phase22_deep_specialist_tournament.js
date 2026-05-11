@@ -568,6 +568,53 @@ function compactTrade(trade) {
   };
 }
 
+function isoTime(value) {
+  const parsed = number(value, 0);
+  if (!parsed) return 'n/a';
+  return new Date((parsed > 100000000000 ? parsed : parsed * 1000)).toISOString();
+}
+
+function minutesHeld(trade) {
+  const entry = number(trade.entryTime, 0);
+  const exit = number(trade.exitTime, 0);
+  if (!entry || !exit) return null;
+  const entryMs = entry > 100000000000 ? entry : entry * 1000;
+  const exitMs = exit > 100000000000 ? exit : exit * 1000;
+  return Math.max(0, Math.round((exitMs - entryMs) / 60000));
+}
+
+function ledgerTrade(trade, index) {
+  const pnl = number(trade.pnlDollars, 0);
+  return {
+    index: index + 1,
+    outcome: pnl > 0 ? 'win' : pnl < 0 ? 'loss' : 'flat',
+    canonicalId: trade.canonicalId,
+    symbol: trade.symbol,
+    family: trade.family,
+    side: trade.side,
+    trigger: trade.trigger,
+    session: trade.session,
+    date: trade.date,
+    entryTime: trade.entryTime,
+    exitTime: trade.exitTime,
+    entryIso: isoTime(trade.entryTime),
+    exitIso: isoTime(trade.exitTime),
+    minutesHeld: minutesHeld(trade),
+    entry: trade.entry,
+    exit: trade.exit,
+    pnlDollars: pnl,
+    modeledPnlOn100k: pnl,
+    modeledPnlScaledTo10k: pnl * 0.10,
+    mfeR: trade.mfeR,
+    maeR: trade.maeR,
+    confidence: trade.confidence,
+    tags: trade.tags || [],
+    selectedRouteKey: trade.selectedRouteKey,
+    selectedRouteQuality: trade.selectedRouteQuality,
+    selectedRouteScore: trade.selectedRouteScore,
+  };
+}
+
 function summarizeSymbols(trades, limit = 25) {
   const bySymbol = new Map();
   for (const trade of trades) {
@@ -770,10 +817,61 @@ const output = {
   rankedVariants: refined.map(compactVariant),
 };
 
+const tradeLedgers = {
+  updatedAt: output.updatedAt,
+  runId,
+  source: 'phase22-selected-trades',
+  description: 'Exact selected trades for each Phase22 category champion. These are backtest/model trades only, not placed orders.',
+  categoryMap: {},
+  ledgers: {},
+};
+for (const [category, variant] of Object.entries(categoryChampions)) {
+  if (!variant) continue;
+  tradeLedgers.categoryMap[category] = variant.id;
+  if (!tradeLedgers.ledgers[variant.id]) {
+    tradeLedgers.ledgers[variant.id] = {
+      id: variant.id,
+      categories: [],
+      profile: variant.profile,
+      universe: variant.universe,
+      sessionGroup: variant.sessionGroup,
+      triggerGroup: variant.triggerGroup,
+      directionGroup: variant.directionGroup,
+      strictness: variant.strictness,
+      routeCount: variant.routeCount,
+      metrics: variant.metrics,
+      holdout: variant.holdout,
+      stress: variant.stress,
+      topSymbols: variant.topSymbols,
+      topRoutes: variant.topRoutes,
+      trades: (variant._selectedTrades || []).map(ledgerTrade),
+    };
+  }
+  tradeLedgers.ledgers[variant.id].categories.push(category);
+}
+tradeLedgers.summary = Object.entries(tradeLedgers.ledgers).map(([id, ledger]) => ({
+  id,
+  categories: ledger.categories,
+  profile: ledger.profile,
+  universe: ledger.universe,
+  sessionGroup: ledger.sessionGroup,
+  triggerGroup: ledger.triggerGroup,
+  directionGroup: ledger.directionGroup,
+  strictness: ledger.strictness,
+  trades: ledger.trades.length,
+  winRate: ledger.metrics.winRate,
+  netDollars: ledger.metrics.netDollars,
+  avgDollars: ledger.metrics.avgDollars,
+  holdoutWinRate: ledger.holdout.winRate,
+  stressNetDollars: ledger.stress.netDollars,
+}));
+
 writeJson(join(paths.phase22Runs, `${runId}.json`), output);
 writeJson(join(paths.champions, 'current-phase22-deep-specialist-tournament.json'), output);
 writeJson(join(paths.reports, 'phase22-deep-specialist-tournament-report.json'), output);
+writeJson(join(paths.reports, 'phase22-trade-ledgers.json'), tradeLedgers);
 writeJson(join(paths.dashboardData, 'phase22-deep-specialist-tournament.json'), output);
+writeJson(join(paths.dashboardData, 'phase22-trade-ledgers.json'), tradeLedgers);
 writeJson(join(paths.registry, 'phase22-deep-specialist-registry.json'), {
   updatedAt: output.updatedAt,
   runId,

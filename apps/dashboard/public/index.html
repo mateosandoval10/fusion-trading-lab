@@ -238,6 +238,48 @@
       <section class="panel">
         <div class="panel-head">
           <div>
+            <p class="eyebrow">Phase22 Trade Ledger</p>
+            <h2>Every trade taken by each Phase22 winner</h2>
+          </div>
+          <span class="badge" id="phase22TradeCount">Loading…</span>
+        </div>
+        <div class="controls">
+          <label>
+            Winner
+            <select id="phase22TradeLedgerSelect"></select>
+          </label>
+          <label>
+            Symbol / route filter
+            <input id="phase22TradeSearch" type="search" placeholder="e.g. SOFI, OPEN, short, vwap" />
+          </label>
+        </div>
+        <div class="metric-grid" id="phase22TradeMetrics"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Symbol</th>
+                <th>Side / Trigger</th>
+                <th>Entry → Exit</th>
+                <th>Hold</th>
+                <th>Prices</th>
+                <th>PnL</th>
+                <th>10k Scale</th>
+                <th>MFE / MAE</th>
+                <th>Conf</th>
+                <th>Route</th>
+              </tr>
+            </thead>
+            <tbody id="phase22TradeTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
             <p class="eyebrow">Daily Performance</p>
             <h2>Specialists by day / family</h2>
           </div>
