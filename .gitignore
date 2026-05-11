@@ -11,6 +11,7 @@ optimization-results/runs/
 optimization-results/shard-runs/
 optimization-results/datasets/
 optimization-results/canonical/*.jsonl
+optimization-results/phase22/
 data/canonical/canonical-trades.full.jsonl
 
 # Keep forward summaries and compressed ledgers, avoid accidental huge raw dumps.

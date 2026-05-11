@@ -25,6 +25,8 @@ flowchart LR
   PL --> SP["Specialist Candidates"]
   SF --> SP
   SP --> TO["Tournaments"]
+  TO --> P22["Phase22 Deep Specialist Tournament"]
+  P22 --> CH
   TO --> CH["Champion Registry"]
   CH --> PE["Pine Export"]
   CH --> DB["Dashboard"]
@@ -35,6 +37,7 @@ flowchart LR
 ```bash
 npm run lab:report
 npm run lab:phase21
+npm run scalp:phase22
 npm run lab:nightly
 npm run scalp:phase19 -- --fresh-data=false
 npm run scalp:closed-loop:start
@@ -60,6 +63,16 @@ GitHub stores code, models, reports, Pine exports, canonical summaries, speciali
 - Writes route, symbol, and factory summaries into `data/canonical/`.
 - Writes deduped specialist candidates into `models/specialists/phase21-specialist-factory.json`.
 - Updates the dashboard with raw-vs-canonical trade counts, biggest symbol hits, route quality, and consistency checks.
+
+## Phase22 Deep Tournament
+
+`npm run scalp:phase22` fuses Phase21 factory routes into portfolio challengers:
+
+- Tests balanced, high-win, profit-max, low-drawdown, options-worthy, and high-trade-count profiles.
+- Splits results into train/test/holdout/stress and odd/even-day validation.
+- Resolves route conflicts so overlapping routes do not double-count the same underlying trade.
+- Runs Monte Carlo drawdown checks on top variants.
+- Writes the current Phase22 champion to `models/champions/current-phase22-deep-specialist-tournament.json`.
 
 ## TradingView Connection
 

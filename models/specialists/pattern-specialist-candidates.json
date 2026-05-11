@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-09T21:59:34.593Z",
+  "updatedAt": "2026-05-11T05:58:32.764Z",
   "source": "pattern-lab-v1",
   "candidates": [
     {
@@ -19,8 +19,8 @@
         "profitFactor": 11.03013895998649,
         "netDollars": 60628.85262144637,
         "avgDollars": 977.884719700748,
-        "avgMfeR": 1.2948920234595338,
-        "avgMaeR": 0.39311400400685187,
+        "avgMfeR": 1.2948920234595336,
+        "avgMaeR": 0.3931140040068518,
         "optionWorthyRate": 9.67741935483871,
         "greatTradeRate": 9.67741935483871
       },
@@ -29,7 +29,7 @@
         "volume-expansion",
         "clean-breakout",
         "options-worthy-burst",
-        "compression-pop"
+        "liquidity-sweep-reclaim"
       ],
       "featureBoosts": [
         {
@@ -333,10 +333,10 @@
         "losses": 6,
         "winRate": 89.28571428571429,
         "profitFactor": 20.121163640338725,
-        "netDollars": 51961.0665949266,
-        "avgDollars": 927.8761891951178,
-        "avgMfeR": 0.9034871475321431,
-        "avgMaeR": 0.20879002271235508,
+        "netDollars": 51961.06659492659,
+        "avgDollars": 927.8761891951177,
+        "avgMfeR": 0.903487147532143,
+        "avgMaeR": 0.208790022712355,
         "optionWorthyRate": 7.142857142857142,
         "greatTradeRate": 7.142857142857142
       },
@@ -345,7 +345,7 @@
         "volume-expansion",
         "clean-breakout",
         "options-worthy-burst",
-        "compression-pop"
+        "liquidity-sweep-reclaim"
       ],
       "featureBoosts": [
         {
@@ -414,7 +414,7 @@
         "wins": 42,
         "losses": 6,
         "winRate": 87.5,
-        "profitFactor": 19.231608753447546,
+        "profitFactor": 19.23160875344755,
         "netDollars": 49543.7335503998,
         "avgDollars": 1032.161115633329,
         "avgMfeR": 0.9385747893799828,
@@ -427,7 +427,7 @@
         "volume-expansion",
         "clean-breakout",
         "options-worthy-burst",
-        "compression-pop"
+        "liquidity-sweep-reclaim"
       ],
       "featureBoosts": [
         {
@@ -503,10 +503,10 @@
         "losses": 4,
         "winRate": 90,
         "profitFactor": 18.774769696837744,
-        "netDollars": 46910.79257546467,
-        "avgDollars": 1172.7698143866169,
+        "netDollars": 46910.792575464664,
+        "avgDollars": 1172.7698143866166,
         "avgMfeR": 1.051591699843412,
-        "avgMaeR": 0.19284868387517093,
+        "avgMaeR": 0.1928486838751709,
         "optionWorthyRate": 10,
         "greatTradeRate": 10
       },
@@ -515,7 +515,7 @@
         "clean-breakout",
         "volume-expansion",
         "options-worthy-burst",
-        "compression-pop"
+        "liquidity-sweep-reclaim"
       ],
       "featureBoosts": [
         {
@@ -870,19 +870,19 @@
         "wins": 38,
         "losses": 4,
         "winRate": 90.47619047619048,
-        "profitFactor": 26.34060499368204,
-        "netDollars": 33747.15856265944,
-        "avgDollars": 803.5037753014152,
-        "avgMfeR": 1.0274398069533603,
-        "avgMaeR": 0.3726139810349447,
+        "profitFactor": 26.340604993682042,
+        "netDollars": 33747.158562659446,
+        "avgDollars": 803.5037753014154,
+        "avgMfeR": 1.0274398069533608,
+        "avgMaeR": 0.37261398103494475,
         "optionWorthyRate": 14.285714285714285,
         "greatTradeRate": 9.523809523809524
       },
       "preferredTags": [
         "unclassified",
+        "opening-drive",
         "volume-expansion",
         "options-worthy-burst",
-        "opening-drive",
         "compression-pop"
       ],
       "featureBoosts": [
@@ -1148,82 +1148,6 @@
     {
       "id": "pattern-specialist-016",
       "status": "candidate-promotable",
-      "routeKey": "USAR|general|base|all|long",
-      "symbol": "USAR",
-      "family": "general",
-      "triggerMode": "base",
-      "session": "all",
-      "side": "long",
-      "metrics": {
-        "trades": 31,
-        "wins": 25,
-        "losses": 6,
-        "winRate": 80.64516129032258,
-        "profitFactor": 5.698109883208347,
-        "netDollars": 31291.478219787048,
-        "avgDollars": 1009.4025232189371,
-        "avgMfeR": 0.968090429648964,
-        "avgMaeR": 0.40989498778150235,
-        "optionWorthyRate": 25.806451612903224,
-        "greatTradeRate": 3.225806451612903
-      },
-      "preferredTags": [
-        "volume-expansion",
-        "opening-drive",
-        "options-worthy-burst",
-        "compression-pop",
-        "clean-breakout"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "breakoutQuality",
-          "winner": 0.6561,
-          "loser": 0.2875,
-          "edge": 0.3686
-        },
-        {
-          "feature": "priceAcceleration",
-          "winner": 0.7775,
-          "loser": 0.4789,
-          "edge": 0.2986
-        },
-        {
-          "feature": "momentumBurst",
-          "winner": 0.4904,
-          "loser": 0.2001,
-          "edge": 0.2903
-        },
-        {
-          "feature": "optionBurstShape",
-          "winner": 0.4883,
-          "loser": 0.2001,
-          "edge": 0.2882
-        },
-        {
-          "feature": "cleanBreakout",
-          "winner": 0.4506,
-          "loser": 0.1822,
-          "edge": 0.2684
-        }
-      ],
-      "avoidPatterns": [
-        {
-          "feature": "marketAlignment",
-          "winner": 0.26,
-          "loser": 0.5833,
-          "edge": -0.3233
-        }
-      ],
-      "suggestedRules": {
-        "minConfidence": 75,
-        "minAlphaQuality": 55,
-        "targetR": 0.35,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-017",
-      "status": "candidate-promotable",
       "routeKey": "QBTS|general|base|open|long",
       "symbol": "QBTS",
       "family": "general",
@@ -1291,7 +1215,7 @@
       }
     },
     {
-      "id": "pattern-specialist-018",
+      "id": "pattern-specialist-017",
       "status": "watchlist",
       "routeKey": "MSTU|general|base|all|long",
       "symbol": "MSTU",
@@ -1366,7 +1290,7 @@
       }
     },
     {
-      "id": "pattern-specialist-019",
+      "id": "pattern-specialist-018",
       "status": "candidate-promotable",
       "routeKey": "MSTX|general|base|all|long",
       "symbol": "MSTX",
@@ -1446,7 +1370,7 @@
       }
     },
     {
-      "id": "pattern-specialist-020",
+      "id": "pattern-specialist-019",
       "status": "candidate-promotable",
       "routeKey": "MSTX|general|base|open|long",
       "symbol": "MSTX",
@@ -1526,7 +1450,7 @@
       }
     },
     {
-      "id": "pattern-specialist-021",
+      "id": "pattern-specialist-020",
       "status": "candidate-promotable",
       "routeKey": "MSTX|general|base|morning|long",
       "symbol": "MSTX",
@@ -1606,7 +1530,7 @@
       }
     },
     {
-      "id": "pattern-specialist-022",
+      "id": "pattern-specialist-021",
       "status": "watchlist",
       "routeKey": "QBTS|general|base|all|long",
       "symbol": "QBTS",
@@ -1675,89 +1599,7 @@
       }
     },
     {
-      "id": "pattern-specialist-023",
-      "status": "candidate-promotable",
-      "routeKey": "AXTI|general|base|all|long",
-      "symbol": "AXTI",
-      "family": "general",
-      "triggerMode": "base",
-      "session": "all",
-      "side": "long",
-      "metrics": {
-        "trades": 28,
-        "wins": 24,
-        "losses": 4,
-        "winRate": 85.71428571428571,
-        "profitFactor": 3.2070743385363056,
-        "netDollars": 27159.860498079925,
-        "avgDollars": 969.9950177885687,
-        "avgMfeR": 0.9314196924158548,
-        "avgMaeR": 0.42552038388299607,
-        "optionWorthyRate": 10.714285714285714,
-        "greatTradeRate": 3.571428571428571
-      },
-      "preferredTags": [
-        "volume-expansion",
-        "options-worthy-burst",
-        "unclassified",
-        "clean-breakout",
-        "opening-drive"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "vwapPressure",
-          "winner": 0.5235,
-          "loser": 0.1325,
-          "edge": 0.391
-        },
-        {
-          "feature": "cleanVolume",
-          "winner": 0.7254,
-          "loser": 0.49,
-          "edge": 0.2354
-        }
-      ],
-      "avoidPatterns": [
-        {
-          "feature": "vwapExtensionRisk",
-          "winner": 0.2153,
-          "loser": 0.6589,
-          "edge": -0.4436
-        },
-        {
-          "feature": "breakoutQuality",
-          "winner": 0.407,
-          "loser": 0.75,
-          "edge": -0.343
-        },
-        {
-          "feature": "marketAlignment",
-          "winner": 0.2083,
-          "loser": 0.5,
-          "edge": -0.2917
-        },
-        {
-          "feature": "priceAcceleration",
-          "winner": 0.7863,
-          "loser": 1,
-          "edge": -0.2137
-        },
-        {
-          "feature": "liquiditySweep",
-          "winner": 0.0417,
-          "loser": 0.25,
-          "edge": -0.2083
-        }
-      ],
-      "suggestedRules": {
-        "minConfidence": 70,
-        "minAlphaQuality": 55,
-        "targetR": 0.35,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-024",
+      "id": "pattern-specialist-022",
       "status": "candidate-promotable",
       "routeKey": "CONL|general|base|all|long",
       "symbol": "CONL",
@@ -1829,7 +1671,7 @@
       }
     },
     {
-      "id": "pattern-specialist-025",
+      "id": "pattern-specialist-023",
       "status": "candidate-promotable",
       "routeKey": "CONL|general|base|morning|long",
       "symbol": "CONL",
@@ -1901,7 +1743,7 @@
       }
     },
     {
-      "id": "pattern-specialist-026",
+      "id": "pattern-specialist-024",
       "status": "watchlist",
       "routeKey": "QBTS|general|base|morning|long",
       "symbol": "QBTS",
@@ -1970,89 +1812,7 @@
       }
     },
     {
-      "id": "pattern-specialist-027",
-      "status": "watchlist",
-      "routeKey": "WULF|crypto-proxy|base|open-0930|long",
-      "symbol": "WULF",
-      "family": "crypto-proxy",
-      "triggerMode": "base",
-      "session": "open-0930",
-      "side": "long",
-      "metrics": {
-        "trades": 43,
-        "wins": 31,
-        "losses": 12,
-        "winRate": 72.09302325581395,
-        "profitFactor": 3.0167909938671227,
-        "netDollars": 25331.206965613448,
-        "avgDollars": 589.0978364096151,
-        "avgMfeR": 0.7431901217905065,
-        "avgMaeR": 0.46058006023531767,
-        "optionWorthyRate": 9.30232558139535,
-        "greatTradeRate": 9.30232558139535
-      },
-      "preferredTags": [
-        "volume-expansion",
-        "opening-drive",
-        "options-worthy-burst",
-        "compression-pop",
-        "clean-breakout"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "priorDayBreakQuality",
-          "winner": 0.3156,
-          "loser": 0,
-          "edge": 0.3156
-        },
-        {
-          "feature": "marketAlignment",
-          "winner": 0.6774,
-          "loser": 0.375,
-          "edge": 0.3024
-        },
-        {
-          "feature": "trendQuality",
-          "winner": 0.7527,
-          "loser": 0.5556,
-          "edge": 0.1971
-        },
-        {
-          "feature": "vwapPressure",
-          "winner": 0.4543,
-          "loser": 0.298,
-          "edge": 0.1563
-        },
-        {
-          "feature": "relVolTodQuality",
-          "winner": 0.3259,
-          "loser": 0.1928,
-          "edge": 0.1331
-        }
-      ],
-      "avoidPatterns": [
-        {
-          "feature": "marketImpulse",
-          "winner": 0.5052,
-          "loser": 0.8138,
-          "edge": -0.3086
-        },
-        {
-          "feature": "priceAcceleration",
-          "winner": 0.8678,
-          "loser": 1,
-          "edge": -0.1322
-        }
-      ],
-      "suggestedRules": {
-        "minConfidence": 75,
-        "minAlphaQuality": 65,
-        "targetR": 0.35,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-028",
+      "id": "pattern-specialist-025",
       "status": "candidate-promotable",
       "routeKey": "AFRM|high-beta-growth|base|all|long",
       "symbol": "AFRM",
@@ -2065,17 +1825,17 @@
         "wins": 50,
         "losses": 10,
         "winRate": 83.33333333333334,
-        "profitFactor": 8.801631518441798,
-        "netDollars": 24267.609091542054,
-        "avgDollars": 404.4601515257009,
-        "avgMfeR": 0.9000358812668116,
-        "avgMaeR": 0.5123130167713842,
+        "profitFactor": 8.801631518441797,
+        "netDollars": 24267.60909154205,
+        "avgDollars": 404.46015152570084,
+        "avgMfeR": 0.9000358812668118,
+        "avgMaeR": 0.5123130167713843,
         "optionWorthyRate": 6.666666666666667,
         "greatTradeRate": 6.666666666666667
       },
       "preferredTags": [
-        "unclassified",
         "volume-expansion",
+        "unclassified",
         "options-worthy-burst",
         "opening-drive",
         "clean-breakout"
@@ -2140,7 +1900,76 @@
       }
     },
     {
-      "id": "pattern-specialist-029",
+      "id": "pattern-specialist-026",
+      "status": "candidate-promotable",
+      "routeKey": "OPEN|high-beta-growth|base|open-0930|short",
+      "symbol": "OPEN",
+      "family": "high-beta-growth",
+      "triggerMode": "base",
+      "session": "open-0930",
+      "side": "short",
+      "metrics": {
+        "trades": 22,
+        "wins": 22,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 24150.980181395535,
+        "avgDollars": 1097.7718264270698,
+        "avgMfeR": 0.914980582653573,
+        "avgMaeR": 0.275189635171368,
+        "optionWorthyRate": 18.181818181818183,
+        "greatTradeRate": 9.090909090909092
+      },
+      "preferredTags": [
+        "opening-drive",
+        "options-worthy-burst",
+        "volume-expansion",
+        "unclassified",
+        "compression-pop"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 0.955,
+          "loser": 0,
+          "edge": 0.955
+        },
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.9496,
+          "loser": 0,
+          "edge": 0.9496
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 0.8422,
+          "loser": 0,
+          "edge": 0.8422
+        },
+        {
+          "feature": "relativeStrength",
+          "winner": 0.8141,
+          "loser": 0,
+          "edge": 0.8141
+        }
+      ],
+      "avoidPatterns": [],
+      "suggestedRules": {
+        "minConfidence": 70,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-027",
       "status": "candidate-promotable",
       "routeKey": "OPEN|high-beta-growth|base|open|short",
       "symbol": "OPEN",
@@ -2209,7 +2038,7 @@
       }
     },
     {
-      "id": "pattern-specialist-030",
+      "id": "pattern-specialist-028",
       "status": "candidate-promotable",
       "routeKey": "OPEN|high-beta-growth|base|morning|short",
       "symbol": "OPEN",
@@ -2278,158 +2107,7 @@
       }
     },
     {
-      "id": "pattern-specialist-031",
-      "status": "candidate-promotable",
-      "routeKey": "OPEN|high-beta-growth|base|open-0930|short",
-      "symbol": "OPEN",
-      "family": "high-beta-growth",
-      "triggerMode": "base",
-      "session": "open-0930",
-      "side": "short",
-      "metrics": {
-        "trades": 22,
-        "wins": 22,
-        "losses": 0,
-        "winRate": 100,
-        "profitFactor": 999,
-        "netDollars": 24150.980181011248,
-        "avgDollars": 1097.7718264096022,
-        "avgMfeR": 0.914980582653573,
-        "avgMaeR": 0.275189635171368,
-        "optionWorthyRate": 18.181818181818183,
-        "greatTradeRate": 9.090909090909092
-      },
-      "preferredTags": [
-        "opening-drive",
-        "volume-expansion",
-        "options-worthy-burst",
-        "unclassified",
-        "compression-pop"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "timeEdge",
-          "winner": 1,
-          "loser": 0,
-          "edge": 1
-        },
-        {
-          "feature": "atrExpansion",
-          "winner": 0.955,
-          "loser": 0,
-          "edge": 0.955
-        },
-        {
-          "feature": "intradayTrendQuality",
-          "winner": 0.9496,
-          "loser": 0,
-          "edge": 0.9496
-        },
-        {
-          "feature": "cleanVolume",
-          "winner": 0.8422,
-          "loser": 0,
-          "edge": 0.8422
-        },
-        {
-          "feature": "relativeStrength",
-          "winner": 0.8141,
-          "loser": 0,
-          "edge": 0.8141
-        }
-      ],
-      "avoidPatterns": [],
-      "suggestedRules": {
-        "minConfidence": 70,
-        "minAlphaQuality": 55,
-        "targetR": 0.35,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-032",
-      "status": "candidate-promotable",
-      "routeKey": "OKLO|general|base|open-0930|long",
-      "symbol": "OKLO",
-      "family": "general",
-      "triggerMode": "base",
-      "session": "open-0930",
-      "side": "long",
-      "metrics": {
-        "trades": 24,
-        "wins": 21,
-        "losses": 3,
-        "winRate": 87.5,
-        "profitFactor": 6.950621422053124,
-        "netDollars": 23289.838280309155,
-        "avgDollars": 970.4099283462148,
-        "avgMfeR": 0.7777685767656508,
-        "avgMaeR": 0.49471826710820827,
-        "optionWorthyRate": 4.166666666666666,
-        "greatTradeRate": 0
-      },
-      "preferredTags": [
-        "volume-expansion",
-        "clean-breakout",
-        "options-worthy-burst",
-        "compression-pop",
-        "liquidity-sweep-reclaim"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "priorDayBreakQuality",
-          "winner": 0.4286,
-          "loser": 0,
-          "edge": 0.4286
-        },
-        {
-          "feature": "vwapPressure",
-          "winner": 0.7196,
-          "loser": 0.4337,
-          "edge": 0.2859
-        },
-        {
-          "feature": "volumeFlowAgreement",
-          "winner": 0.5165,
-          "loser": 0.2358,
-          "edge": 0.2807
-        },
-        {
-          "feature": "relVolTodQuality",
-          "winner": 0.4408,
-          "loser": 0.1754,
-          "edge": 0.2654
-        },
-        {
-          "feature": "momentumBurst",
-          "winner": 0.427,
-          "loser": 0.2004,
-          "edge": 0.2266
-        }
-      ],
-      "avoidPatterns": [
-        {
-          "feature": "breakoutQuality",
-          "winner": 0.4841,
-          "loser": 0.8211,
-          "edge": -0.337
-        },
-        {
-          "feature": "cleanBreakout",
-          "winner": 0.4358,
-          "loser": 0.7382,
-          "edge": -0.3024
-        }
-      ],
-      "suggestedRules": {
-        "minConfidence": 70,
-        "minAlphaQuality": 65,
-        "targetR": 0.35,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-033",
+      "id": "pattern-specialist-029",
       "status": "watchlist",
       "routeKey": "IONQ|general|base|all|long",
       "symbol": "IONQ",
@@ -2505,7 +2183,7 @@
       }
     },
     {
-      "id": "pattern-specialist-034",
+      "id": "pattern-specialist-030",
       "status": "watchlist",
       "routeKey": "IONQ|general|base|open|long",
       "symbol": "IONQ",
@@ -2581,7 +2259,7 @@
       }
     },
     {
-      "id": "pattern-specialist-035",
+      "id": "pattern-specialist-031",
       "status": "candidate-promotable",
       "routeKey": "COIN|crypto-proxy|base|open|long",
       "symbol": "COIN",
@@ -2650,7 +2328,89 @@
       }
     },
     {
-      "id": "pattern-specialist-036",
+      "id": "pattern-specialist-032",
+      "status": "watchlist",
+      "routeKey": "WULF|crypto-proxy|base|open-0930|long",
+      "symbol": "WULF",
+      "family": "crypto-proxy",
+      "triggerMode": "base",
+      "session": "open-0930",
+      "side": "long",
+      "metrics": {
+        "trades": 36,
+        "wins": 26,
+        "losses": 10,
+        "winRate": 72.22222222222221,
+        "profitFactor": 3.9245801282215416,
+        "netDollars": 22545.964175355646,
+        "avgDollars": 626.276782648768,
+        "avgMfeR": 0.7836462648691985,
+        "avgMaeR": 0.43400950113017916,
+        "optionWorthyRate": 11.11111111111111,
+        "greatTradeRate": 11.11111111111111
+      },
+      "preferredTags": [
+        "volume-expansion",
+        "opening-drive",
+        "options-worthy-burst",
+        "compression-pop",
+        "clean-breakout"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "marketAlignment",
+          "winner": 0.7308,
+          "loser": 0.4,
+          "edge": 0.3308
+        },
+        {
+          "feature": "trendQuality",
+          "winner": 0.7179,
+          "loser": 0.4667,
+          "edge": 0.2512
+        },
+        {
+          "feature": "priorDayBreakQuality",
+          "winner": 0.2308,
+          "loser": 0,
+          "edge": 0.2308
+        },
+        {
+          "feature": "rangeExpansionQuality",
+          "winner": 0.6552,
+          "loser": 0.4609,
+          "edge": 0.1943
+        },
+        {
+          "feature": "relVolTodQuality",
+          "winner": 0.3542,
+          "loser": 0.2009,
+          "edge": 0.1533
+        }
+      ],
+      "avoidPatterns": [
+        {
+          "feature": "marketImpulse",
+          "winner": 0.4485,
+          "loser": 0.9765,
+          "edge": -0.528
+        },
+        {
+          "feature": "priceAcceleration",
+          "winner": 0.8424,
+          "loser": 1,
+          "edge": -0.1576
+        }
+      ],
+      "suggestedRules": {
+        "minConfidence": 75,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-033",
       "status": "watchlist",
       "routeKey": "WULF|crypto-proxy|base|open|long",
       "symbol": "WULF",
@@ -2732,7 +2492,7 @@
       }
     },
     {
-      "id": "pattern-specialist-037",
+      "id": "pattern-specialist-034",
       "status": "watchlist",
       "routeKey": "WULF|crypto-proxy|base|morning|long",
       "symbol": "WULF",
@@ -2814,95 +2574,7 @@
       }
     },
     {
-      "id": "pattern-specialist-038",
-      "status": "candidate-promotable",
-      "routeKey": "OKLO|general|base|open|long",
-      "symbol": "OKLO",
-      "family": "general",
-      "triggerMode": "base",
-      "session": "open",
-      "side": "long",
-      "metrics": {
-        "trades": 26,
-        "wins": 22,
-        "losses": 4,
-        "winRate": 84.61538461538461,
-        "profitFactor": 4.7468841610230585,
-        "netDollars": 22172.134078033592,
-        "avgDollars": 852.7743876166767,
-        "avgMfeR": 0.7542026979246248,
-        "avgMaeR": 0.5353165621289563,
-        "optionWorthyRate": 3.8461538461538463,
-        "greatTradeRate": 0
-      },
-      "preferredTags": [
-        "volume-expansion",
-        "clean-breakout",
-        "options-worthy-burst",
-        "compression-pop",
-        "opening-drive"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "vwapPressure",
-          "winner": 0.6869,
-          "loser": 0.3252,
-          "edge": 0.3617
-        },
-        {
-          "feature": "priorDayBreakQuality",
-          "winner": 0.4091,
-          "loser": 0.077,
-          "edge": 0.3321
-        },
-        {
-          "feature": "relVolTodQuality",
-          "winner": 0.4539,
-          "loser": 0.1588,
-          "edge": 0.2951
-        },
-        {
-          "feature": "volumeFlowAgreement",
-          "winner": 0.5067,
-          "loser": 0.2775,
-          "edge": 0.2292
-        },
-        {
-          "feature": "efficiency",
-          "winner": 0.8876,
-          "loser": 0.7038,
-          "edge": 0.1838
-        }
-      ],
-      "avoidPatterns": [
-        {
-          "feature": "breakoutQuality",
-          "winner": 0.4621,
-          "loser": 0.8658,
-          "edge": -0.4037
-        },
-        {
-          "feature": "vwapExtensionRisk",
-          "winner": 0.136,
-          "loser": 0.3975,
-          "edge": -0.2615
-        },
-        {
-          "feature": "cleanBreakout",
-          "winner": 0.416,
-          "loser": 0.6063,
-          "edge": -0.1903
-        }
-      ],
-      "suggestedRules": {
-        "minConfidence": 75,
-        "minAlphaQuality": 65,
-        "targetR": 0.35,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-039",
+      "id": "pattern-specialist-035",
       "status": "candidate-promotable",
       "routeKey": "CONL|general|base|open|long",
       "symbol": "CONL",
@@ -2980,7 +2652,7 @@
       }
     },
     {
-      "id": "pattern-specialist-040",
+      "id": "pattern-specialist-036",
       "status": "watchlist",
       "routeKey": "HIVE|low-priced|base|all|long",
       "symbol": "HIVE",
@@ -3062,7 +2734,7 @@
       }
     },
     {
-      "id": "pattern-specialist-041",
+      "id": "pattern-specialist-037",
       "status": "watchlist",
       "routeKey": "HIVE|low-priced|base|morning|long",
       "symbol": "HIVE",
@@ -3144,7 +2816,7 @@
       }
     },
     {
-      "id": "pattern-specialist-042",
+      "id": "pattern-specialist-038",
       "status": "candidate-promotable",
       "routeKey": "NET|general|base|open-0930|short",
       "symbol": "NET",
@@ -3232,7 +2904,7 @@
       }
     },
     {
-      "id": "pattern-specialist-043",
+      "id": "pattern-specialist-039",
       "status": "watchlist",
       "routeKey": "IONQ|general|base|morning|long",
       "symbol": "IONQ",
@@ -3308,7 +2980,89 @@
       }
     },
     {
-      "id": "pattern-specialist-044",
+      "id": "pattern-specialist-040",
+      "status": "candidate-promotable",
+      "routeKey": "MSTX|general|base|open-0930|long",
+      "symbol": "MSTX",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "open-0930",
+      "side": "long",
+      "metrics": {
+        "trades": 22,
+        "wins": 18,
+        "losses": 4,
+        "winRate": 81.81818181818183,
+        "profitFactor": 3.243339760440009,
+        "netDollars": 21436.845363461354,
+        "avgDollars": 974.4020619755161,
+        "avgMfeR": 0.5823513124940531,
+        "avgMaeR": 0.35154760032054666,
+        "optionWorthyRate": 0,
+        "greatTradeRate": 0
+      },
+      "preferredTags": [
+        "opening-drive",
+        "compression-pop",
+        "volume-expansion",
+        "clean-breakout",
+        "options-worthy-burst"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "priorDayBreakQuality",
+          "winner": 0.8889,
+          "loser": 0,
+          "edge": 0.8889
+        },
+        {
+          "feature": "relVolTodQuality",
+          "winner": 0.6928,
+          "loser": 0,
+          "edge": 0.6928
+        },
+        {
+          "feature": "breakoutQuality",
+          "winner": 0.6409,
+          "loser": 0,
+          "edge": 0.6409
+        },
+        {
+          "feature": "bodyQuality",
+          "winner": 0.7415,
+          "loser": 0.2333,
+          "edge": 0.5082
+        },
+        {
+          "feature": "marketImpulse",
+          "winner": 0.9837,
+          "loser": 0.5,
+          "edge": 0.4837
+        }
+      ],
+      "avoidPatterns": [
+        {
+          "feature": "vwapPressure",
+          "winner": 0.2476,
+          "loser": 0.7761,
+          "edge": -0.5285
+        },
+        {
+          "feature": "rejectionWick",
+          "winner": 0.0058,
+          "loser": 0.4833,
+          "edge": -0.4775
+        }
+      ],
+      "suggestedRules": {
+        "minConfidence": 75,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-041",
       "status": "watchlist",
       "routeKey": "QBTS|general|base|open-0930|long",
       "symbol": "QBTS",
@@ -3321,11 +3075,11 @@
         "wins": 30,
         "losses": 8,
         "winRate": 78.94736842105263,
-        "profitFactor": 3.8751644936763143,
-        "netDollars": 20955.47341775767,
-        "avgDollars": 551.4598267830966,
+        "profitFactor": 3.8751644936960274,
+        "netDollars": 20955.473417901347,
+        "avgDollars": 551.4598267868776,
         "avgMfeR": 0.5849323028561172,
-        "avgMaeR": 0.29602981535850614,
+        "avgMaeR": 0.2960298153585062,
         "optionWorthyRate": 0,
         "greatTradeRate": 0
       },
@@ -3377,7 +3131,76 @@
       }
     },
     {
-      "id": "pattern-specialist-045",
+      "id": "pattern-specialist-042",
+      "status": "watchlist",
+      "routeKey": "USAR|general|base|all|long",
+      "symbol": "USAR",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "all",
+      "side": "long",
+      "metrics": {
+        "trades": 14,
+        "wins": 12,
+        "losses": 2,
+        "winRate": 85.71428571428571,
+        "profitFactor": 16.622748369204942,
+        "netDollars": 20943.14731969575,
+        "avgDollars": 1495.939094263982,
+        "avgMfeR": 0.9074170703661275,
+        "avgMaeR": 0.23340796084024426,
+        "optionWorthyRate": 28.57142857142857,
+        "greatTradeRate": 0
+      },
+      "preferredTags": [
+        "volume-expansion",
+        "opening-drive",
+        "options-worthy-burst",
+        "compression-pop",
+        "clean-breakout"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "volumeAcceleration",
+          "winner": 0.6667,
+          "loser": 0,
+          "edge": 0.6667
+        },
+        {
+          "feature": "priceAcceleration",
+          "winner": 0.6667,
+          "loser": 0,
+          "edge": 0.6667
+        },
+        {
+          "feature": "breakoutQuality",
+          "winner": 0.6667,
+          "loser": 0,
+          "edge": 0.6667
+        },
+        {
+          "feature": "volumeFlowAgreement",
+          "winner": 0.7093,
+          "loser": 0.128,
+          "edge": 0.5813
+        },
+        {
+          "feature": "cleanBreakout",
+          "winner": 0.557,
+          "loser": 0,
+          "edge": 0.557
+        }
+      ],
+      "avoidPatterns": [],
+      "suggestedRules": {
+        "minConfidence": 70,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-043",
       "status": "watchlist",
       "routeKey": "USAR|general|base|open|long",
       "symbol": "USAR",
@@ -3446,7 +3269,7 @@
       }
     },
     {
-      "id": "pattern-specialist-046",
+      "id": "pattern-specialist-044",
       "status": "watchlist",
       "routeKey": "USAR|general|base|morning|long",
       "symbol": "USAR",
@@ -3515,7 +3338,7 @@
       }
     },
     {
-      "id": "pattern-specialist-047",
+      "id": "pattern-specialist-045",
       "status": "watchlist",
       "routeKey": "USAR|general|base|open-0930|long",
       "symbol": "USAR",
@@ -3584,95 +3407,7 @@
       }
     },
     {
-      "id": "pattern-specialist-048",
-      "status": "candidate-promotable",
-      "routeKey": "HIMS|general|base|all|long",
-      "symbol": "HIMS",
-      "family": "general",
-      "triggerMode": "base",
-      "session": "all",
-      "side": "long",
-      "metrics": {
-        "trades": 25,
-        "wins": 20,
-        "losses": 5,
-        "winRate": 80,
-        "profitFactor": 3.884944352942521,
-        "netDollars": 20846.91698572581,
-        "avgDollars": 833.8766794290324,
-        "avgMfeR": 0.8928748715294005,
-        "avgMaeR": 0.43354978812228173,
-        "optionWorthyRate": 16,
-        "greatTradeRate": 16
-      },
-      "preferredTags": [
-        "opening-drive",
-        "volume-expansion",
-        "options-worthy-burst",
-        "clean-breakout",
-        "unclassified"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "marketAlignment",
-          "winner": 0.75,
-          "loser": 0.1,
-          "edge": 0.65
-        },
-        {
-          "feature": "priorDayBreakQuality",
-          "winner": 0.4,
-          "loser": 0.146,
-          "edge": 0.254
-        },
-        {
-          "feature": "openingDriveQuality",
-          "winner": 0.5348,
-          "loser": 0.3228,
-          "edge": 0.212
-        }
-      ],
-      "avoidPatterns": [
-        {
-          "feature": "breakoutQuality",
-          "winner": 0.4632,
-          "loser": 1,
-          "edge": -0.5368
-        },
-        {
-          "feature": "cleanBreakout",
-          "winner": 0.3208,
-          "loser": 0.6582,
-          "edge": -0.3374
-        },
-        {
-          "feature": "volumeFlowAgreement",
-          "winner": 0.5508,
-          "loser": 0.8087,
-          "edge": -0.2579
-        },
-        {
-          "feature": "cleanVolume",
-          "winner": 0.6776,
-          "loser": 0.9128,
-          "edge": -0.2352
-        },
-        {
-          "feature": "volumeQuality",
-          "winner": 0.58,
-          "loser": 0.812,
-          "edge": -0.232
-        }
-      ],
-      "suggestedRules": {
-        "minConfidence": 75,
-        "minAlphaQuality": 55,
-        "targetR": 0.35,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-049",
+      "id": "pattern-specialist-046",
       "status": "candidate-promotable",
       "routeKey": "AMC|low-priced|base|all|short",
       "symbol": "AMC",
@@ -3754,7 +3489,7 @@
       }
     },
     {
-      "id": "pattern-specialist-050",
+      "id": "pattern-specialist-047",
       "status": "candidate-promotable",
       "routeKey": "AMC|low-priced|base|open|short",
       "symbol": "AMC",
@@ -3836,7 +3571,7 @@
       }
     },
     {
-      "id": "pattern-specialist-051",
+      "id": "pattern-specialist-048",
       "status": "candidate-promotable",
       "routeKey": "AMC|low-priced|base|morning|short",
       "symbol": "AMC",
@@ -3918,7 +3653,7 @@
       }
     },
     {
-      "id": "pattern-specialist-052",
+      "id": "pattern-specialist-049",
       "status": "candidate-promotable",
       "routeKey": "AMC|low-priced|base|open-0930|short",
       "symbol": "AMC",
@@ -4000,7 +3735,7 @@
       }
     },
     {
-      "id": "pattern-specialist-053",
+      "id": "pattern-specialist-050",
       "status": "watchlist",
       "routeKey": "COIN|crypto-proxy|base|all|long",
       "symbol": "COIN",
@@ -4082,7 +3817,7 @@
       }
     },
     {
-      "id": "pattern-specialist-054",
+      "id": "pattern-specialist-051",
       "status": "watchlist",
       "routeKey": "COIN|crypto-proxy|base|morning|long",
       "symbol": "COIN",
@@ -4164,7 +3899,7 @@
       }
     },
     {
-      "id": "pattern-specialist-055",
+      "id": "pattern-specialist-052",
       "status": "watchlist",
       "routeKey": "DDOG|general|base|all|short",
       "symbol": "DDOG",
@@ -4233,7 +3968,7 @@
       }
     },
     {
-      "id": "pattern-specialist-056",
+      "id": "pattern-specialist-053",
       "status": "watchlist",
       "routeKey": "SPCE|low-priced|base|all|short",
       "symbol": "SPCE",
@@ -4302,7 +4037,7 @@
       }
     },
     {
-      "id": "pattern-specialist-057",
+      "id": "pattern-specialist-054",
       "status": "watchlist",
       "routeKey": "SPCE|low-priced|base|open|short",
       "symbol": "SPCE",
@@ -4371,7 +4106,7 @@
       }
     },
     {
-      "id": "pattern-specialist-058",
+      "id": "pattern-specialist-055",
       "status": "watchlist",
       "routeKey": "SPCE|low-priced|base|morning|short",
       "symbol": "SPCE",
@@ -4440,7 +4175,7 @@
       }
     },
     {
-      "id": "pattern-specialist-059",
+      "id": "pattern-specialist-056",
       "status": "watchlist",
       "routeKey": "SPCE|low-priced|base|open-0930|short",
       "symbol": "SPCE",
@@ -4509,7 +4244,7 @@
       }
     },
     {
-      "id": "pattern-specialist-060",
+      "id": "pattern-specialist-057",
       "status": "candidate-promotable",
       "routeKey": "AMC|low-priced|base|all|long",
       "symbol": "AMC",
@@ -4597,7 +4332,7 @@
       }
     },
     {
-      "id": "pattern-specialist-061",
+      "id": "pattern-specialist-058",
       "status": "watchlist",
       "routeKey": "CONL|general|base|open-0930|long",
       "symbol": "CONL",
@@ -4662,175 +4397,7 @@
       }
     },
     {
-      "id": "pattern-specialist-062",
-      "status": "candidate-promotable",
-      "routeKey": "MSTX|general|base|open-0930|long",
-      "symbol": "MSTX",
-      "family": "general",
-      "triggerMode": "base",
-      "session": "open-0930",
-      "side": "long",
-      "metrics": {
-        "trades": 20,
-        "wins": 16,
-        "losses": 4,
-        "winRate": 80,
-        "profitFactor": 3.0606348071105596,
-        "netDollars": 19690.95831561907,
-        "avgDollars": 984.5479157809535,
-        "avgMfeR": 0.5550100231994003,
-        "avgMaeR": 0.3716888879298509,
-        "optionWorthyRate": 0,
-        "greatTradeRate": 0
-      },
-      "preferredTags": [
-        "opening-drive",
-        "compression-pop",
-        "volume-expansion"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "priorDayBreakQuality",
-          "winner": 1,
-          "loser": 0,
-          "edge": 1
-        },
-        {
-          "feature": "relVolTodQuality",
-          "winner": 0.7106,
-          "loser": 0,
-          "edge": 0.7106
-        },
-        {
-          "feature": "breakoutQuality",
-          "winner": 0.5961,
-          "loser": 0,
-          "edge": 0.5961
-        },
-        {
-          "feature": "volumeAcceleration",
-          "winner": 0.5,
-          "loser": 0,
-          "edge": 0.5
-        },
-        {
-          "feature": "marketImpulse",
-          "winner": 1,
-          "loser": 0.5,
-          "edge": 0.5
-        }
-      ],
-      "avoidPatterns": [
-        {
-          "feature": "vwapPressure",
-          "winner": 0.2482,
-          "loser": 0.7761,
-          "edge": -0.5279
-        },
-        {
-          "feature": "marketAlignment",
-          "winner": 0.5,
-          "loser": 1,
-          "edge": -0.5
-        },
-        {
-          "feature": "rejectionWick",
-          "winner": 0.0065,
-          "loser": 0.4833,
-          "edge": -0.4768
-        }
-      ],
-      "suggestedRules": {
-        "minConfidence": 75,
-        "minAlphaQuality": 55,
-        "targetR": 0.35,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-063",
-      "status": "candidate-promotable",
-      "routeKey": "AMC|low-priced|base|morning|long",
-      "symbol": "AMC",
-      "family": "low-priced",
-      "triggerMode": "base",
-      "session": "morning",
-      "side": "long",
-      "metrics": {
-        "trades": 35,
-        "wins": 30,
-        "losses": 5,
-        "winRate": 85.71428571428571,
-        "profitFactor": 4.316684827172541,
-        "netDollars": 19690.33775845846,
-        "avgDollars": 562.5810788130989,
-        "avgMfeR": 0.6144636206878221,
-        "avgMaeR": 0.3783691585417404,
-        "optionWorthyRate": 2.857142857142857,
-        "greatTradeRate": 2.857142857142857
-      },
-      "preferredTags": [
-        "volume-expansion",
-        "opening-drive",
-        "compression-pop",
-        "unclassified",
-        "options-worthy-burst"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "marketAlignment",
-          "winner": 0.55,
-          "loser": 0,
-          "edge": 0.55
-        },
-        {
-          "feature": "breakoutQuality",
-          "winner": 0.4188,
-          "loser": 0,
-          "edge": 0.4188
-        },
-        {
-          "feature": "volumeAcceleration",
-          "winner": 0.7627,
-          "loser": 0.4617,
-          "edge": 0.301
-        },
-        {
-          "feature": "vwapExtensionRisk",
-          "winner": 0.2877,
-          "loser": 0,
-          "edge": 0.2877
-        },
-        {
-          "feature": "priceAcceleration",
-          "winner": 0.8826,
-          "loser": 0.6312,
-          "edge": 0.2514
-        }
-      ],
-      "avoidPatterns": [
-        {
-          "feature": "vwapPressure",
-          "winner": 0.4994,
-          "loser": 0.7344,
-          "edge": -0.235
-        },
-        {
-          "feature": "cleanVolume",
-          "winner": 0.3425,
-          "loser": 0.5525,
-          "edge": -0.21
-        }
-      ],
-      "suggestedRules": {
-        "minConfidence": 70,
-        "minAlphaQuality": 55,
-        "targetR": 0.35,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-064",
+      "id": "pattern-specialist-059",
       "status": "candidate-promotable",
       "routeKey": "SOFI|high-beta-growth|base|all|short",
       "symbol": "SOFI",
@@ -4899,83 +4466,7 @@
       }
     },
     {
-      "id": "pattern-specialist-065",
-      "status": "candidate-promotable",
-      "routeKey": "CRDO|general|base|all|short",
-      "symbol": "CRDO",
-      "family": "general",
-      "triggerMode": "base",
-      "session": "all",
-      "side": "short",
-      "metrics": {
-        "trades": 21,
-        "wins": 18,
-        "losses": 3,
-        "winRate": 85.71428571428571,
-        "profitFactor": 4.943888755547775,
-        "netDollars": 19470.21326747476,
-        "avgDollars": 927.1530127368933,
-        "avgMfeR": 1.171718622237349,
-        "avgMaeR": 0.3793785069685332,
-        "optionWorthyRate": 33.33333333333333,
-        "greatTradeRate": 19.047619047619047
-      },
-      "preferredTags": [
-        "unclassified",
-        "volume-expansion",
-        "options-worthy-burst",
-        "clean-breakout",
-        "compression-pop"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "volumeAcceleration",
-          "winner": 0.6193,
-          "loser": 0.041,
-          "edge": 0.5783
-        },
-        {
-          "feature": "volumeQuality",
-          "winner": 0.6386,
-          "loser": 0.2772,
-          "edge": 0.3614
-        },
-        {
-          "feature": "volumeFlowAgreement",
-          "winner": 0.5581,
-          "loser": 0.2376,
-          "edge": 0.3205
-        },
-        {
-          "feature": "relativeVolume",
-          "winner": 0.7116,
-          "loser": 0.4232,
-          "edge": 0.2884
-        },
-        {
-          "feature": "relVolTodQuality",
-          "winner": 0.289,
-          "loser": 0.0044,
-          "edge": 0.2846
-        }
-      ],
-      "avoidPatterns": [
-        {
-          "feature": "marketAlignment",
-          "winner": 0.1111,
-          "loser": 0.3333,
-          "edge": -0.2222
-        }
-      ],
-      "suggestedRules": {
-        "minConfidence": 70,
-        "minAlphaQuality": 55,
-        "targetR": 0.5,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-066",
+      "id": "pattern-specialist-060",
       "status": "watchlist",
       "routeKey": "NIO|ev-auto|base|open-0930|long",
       "symbol": "NIO",
@@ -5051,7 +4542,7 @@
       }
     },
     {
-      "id": "pattern-specialist-067",
+      "id": "pattern-specialist-061",
       "status": "candidate-promotable",
       "routeKey": "PLTR|high-beta-growth|base|open|short",
       "symbol": "PLTR",
@@ -5064,11 +4555,11 @@
         "wins": 44,
         "losses": 4,
         "winRate": 91.66666666666666,
-        "profitFactor": 7.261576707491445,
+        "profitFactor": 7.2615767074914475,
         "netDollars": 19076.632002955488,
         "avgDollars": 397.429833394906,
-        "avgMfeR": 0.617933941049667,
-        "avgMaeR": 0.37091121060606186,
+        "avgMfeR": 0.6179339410496671,
+        "avgMaeR": 0.3709112106060619,
         "optionWorthyRate": 4.166666666666666,
         "greatTradeRate": 0
       },
@@ -5127,7 +4618,7 @@
       }
     },
     {
-      "id": "pattern-specialist-068",
+      "id": "pattern-specialist-062",
       "status": "candidate-promotable",
       "routeKey": "DDOG|general|base|morning|short",
       "symbol": "DDOG",
@@ -5196,7 +4687,7 @@
       }
     },
     {
-      "id": "pattern-specialist-069",
+      "id": "pattern-specialist-063",
       "status": "watchlist",
       "routeKey": "IONQ|general|base|open-0930|long",
       "symbol": "IONQ",
@@ -5265,7 +4756,7 @@
       }
     },
     {
-      "id": "pattern-specialist-070",
+      "id": "pattern-specialist-064",
       "status": "candidate-promotable",
       "routeKey": "PLTR|high-beta-growth|base|all|short",
       "symbol": "PLTR",
@@ -5278,11 +4769,11 @@
         "wins": 52,
         "losses": 8,
         "winRate": 86.66666666666667,
-        "profitFactor": 4.542563082615969,
+        "profitFactor": 4.542563082615968,
         "netDollars": 18756.40642063176,
         "avgDollars": 312.606773677196,
-        "avgMfeR": 0.5720611366237663,
-        "avgMaeR": 0.40944360383066175,
+        "avgMfeR": 0.5720611366237666,
+        "avgMaeR": 0.40944360383066186,
         "optionWorthyRate": 3.3333333333333335,
         "greatTradeRate": 0
       },
@@ -5341,7 +4832,7 @@
       }
     },
     {
-      "id": "pattern-specialist-071",
+      "id": "pattern-specialist-065",
       "status": "candidate-promotable",
       "routeKey": "NET|general|base|open|short",
       "symbol": "NET",
@@ -5429,7 +4920,7 @@
       }
     },
     {
-      "id": "pattern-specialist-072",
+      "id": "pattern-specialist-066",
       "status": "watchlist",
       "routeKey": "AAOI|general|base|all|short",
       "symbol": "AAOI",
@@ -5498,7 +4989,7 @@
       }
     },
     {
-      "id": "pattern-specialist-073",
+      "id": "pattern-specialist-067",
       "status": "watchlist",
       "routeKey": "AAOI|general|base|open|short",
       "symbol": "AAOI",
@@ -5567,7 +5058,7 @@
       }
     },
     {
-      "id": "pattern-specialist-074",
+      "id": "pattern-specialist-068",
       "status": "watchlist",
       "routeKey": "AAOI|general|base|morning|short",
       "symbol": "AAOI",
@@ -5636,7 +5127,7 @@
       }
     },
     {
-      "id": "pattern-specialist-075",
+      "id": "pattern-specialist-069",
       "status": "watchlist",
       "routeKey": "AAOI|general|base|open-0930|short",
       "symbol": "AAOI",
@@ -5705,7 +5196,7 @@
       }
     },
     {
-      "id": "pattern-specialist-076",
+      "id": "pattern-specialist-070",
       "status": "candidate-promotable",
       "routeKey": "AFRM|high-beta-growth|base|morning|long",
       "symbol": "AFRM",
@@ -5718,11 +5209,11 @@
         "wins": 40,
         "losses": 6,
         "winRate": 86.95652173913044,
-        "profitFactor": 12.44173434662537,
-        "netDollars": 18416.91546823906,
-        "avgDollars": 400.3677275704144,
-        "avgMfeR": 0.6509277506052408,
-        "avgMaeR": 0.45210223469258404,
+        "profitFactor": 12.441734346625367,
+        "netDollars": 18416.915468239058,
+        "avgDollars": 400.36772757041433,
+        "avgMfeR": 0.6509277506052409,
+        "avgMaeR": 0.45210223469258415,
         "optionWorthyRate": 4.3478260869565215,
         "greatTradeRate": 4.3478260869565215
       },
@@ -5793,7 +5284,7 @@
       }
     },
     {
-      "id": "pattern-specialist-077",
+      "id": "pattern-specialist-071",
       "status": "watchlist",
       "routeKey": "NIO|ev-auto|base|open|long",
       "symbol": "NIO",
@@ -5869,165 +5360,7 @@
       }
     },
     {
-      "id": "pattern-specialist-078",
-      "status": "candidate-promotable",
-      "routeKey": "PL|general|base|all|short",
-      "symbol": "PL",
-      "family": "general",
-      "triggerMode": "base",
-      "session": "all",
-      "side": "short",
-      "metrics": {
-        "trades": 21,
-        "wins": 20,
-        "losses": 1,
-        "winRate": 95.23809523809523,
-        "profitFactor": 11.484732086990759,
-        "netDollars": 18174.46509453788,
-        "avgDollars": 865.4507187875182,
-        "avgMfeR": 1.0367205488794264,
-        "avgMaeR": 0.5227288052333547,
-        "optionWorthyRate": 4.761904761904762,
-        "greatTradeRate": 0
-      },
-      "preferredTags": [
-        "volume-expansion",
-        "opening-drive",
-        "options-worthy-burst",
-        "unclassified",
-        "clean-breakout"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "vwapExtensionRisk",
-          "winner": 0.478,
-          "loser": 0,
-          "edge": 0.478
-        }
-      ],
-      "avoidPatterns": [
-        {
-          "feature": "volumeAcceleration",
-          "winner": 0.2903,
-          "loser": 1,
-          "edge": -0.7097
-        },
-        {
-          "feature": "volumeQuality",
-          "winner": 0.3881,
-          "loser": 1,
-          "edge": -0.6119
-        },
-        {
-          "feature": "vwapPressure",
-          "winner": 0.299,
-          "loser": 0.8946,
-          "edge": -0.5956
-        },
-        {
-          "feature": "marketAlignment",
-          "winner": 0.425,
-          "loser": 1,
-          "edge": -0.575
-        },
-        {
-          "feature": "breakoutQuality",
-          "winner": 0.4593,
-          "loser": 1,
-          "edge": -0.5407
-        }
-      ],
-      "suggestedRules": {
-        "minConfidence": 70,
-        "minAlphaQuality": 65,
-        "targetR": 0.5,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-079",
-      "status": "watchlist",
-      "routeKey": "NNE|general|base|all|long",
-      "symbol": "NNE",
-      "family": "general",
-      "triggerMode": "base",
-      "session": "all",
-      "side": "long",
-      "metrics": {
-        "trades": 20,
-        "wins": 14,
-        "losses": 6,
-        "winRate": 70,
-        "profitFactor": 3.9388981518103394,
-        "netDollars": 18012.28976175823,
-        "avgDollars": 900.6144880879116,
-        "avgMfeR": 1.665960795130091,
-        "avgMaeR": 0.28012617595354444,
-        "optionWorthyRate": 40,
-        "greatTradeRate": 20
-      },
-      "preferredTags": [
-        "volume-expansion",
-        "options-worthy-burst",
-        "opening-drive",
-        "clean-breakout",
-        "unclassified"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "bodyQuality",
-          "winner": 0.6575,
-          "loser": 0.2951,
-          "edge": 0.3624
-        },
-        {
-          "feature": "volumeFlowAgreement",
-          "winner": 0.6447,
-          "loser": 0.3372,
-          "edge": 0.3075
-        }
-      ],
-      "avoidPatterns": [
-        {
-          "feature": "marketAlignment",
-          "winner": 0.3214,
-          "loser": 0.8333,
-          "edge": -0.5119
-        },
-        {
-          "feature": "openingDriveQuality",
-          "winner": 0.2295,
-          "loser": 0.5882,
-          "edge": -0.3587
-        },
-        {
-          "feature": "rejectionWick",
-          "winner": 0.0977,
-          "loser": 0.446,
-          "edge": -0.3483
-        },
-        {
-          "feature": "relVolTodQuality",
-          "winner": 0.4405,
-          "loser": 0.7854,
-          "edge": -0.3449
-        },
-        {
-          "feature": "emaSlope",
-          "winner": 0.7111,
-          "loser": 1,
-          "edge": -0.2889
-        }
-      ],
-      "suggestedRules": {
-        "minConfidence": 75,
-        "minAlphaQuality": 55,
-        "targetR": 0.75,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-080",
+      "id": "pattern-specialist-072",
       "status": "watchlist",
       "routeKey": "DDOG|general|base|open|short",
       "symbol": "DDOG",
@@ -6096,7 +5429,7 @@
       }
     },
     {
-      "id": "pattern-specialist-081",
+      "id": "pattern-specialist-073",
       "status": "watchlist",
       "routeKey": "DDOG|general|base|open-0930|short",
       "symbol": "DDOG",
@@ -6110,8 +5443,8 @@
         "losses": 6,
         "winRate": 78.57142857142857,
         "profitFactor": 4.094025247083947,
-        "netDollars": 17986.577249400103,
-        "avgDollars": 642.3777589071466,
+        "netDollars": 17986.5772494001,
+        "avgDollars": 642.3777589071464,
         "avgMfeR": 1.0784678759543482,
         "avgMaeR": 0.31871624455538383,
         "optionWorthyRate": 14.285714285714285,
@@ -6165,95 +5498,7 @@
       }
     },
     {
-      "id": "pattern-specialist-082",
-      "status": "watchlist",
-      "routeKey": "HIMS|general|base|open-0930|long",
-      "symbol": "HIMS",
-      "family": "general",
-      "triggerMode": "base",
-      "session": "open-0930",
-      "side": "long",
-      "metrics": {
-        "trades": 18,
-        "wins": 14,
-        "losses": 4,
-        "winRate": 77.77777777777779,
-        "profitFactor": 3.8536841775693325,
-        "netDollars": 17985.4239137718,
-        "avgDollars": 999.1902174317667,
-        "avgMfeR": 1.0399661376280378,
-        "avgMaeR": 0.412437514485769,
-        "optionWorthyRate": 22.22222222222222,
-        "greatTradeRate": 22.22222222222222
-      },
-      "preferredTags": [
-        "opening-drive",
-        "volume-expansion",
-        "options-worthy-burst",
-        "clean-breakout",
-        "compression-pop"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "marketAlignment",
-          "winner": 0.7143,
-          "loser": 0.125,
-          "edge": 0.5893
-        },
-        {
-          "feature": "openingDriveQuality",
-          "winner": 0.7318,
-          "loser": 0.4035,
-          "edge": 0.3283
-        },
-        {
-          "feature": "priorDayBreakQuality",
-          "winner": 0.5,
-          "loser": 0.1825,
-          "edge": 0.3175
-        }
-      ],
-      "avoidPatterns": [
-        {
-          "feature": "breakoutQuality",
-          "winner": 0.5141,
-          "loser": 1,
-          "edge": -0.4859
-        },
-        {
-          "feature": "cleanBreakout",
-          "winner": 0.4117,
-          "loser": 0.6994,
-          "edge": -0.2877
-        },
-        {
-          "feature": "volumeFlowAgreement",
-          "winner": 0.6122,
-          "loser": 0.8757,
-          "edge": -0.2635
-        },
-        {
-          "feature": "volumeQuality",
-          "winner": 0.6306,
-          "loser": 0.8798,
-          "edge": -0.2492
-        },
-        {
-          "feature": "volumeAcceleration",
-          "winner": 0.5033,
-          "loser": 0.75,
-          "edge": -0.2467
-        }
-      ],
-      "suggestedRules": {
-        "minConfidence": 75,
-        "minAlphaQuality": 55,
-        "targetR": 0.5,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-083",
+      "id": "pattern-specialist-074",
       "status": "candidate-promotable",
       "routeKey": "NET|general|base|morning|short",
       "symbol": "NET",
@@ -6341,7 +5586,7 @@
       }
     },
     {
-      "id": "pattern-specialist-084",
+      "id": "pattern-specialist-075",
       "status": "watchlist",
       "routeKey": "IONQ|general|base|all|short",
       "symbol": "IONQ",
@@ -6410,7 +5655,7 @@
       }
     },
     {
-      "id": "pattern-specialist-085",
+      "id": "pattern-specialist-076",
       "status": "watchlist",
       "routeKey": "OPEN|high-beta-growth|base|all|long",
       "symbol": "OPEN",
@@ -6492,7 +5737,7 @@
       }
     },
     {
-      "id": "pattern-specialist-086",
+      "id": "pattern-specialist-077",
       "status": "candidate-promotable",
       "routeKey": "PLTR|high-beta-growth|base|morning|short",
       "symbol": "PLTR",
@@ -6505,10 +5750,10 @@
         "wins": 44,
         "losses": 6,
         "winRate": 88,
-        "profitFactor": 4.556180823302643,
+        "profitFactor": 4.556180823302644,
         "netDollars": 17267.593251671828,
         "avgDollars": 345.3518650334365,
-        "avgMfeR": 0.593874164005919,
+        "avgMfeR": 0.5938741640059191,
         "avgMaeR": 0.4023247649145765,
         "optionWorthyRate": 4,
         "greatTradeRate": 0
@@ -6568,7 +5813,7 @@
       }
     },
     {
-      "id": "pattern-specialist-087",
+      "id": "pattern-specialist-078",
       "status": "candidate-promotable",
       "routeKey": "AI|general|base|open|short",
       "symbol": "AI",
@@ -6637,7 +5882,7 @@
       }
     },
     {
-      "id": "pattern-specialist-088",
+      "id": "pattern-specialist-079",
       "status": "candidate-promotable",
       "routeKey": "AI|general|base|morning|short",
       "symbol": "AI",
@@ -6706,7 +5951,76 @@
       }
     },
     {
-      "id": "pattern-specialist-089",
+      "id": "pattern-specialist-080",
+      "status": "candidate-promotable",
+      "routeKey": "AMC|low-priced|base|morning|long",
+      "symbol": "AMC",
+      "family": "low-priced",
+      "triggerMode": "base",
+      "session": "morning",
+      "side": "long",
+      "metrics": {
+        "trades": 20,
+        "wins": 20,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 16962.27075507529,
+        "avgDollars": 848.1135377537645,
+        "avgMfeR": 0.7166299612776338,
+        "avgMaeR": 0.34266434939768975,
+        "optionWorthyRate": 0,
+        "greatTradeRate": 0
+      },
+      "preferredTags": [
+        "volume-expansion",
+        "compression-pop",
+        "opening-drive",
+        "clean-breakout",
+        "options-worthy-burst"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "priceAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "volumeAcceleration",
+          "winner": 0.9174,
+          "loser": 0,
+          "edge": 0.9174
+        },
+        {
+          "feature": "relativeStrength",
+          "winner": 0.8878,
+          "loser": 0,
+          "edge": 0.8878
+        },
+        {
+          "feature": "dayPositionQuality",
+          "winner": 0.8841,
+          "loser": 0,
+          "edge": 0.8841
+        }
+      ],
+      "avoidPatterns": [],
+      "suggestedRules": {
+        "minConfidence": 70,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-081",
       "status": "candidate-promotable",
       "routeKey": "PLTR|high-beta-growth|base|open|long",
       "symbol": "PLTR",
@@ -6720,8 +6034,8 @@
         "losses": 8,
         "winRate": 84,
         "profitFactor": 8.663080748077261,
-        "netDollars": 16493.364706319244,
-        "avgDollars": 329.8672941263849,
+        "netDollars": 16493.364706319247,
+        "avgDollars": 329.86729412638493,
         "avgMfeR": 0.5793776767891267,
         "avgMaeR": 0.4636790251970232,
         "optionWorthyRate": 0,
@@ -6730,8 +6044,8 @@
       "preferredTags": [
         "opening-drive",
         "volume-expansion",
-        "unclassified",
         "compression-pop",
+        "unclassified",
         "clean-breakout"
       ],
       "featureBoosts": [
@@ -6794,7 +6108,7 @@
       }
     },
     {
-      "id": "pattern-specialist-090",
+      "id": "pattern-specialist-082",
       "status": "candidate-promotable",
       "routeKey": "PLTR|high-beta-growth|base|morning|long",
       "symbol": "PLTR",
@@ -6808,8 +6122,8 @@
         "losses": 8,
         "winRate": 84,
         "profitFactor": 8.663080748077261,
-        "netDollars": 16493.364706319244,
-        "avgDollars": 329.8672941263849,
+        "netDollars": 16493.364706319247,
+        "avgDollars": 329.86729412638493,
         "avgMfeR": 0.5793776767891267,
         "avgMaeR": 0.4636790251970232,
         "optionWorthyRate": 0,
@@ -6818,8 +6132,8 @@
       "preferredTags": [
         "opening-drive",
         "volume-expansion",
-        "unclassified",
         "compression-pop",
+        "unclassified",
         "clean-breakout"
       ],
       "featureBoosts": [
@@ -6882,7 +6196,7 @@
       }
     },
     {
-      "id": "pattern-specialist-091",
+      "id": "pattern-specialist-083",
       "status": "candidate-promotable",
       "routeKey": "AFRM|high-beta-growth|base|open|long",
       "symbol": "AFRM",
@@ -6970,7 +6284,7 @@
       }
     },
     {
-      "id": "pattern-specialist-092",
+      "id": "pattern-specialist-084",
       "status": "candidate-promotable",
       "routeKey": "AFRM|high-beta-growth|base|open-0930|long",
       "symbol": "AFRM",
@@ -7045,9 +6359,9 @@
         },
         {
           "feature": "relVolTodQuality",
-          "winner": 0.3324,
+          "winner": 0.3547,
           "loser": 0.663,
-          "edge": -0.3306
+          "edge": -0.3083
         }
       ],
       "suggestedRules": {
@@ -7058,7 +6372,7 @@
       }
     },
     {
-      "id": "pattern-specialist-093",
+      "id": "pattern-specialist-085",
       "status": "candidate-promotable",
       "routeKey": "HOOD|crypto-proxy|base|all|short",
       "symbol": "HOOD",
@@ -7134,163 +6448,158 @@
       }
     },
     {
-      "id": "pattern-specialist-094",
-      "status": "watchlist",
-      "routeKey": "MU|semis-ai|momentum-acceleration|powerhour|long",
-      "symbol": "MU",
-      "family": "semis-ai",
-      "triggerMode": "momentum-acceleration",
-      "session": "powerhour",
-      "side": "long",
-      "metrics": {
-        "trades": 13,
-        "wins": 12,
-        "losses": 1,
-        "winRate": 92.3076923076923,
-        "profitFactor": 24.563700675274198,
-        "netDollars": 16324.545363656942,
-        "avgDollars": 1255.7342587428416,
-        "avgMfeR": 2.922704291755749,
-        "avgMaeR": 0.6703284352887622,
-        "optionWorthyRate": 15.384615384615385,
-        "greatTradeRate": 15.384615384615385
-      },
-      "preferredTags": [
-        "options-worthy-burst",
-        "unclassified",
-        "volume-expansion",
-        "late-chase-risk"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "marketAlignment",
-          "winner": 0.7917,
-          "loser": 0,
-          "edge": 0.7917
-        },
-        {
-          "feature": "breakoutQuality",
-          "winner": 0.4357,
-          "loser": 0,
-          "edge": 0.4357
-        },
-        {
-          "feature": "trendQuality",
-          "winner": 0.75,
-          "loser": 0.3333,
-          "edge": 0.4167
-        }
-      ],
-      "avoidPatterns": [
-        {
-          "feature": "priorDayBreakQuality",
-          "winner": 0.3333,
-          "loser": 1,
-          "edge": -0.6667
-        },
-        {
-          "feature": "volumeAcceleration",
-          "winner": 0.5386,
-          "loser": 1,
-          "edge": -0.4614
-        },
-        {
-          "feature": "momentumBurst",
-          "winner": 0.3536,
-          "loser": 0.8069,
-          "edge": -0.4533
-        },
-        {
-          "feature": "optionBurstShape",
-          "winner": 0.3366,
-          "loser": 0.7879,
-          "edge": -0.4513
-        },
-        {
-          "feature": "volumeFlowAgreement",
-          "winner": 0.4511,
-          "loser": 0.8682,
-          "edge": -0.4171
-        }
-      ],
-      "suggestedRules": {
-        "minConfidence": 70,
-        "minAlphaQuality": 65,
-        "targetR": 0.75,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-095",
+      "id": "pattern-specialist-086",
       "status": "candidate-promotable",
-      "routeKey": "QBTS|general|volume-shock|morning|long",
-      "symbol": "QBTS",
+      "routeKey": "AI|general|base|open-0930|short",
+      "symbol": "AI",
       "family": "general",
-      "triggerMode": "volume-shock",
-      "session": "morning",
-      "side": "long",
+      "triggerMode": "base",
+      "session": "open-0930",
+      "side": "short",
       "metrics": {
-        "trades": 23,
-        "wins": 20,
-        "losses": 3,
-        "winRate": 86.95652173913044,
-        "profitFactor": 4.248397457788512,
-        "netDollars": 16039.041303851103,
-        "avgDollars": 697.3496219065697,
-        "avgMfeR": 0.803972693697283,
-        "avgMaeR": 0.5572678645714543,
+        "trades": 22,
+        "wins": 22,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 16139.866018623661,
+        "avgDollars": 733.6302735738028,
+        "avgMfeR": 0.7710975063898545,
+        "avgMaeR": 0.12063946564487128,
         "optionWorthyRate": 0,
         "greatTradeRate": 0
       },
       "preferredTags": [
         "volume-expansion",
-        "options-worthy-burst",
+        "unclassified",
         "clean-breakout",
         "opening-drive",
-        "compression-pop"
+        "options-worthy-burst"
       ],
-      "featureBoosts": [],
-      "avoidPatterns": [
+      "featureBoosts": [
         {
-          "feature": "vwapPressure",
-          "winner": 0.5573,
-          "loser": 0.7962,
-          "edge": -0.2389
+          "feature": "priceAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
         },
         {
-          "feature": "volumeAcceleration",
-          "winner": 0.5711,
-          "loser": 0.7821,
-          "edge": -0.211
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
         },
         {
-          "feature": "breakoutQuality",
-          "winner": 0.7918,
-          "loser": 1,
-          "edge": -0.2082
+          "feature": "relativeStrength",
+          "winner": 0.9881,
+          "loser": 0,
+          "edge": 0.9881
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 0.9662,
+          "loser": 0,
+          "edge": 0.9662
+        },
+        {
+          "feature": "intradayTrendQuality",
+          "winner": 0.9353,
+          "loser": 0,
+          "edge": 0.9353
+        }
+      ],
+      "avoidPatterns": [],
+      "suggestedRules": {
+        "minConfidence": 70,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-087",
+      "status": "candidate-promotable",
+      "routeKey": "RBLX|high-beta-growth|base|open-0930|long",
+      "symbol": "RBLX",
+      "family": "high-beta-growth",
+      "triggerMode": "base",
+      "session": "open-0930",
+      "side": "long",
+      "metrics": {
+        "trades": 44,
+        "wins": 36,
+        "losses": 8,
+        "winRate": 81.81818181818183,
+        "profitFactor": 4.8208979725484955,
+        "netDollars": 16091.590408357399,
+        "avgDollars": 365.7179638263045,
+        "avgMfeR": 0.6310445782284029,
+        "avgMaeR": 0.48491635735105,
+        "optionWorthyRate": 4.545454545454546,
+        "greatTradeRate": 0
+      },
+      "preferredTags": [
+        "opening-drive",
+        "clean-breakout",
+        "liquidity-sweep-reclaim",
+        "compression-pop",
+        "volume-expansion"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "emaSlope",
+          "winner": 0.7732,
+          "loser": 0.3372,
+          "edge": 0.436
         },
         {
           "feature": "priorDayBreakQuality",
-          "winner": 0.3556,
-          "loser": 0.5637,
-          "edge": -0.2081
+          "winner": 0.2971,
+          "loser": 0,
+          "edge": 0.2971
         },
         {
-          "feature": "cleanBreakout",
-          "winner": 0.547,
-          "loser": 0.7239,
-          "edge": -0.1769
+          "feature": "relativeStrength",
+          "winner": 0.7783,
+          "loser": 0.4859,
+          "edge": 0.2924
+        },
+        {
+          "feature": "chopQuality",
+          "winner": 0.8403,
+          "loser": 0.5815,
+          "edge": 0.2588
+        },
+        {
+          "feature": "relVolTodQuality",
+          "winner": 0.2573,
+          "loser": 0.0038,
+          "edge": 0.2535
+        }
+      ],
+      "avoidPatterns": [
+        {
+          "feature": "marketImpulse",
+          "winner": 0.3223,
+          "loser": 0.797,
+          "edge": -0.4747
+        },
+        {
+          "feature": "liquiditySweep",
+          "winner": 0.2222,
+          "loser": 0.5,
+          "edge": -0.2778
         }
       ],
       "suggestedRules": {
-        "minConfidence": 70,
+        "minConfidence": 75,
         "minAlphaQuality": 65,
         "targetR": 0.35,
         "requireNoAvoidPattern": true
       }
     },
     {
-      "id": "pattern-specialist-096",
+      "id": "pattern-specialist-088",
       "status": "candidate-promotable",
       "routeKey": "AI|general|base|all|short",
       "symbol": "AI",
@@ -7378,7 +6687,7 @@
       }
     },
     {
-      "id": "pattern-specialist-097",
+      "id": "pattern-specialist-089",
       "status": "candidate-promotable",
       "routeKey": "PLTR|high-beta-growth|base|all|long",
       "symbol": "PLTR",
@@ -7402,8 +6711,8 @@
       "preferredTags": [
         "opening-drive",
         "volume-expansion",
-        "unclassified",
         "compression-pop",
+        "unclassified",
         "clean-breakout"
       ],
       "featureBoosts": [
@@ -7466,83 +6775,95 @@
       }
     },
     {
-      "id": "pattern-specialist-098",
-      "status": "candidate-promotable",
-      "routeKey": "PLTR|high-beta-growth|base|open-0930|short",
-      "symbol": "PLTR",
-      "family": "high-beta-growth",
+      "id": "pattern-specialist-090",
+      "status": "watchlist",
+      "routeKey": "CLSK|general|base|open-0930|long",
+      "symbol": "CLSK",
+      "family": "general",
       "triggerMode": "base",
       "session": "open-0930",
-      "side": "short",
+      "side": "long",
       "metrics": {
-        "trades": 38,
-        "wins": 36,
-        "losses": 2,
-        "winRate": 94.73684210526315,
-        "profitFactor": 8.566182262042865,
-        "netDollars": 15705.699051162705,
-        "avgDollars": 413.30786976743957,
-        "avgMfeR": 0.6667213517992121,
-        "avgMaeR": 0.38596762160806053,
-        "optionWorthyRate": 5.263157894736842,
-        "greatTradeRate": 0
+        "trades": 23,
+        "wins": 17,
+        "losses": 6,
+        "winRate": 73.91304347826086,
+        "profitFactor": 3.5814113340678366,
+        "netDollars": 15681.358489497992,
+        "avgDollars": 681.7981951955649,
+        "avgMfeR": 0.758109051470287,
+        "avgMaeR": 0.3779752392823068,
+        "optionWorthyRate": 4.3478260869565215,
+        "greatTradeRate": 4.3478260869565215
       },
       "preferredTags": [
         "opening-drive",
-        "clean-breakout",
-        "options-worthy-burst",
         "volume-expansion",
-        "compression-pop"
+        "compression-pop",
+        "options-worthy-burst",
+        "clean-breakout"
       ],
       "featureBoosts": [
         {
-          "feature": "volumeAcceleration",
-          "winner": 0.4604,
-          "loser": 0,
-          "edge": 0.4604
-        },
-        {
           "feature": "priorDayBreakQuality",
-          "winner": 0.4444,
-          "loser": 0,
-          "edge": 0.4444
+          "winner": 0.8574,
+          "loser": 0.6667,
+          "edge": 0.1907
         },
         {
-          "feature": "volumeQuality",
-          "winner": 0.6254,
-          "loser": 0.185,
-          "edge": 0.4404
+          "feature": "marketImpulse",
+          "winner": 1,
+          "loser": 0.8333,
+          "edge": 0.1667
         },
         {
-          "feature": "volumeFlowAgreement",
-          "winner": 0.6155,
-          "loser": 0.185,
-          "edge": 0.4305
-        },
-        {
-          "feature": "momentumBurst",
-          "winner": 0.5723,
-          "loser": 0.1516,
-          "edge": 0.4207
+          "feature": "rejectionWick",
+          "winner": 0.1824,
+          "loser": 0.0159,
+          "edge": 0.1665
         }
       ],
       "avoidPatterns": [
         {
-          "feature": "vwapExtensionRisk",
-          "winner": 0.463,
-          "loser": 0.8565,
-          "edge": -0.3935
+          "feature": "priceAcceleration",
+          "winner": 0.6471,
+          "loser": 1,
+          "edge": -0.3529
+        },
+        {
+          "feature": "cleanBreakout",
+          "winner": 0.4016,
+          "loser": 0.6462,
+          "edge": -0.2446
+        },
+        {
+          "feature": "optionBurstShape",
+          "winner": 0.4544,
+          "loser": 0.6692,
+          "edge": -0.2148
+        },
+        {
+          "feature": "momentumBurst",
+          "winner": 0.4544,
+          "loser": 0.6692,
+          "edge": -0.2148
+        },
+        {
+          "feature": "bodyQuality",
+          "winner": 0.5905,
+          "loser": 0.7969,
+          "edge": -0.2064
         }
       ],
       "suggestedRules": {
-        "minConfidence": 70,
+        "minConfidence": 75,
         "minAlphaQuality": 55,
         "targetR": 0.35,
         "requireNoAvoidPattern": true
       }
     },
     {
-      "id": "pattern-specialist-099",
+      "id": "pattern-specialist-091",
       "status": "candidate-promotable",
       "routeKey": "APP|general|base|all|long",
       "symbol": "APP",
@@ -7630,162 +6951,7 @@
       }
     },
     {
-      "id": "pattern-specialist-100",
-      "status": "candidate-promotable",
-      "routeKey": "PLTR|high-beta-growth|base|open-0930|long",
-      "symbol": "PLTR",
-      "family": "high-beta-growth",
-      "triggerMode": "base",
-      "session": "open-0930",
-      "side": "long",
-      "metrics": {
-        "trades": 44,
-        "wins": 36,
-        "losses": 8,
-        "winRate": 81.81818181818183,
-        "profitFactor": 8.208560636370956,
-        "netDollars": 15515.094188863195,
-        "avgDollars": 352.61577701961806,
-        "avgMfeR": 0.5999544829073451,
-        "avgMaeR": 0.4474293849876778,
-        "optionWorthyRate": 0,
-        "greatTradeRate": 0
-      },
-      "preferredTags": [
-        "opening-drive",
-        "volume-expansion",
-        "unclassified",
-        "clean-breakout",
-        "options-worthy-burst"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "priorDayBreakQuality",
-          "winner": 0.361,
-          "loser": 0,
-          "edge": 0.361
-        },
-        {
-          "feature": "relativeStrength",
-          "winner": 0.7918,
-          "loser": 0.44,
-          "edge": 0.3518
-        },
-        {
-          "feature": "atrExpansion",
-          "winner": 0.9717,
-          "loser": 0.6832,
-          "edge": 0.2885
-        },
-        {
-          "feature": "openingDriveQuality",
-          "winner": 0.5987,
-          "loser": 0.3279,
-          "edge": 0.2708
-        }
-      ],
-      "avoidPatterns": [
-        {
-          "feature": "volumeQuality",
-          "winner": 0.4875,
-          "loser": 0.8775,
-          "edge": -0.39
-        },
-        {
-          "feature": "marketImpulse",
-          "winner": 0.5768,
-          "loser": 0.9227,
-          "edge": -0.3459
-        },
-        {
-          "feature": "breakoutQuality",
-          "winner": 0.671,
-          "loser": 0.9736,
-          "edge": -0.3026
-        },
-        {
-          "feature": "relativeVolume",
-          "winner": 0.5908,
-          "loser": 0.8671,
-          "edge": -0.2763
-        }
-      ],
-      "suggestedRules": {
-        "minConfidence": 75,
-        "minAlphaQuality": 55,
-        "targetR": 0.35,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-101",
-      "status": "watchlist",
-      "routeKey": "WULF|crypto-proxy|options-burst|powerhour|long",
-      "symbol": "WULF",
-      "family": "crypto-proxy",
-      "triggerMode": "options-burst",
-      "session": "powerhour",
-      "side": "long",
-      "metrics": {
-        "trades": 9,
-        "wins": 9,
-        "losses": 0,
-        "winRate": 100,
-        "profitFactor": 999,
-        "netDollars": 15489.298274103407,
-        "avgDollars": 1721.0331415670453,
-        "avgMfeR": 2.3306193277811693,
-        "avgMaeR": 0.4417119730618988,
-        "optionWorthyRate": 33.33333333333333,
-        "greatTradeRate": 33.33333333333333
-      },
-      "preferredTags": [
-        "options-worthy-burst",
-        "volume-expansion",
-        "clean-breakout"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "priceAcceleration",
-          "winner": 1,
-          "loser": 0,
-          "edge": 1
-        },
-        {
-          "feature": "directionalCandle",
-          "winner": 0.9156,
-          "loser": 0,
-          "edge": 0.9156
-        },
-        {
-          "feature": "emaSlope",
-          "winner": 0.9058,
-          "loser": 0,
-          "edge": 0.9058
-        },
-        {
-          "feature": "closeLocation",
-          "winner": 0.8982,
-          "loser": 0,
-          "edge": 0.8982
-        },
-        {
-          "feature": "rangeExpansionQuality",
-          "winner": 0.8762,
-          "loser": 0,
-          "edge": 0.8762
-        }
-      ],
-      "avoidPatterns": [],
-      "suggestedRules": {
-        "minConfidence": 70,
-        "minAlphaQuality": 55,
-        "targetR": 0.75,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-102",
+      "id": "pattern-specialist-092",
       "status": "watchlist",
       "routeKey": "RBLX|high-beta-growth|base|all|long",
       "symbol": "RBLX",
@@ -7867,152 +7033,7 @@
       }
     },
     {
-      "id": "pattern-specialist-103",
-      "status": "watchlist",
-      "routeKey": "IONQ|general|options-burst|morning|long",
-      "symbol": "IONQ",
-      "family": "general",
-      "triggerMode": "options-burst",
-      "session": "morning",
-      "side": "long",
-      "metrics": {
-        "trades": 38,
-        "wins": 28,
-        "losses": 10,
-        "winRate": 73.68421052631578,
-        "profitFactor": 2.293887446155423,
-        "netDollars": 15257.528583101595,
-        "avgDollars": 401.5139100816209,
-        "avgMfeR": 0.6144950762968657,
-        "avgMaeR": 0.5427120186099569,
-        "optionWorthyRate": 2.631578947368421,
-        "greatTradeRate": 2.631578947368421
-      },
-      "preferredTags": [
-        "options-worthy-burst",
-        "opening-drive",
-        "volume-expansion",
-        "compression-pop",
-        "clean-breakout"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "breakoutQuality",
-          "winner": 0.7677,
-          "loser": 0.3984,
-          "edge": 0.3693
-        },
-        {
-          "feature": "marketImpulse",
-          "winner": 0.8824,
-          "loser": 0.6092,
-          "edge": 0.2732
-        },
-        {
-          "feature": "vwapExtensionRisk",
-          "winner": 0.454,
-          "loser": 0.2231,
-          "edge": 0.2309
-        },
-        {
-          "feature": "intradayTrendQuality",
-          "winner": 0.8999,
-          "loser": 0.7009,
-          "edge": 0.199
-        },
-        {
-          "feature": "cleanBreakout",
-          "winner": 0.4155,
-          "loser": 0.2181,
-          "edge": 0.1974
-        }
-      ],
-      "avoidPatterns": [
-        {
-          "feature": "vwapPressure",
-          "winner": 0.3569,
-          "loser": 0.5091,
-          "edge": -0.1522
-        }
-      ],
-      "suggestedRules": {
-        "minConfidence": 75,
-        "minAlphaQuality": 65,
-        "targetR": 0.35,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-104",
-      "status": "candidate-promotable",
-      "routeKey": "AI|general|base|open-0930|short",
-      "symbol": "AI",
-      "family": "general",
-      "triggerMode": "base",
-      "session": "open-0930",
-      "side": "short",
-      "metrics": {
-        "trades": 20,
-        "wins": 20,
-        "losses": 0,
-        "winRate": 100,
-        "profitFactor": 999,
-        "netDollars": 15245.174005588657,
-        "avgDollars": 762.2587002794328,
-        "avgMfeR": 0.7711575133881005,
-        "avgMaeR": 0.09288456798161648,
-        "optionWorthyRate": 0,
-        "greatTradeRate": 0
-      },
-      "preferredTags": [
-        "unclassified",
-        "volume-expansion",
-        "opening-drive",
-        "clean-vwap-reclaim",
-        "clean-breakout"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "priceAcceleration",
-          "winner": 1,
-          "loser": 0,
-          "edge": 1
-        },
-        {
-          "feature": "timeEdge",
-          "winner": 1,
-          "loser": 0,
-          "edge": 1
-        },
-        {
-          "feature": "relativeStrength",
-          "winner": 0.9869,
-          "loser": 0,
-          "edge": 0.9869
-        },
-        {
-          "feature": "atrExpansion",
-          "winner": 0.9628,
-          "loser": 0,
-          "edge": 0.9628
-        },
-        {
-          "feature": "intradayTrendQuality",
-          "winner": 0.9288,
-          "loser": 0,
-          "edge": 0.9288
-        }
-      ],
-      "avoidPatterns": [],
-      "suggestedRules": {
-        "minConfidence": 70,
-        "minAlphaQuality": 55,
-        "targetR": 0.35,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-105",
+      "id": "pattern-specialist-093",
       "status": "watchlist",
       "routeKey": "BB|low-priced|base|all|long",
       "symbol": "BB",
@@ -8081,7 +7102,7 @@
       }
     },
     {
-      "id": "pattern-specialist-106",
+      "id": "pattern-specialist-094",
       "status": "candidate-promotable",
       "routeKey": "APP|general|base|open|long",
       "symbol": "APP",
@@ -8169,7 +7190,7 @@
       }
     },
     {
-      "id": "pattern-specialist-107",
+      "id": "pattern-specialist-095",
       "status": "watchlist",
       "routeKey": "SOXL|general|base|afternoon|long",
       "symbol": "SOXL",
@@ -8250,7 +7271,76 @@
       }
     },
     {
-      "id": "pattern-specialist-108",
+      "id": "pattern-specialist-096",
+      "status": "watchlist",
+      "routeKey": "OKLO|general|base|open-0930|long",
+      "symbol": "OKLO",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "open-0930",
+      "side": "long",
+      "metrics": {
+        "trades": 12,
+        "wins": 12,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 15113.320318512251,
+        "avgDollars": 1259.4433598760208,
+        "avgMfeR": 0.823635109748297,
+        "avgMaeR": 0.3860478808378891,
+        "optionWorthyRate": 0,
+        "greatTradeRate": 0
+      },
+      "preferredTags": [
+        "volume-expansion",
+        "clean-breakout",
+        "compression-pop",
+        "options-worthy-burst",
+        "clean-vwap-reclaim"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "cleanVolume",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "priceAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "relativeStrength",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        }
+      ],
+      "avoidPatterns": [],
+      "suggestedRules": {
+        "minConfidence": 70,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-097",
       "status": "candidate-promotable",
       "routeKey": "MSTR|general|base|open-0930|long",
       "symbol": "MSTR",
@@ -8326,7 +7416,7 @@
       }
     },
     {
-      "id": "pattern-specialist-109",
+      "id": "pattern-specialist-098",
       "status": "candidate-promotable",
       "routeKey": "AFRM|high-beta-growth|base|all|short",
       "symbol": "AFRM",
@@ -8339,11 +7429,11 @@
         "wins": 28,
         "losses": 6,
         "winRate": 82.35294117647058,
-        "profitFactor": 6.670592158838226,
-        "netDollars": 15046.207083162088,
-        "avgDollars": 442.53550244594373,
-        "avgMfeR": 1.2431164791036762,
-        "avgMaeR": 0.2958802494056291,
+        "profitFactor": 6.670592158838225,
+        "netDollars": 15046.207083162086,
+        "avgDollars": 442.5355024459437,
+        "avgMfeR": 1.2431164791036764,
+        "avgMaeR": 0.2958802494056292,
         "optionWorthyRate": 11.76470588235294,
         "greatTradeRate": 11.76470588235294
       },
@@ -8414,7 +7504,83 @@
       }
     },
     {
-      "id": "pattern-specialist-110",
+      "id": "pattern-specialist-099",
+      "status": "candidate-promotable",
+      "routeKey": "PLTR|high-beta-growth|base|open-0930|short",
+      "symbol": "PLTR",
+      "family": "high-beta-growth",
+      "triggerMode": "base",
+      "session": "open-0930",
+      "side": "short",
+      "metrics": {
+        "trades": 39,
+        "wins": 36,
+        "losses": 3,
+        "winRate": 92.3076923076923,
+        "profitFactor": 6.408723977293469,
+        "netDollars": 15006.901599162045,
+        "avgDollars": 384.7923486964627,
+        "avgMfeR": 0.6508990748856214,
+        "avgMaeR": 0.4050713771035344,
+        "optionWorthyRate": 5.128205128205128,
+        "greatTradeRate": 0
+      },
+      "preferredTags": [
+        "opening-drive",
+        "clean-breakout",
+        "options-worthy-burst",
+        "volume-expansion",
+        "compression-pop"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "priorDayBreakQuality",
+          "winner": 0.4444,
+          "loser": 0,
+          "edge": 0.4444
+        },
+        {
+          "feature": "momentumBurst",
+          "winner": 0.5723,
+          "loser": 0.2192,
+          "edge": 0.3531
+        },
+        {
+          "feature": "optionBurstShape",
+          "winner": 0.5663,
+          "loser": 0.2192,
+          "edge": 0.3471
+        },
+        {
+          "feature": "cleanBreakout",
+          "winner": 0.5451,
+          "loser": 0.2002,
+          "edge": 0.3449
+        },
+        {
+          "feature": "relVolTodQuality",
+          "winner": 0.3465,
+          "loser": 0.0645,
+          "edge": 0.282
+        }
+      ],
+      "avoidPatterns": [
+        {
+          "feature": "liquiditySweep",
+          "winner": 0.1111,
+          "loser": 0.3333,
+          "edge": -0.2222
+        }
+      ],
+      "suggestedRules": {
+        "minConfidence": 70,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-100",
       "status": "watchlist",
       "routeKey": "HIVE|low-priced|base|open|short",
       "symbol": "HIVE",
@@ -8483,7 +7649,7 @@
       }
     },
     {
-      "id": "pattern-specialist-111",
+      "id": "pattern-specialist-101",
       "status": "watchlist",
       "routeKey": "HIVE|low-priced|base|open-0930|short",
       "symbol": "HIVE",
@@ -8552,7 +7718,7 @@
       }
     },
     {
-      "id": "pattern-specialist-112",
+      "id": "pattern-specialist-102",
       "status": "candidate-promotable",
       "routeKey": "RBLX|high-beta-growth|base|open|long",
       "symbol": "RBLX",
@@ -8640,7 +7806,7 @@
       }
     },
     {
-      "id": "pattern-specialist-113",
+      "id": "pattern-specialist-103",
       "status": "candidate-promotable",
       "routeKey": "RBLX|high-beta-growth|base|morning|long",
       "symbol": "RBLX",
@@ -8728,95 +7894,7 @@
       }
     },
     {
-      "id": "pattern-specialist-114",
-      "status": "candidate-promotable",
-      "routeKey": "RBLX|high-beta-growth|base|open-0930|long",
-      "symbol": "RBLX",
-      "family": "high-beta-growth",
-      "triggerMode": "base",
-      "session": "open-0930",
-      "side": "long",
-      "metrics": {
-        "trades": 42,
-        "wins": 34,
-        "losses": 8,
-        "winRate": 80.95238095238095,
-        "profitFactor": 4.53797229446484,
-        "netDollars": 14900.057904627043,
-        "avgDollars": 354.76328344350105,
-        "avgMfeR": 0.6335652493215685,
-        "avgMaeR": 0.4976841453061229,
-        "optionWorthyRate": 4.761904761904762,
-        "greatTradeRate": 0
-      },
-      "preferredTags": [
-        "opening-drive",
-        "clean-breakout",
-        "volume-expansion",
-        "liquidity-sweep-reclaim",
-        "compression-pop"
-      ],
-      "featureBoosts": [
-        {
-          "feature": "emaSlope",
-          "winner": 0.7694,
-          "loser": 0.3372,
-          "edge": 0.4322
-        },
-        {
-          "feature": "priorDayBreakQuality",
-          "winner": 0.3145,
-          "loser": 0,
-          "edge": 0.3145
-        },
-        {
-          "feature": "relativeStrength",
-          "winner": 0.7653,
-          "loser": 0.4859,
-          "edge": 0.2794
-        },
-        {
-          "feature": "relVolTodQuality",
-          "winner": 0.2724,
-          "loser": 0.0038,
-          "edge": 0.2686
-        },
-        {
-          "feature": "chopQuality",
-          "winner": 0.8309,
-          "loser": 0.5815,
-          "edge": 0.2494
-        }
-      ],
-      "avoidPatterns": [
-        {
-          "feature": "marketImpulse",
-          "winner": 0.3413,
-          "loser": 0.797,
-          "edge": -0.4557
-        },
-        {
-          "feature": "liquiditySweep",
-          "winner": 0.1765,
-          "loser": 0.5,
-          "edge": -0.3235
-        },
-        {
-          "feature": "stopRunReclaim",
-          "winner": 0.1691,
-          "loser": 0.4368,
-          "edge": -0.2677
-        }
-      ],
-      "suggestedRules": {
-        "minConfidence": 75,
-        "minAlphaQuality": 65,
-        "targetR": 0.35,
-        "requireNoAvoidPattern": true
-      }
-    },
-    {
-      "id": "pattern-specialist-115",
+      "id": "pattern-specialist-104",
       "status": "candidate-promotable",
       "routeKey": "OKTA|general|base|all|long",
       "symbol": "OKTA",
@@ -8885,7 +7963,7 @@
       }
     },
     {
-      "id": "pattern-specialist-116",
+      "id": "pattern-specialist-105",
       "status": "candidate-promotable",
       "routeKey": "IREN|crypto-proxy|base|all|long",
       "symbol": "IREN",
@@ -8973,7 +8051,7 @@
       }
     },
     {
-      "id": "pattern-specialist-117",
+      "id": "pattern-specialist-106",
       "status": "candidate-promotable",
       "routeKey": "IREN|crypto-proxy|base|open|long",
       "symbol": "IREN",
@@ -9061,7 +8139,7 @@
       }
     },
     {
-      "id": "pattern-specialist-118",
+      "id": "pattern-specialist-107",
       "status": "candidate-promotable",
       "routeKey": "IREN|crypto-proxy|base|morning|long",
       "symbol": "IREN",
@@ -9149,7 +8227,7 @@
       }
     },
     {
-      "id": "pattern-specialist-119",
+      "id": "pattern-specialist-108",
       "status": "candidate-promotable",
       "routeKey": "IREN|crypto-proxy|base|open-0930|long",
       "symbol": "IREN",
@@ -9163,10 +8241,10 @@
         "losses": 6,
         "winRate": 81.25,
         "profitFactor": 5.869684694842007,
-        "netDollars": 14459.662639004175,
-        "avgDollars": 451.86445746888046,
+        "netDollars": 14459.662639004173,
+        "avgDollars": 451.8644574688804,
         "avgMfeR": 0.5065096112263622,
-        "avgMaeR": 0.3591768884744282,
+        "avgMaeR": 0.35917688847442825,
         "optionWorthyRate": 0,
         "greatTradeRate": 0
       },
@@ -9237,7 +8315,95 @@
       }
     },
     {
-      "id": "pattern-specialist-120",
+      "id": "pattern-specialist-109",
+      "status": "candidate-promotable",
+      "routeKey": "PLTR|high-beta-growth|base|open-0930|long",
+      "symbol": "PLTR",
+      "family": "high-beta-growth",
+      "triggerMode": "base",
+      "session": "open-0930",
+      "side": "long",
+      "metrics": {
+        "trades": 45,
+        "wins": 36,
+        "losses": 9,
+        "winRate": 80,
+        "profitFactor": 5.372848889224918,
+        "netDollars": 14379.133463115197,
+        "avgDollars": 319.5362991803377,
+        "avgMfeR": 0.5886569766217951,
+        "avgMaeR": 0.4652600552335299,
+        "optionWorthyRate": 0,
+        "greatTradeRate": 0
+      },
+      "preferredTags": [
+        "opening-drive",
+        "volume-expansion",
+        "unclassified",
+        "clean-breakout",
+        "options-worthy-burst"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "relativeStrength",
+          "winner": 0.7918,
+          "loser": 0.5022,
+          "edge": 0.2896
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 0.9717,
+          "loser": 0.7184,
+          "edge": 0.2533
+        },
+        {
+          "feature": "priorDayBreakQuality",
+          "winner": 0.361,
+          "loser": 0.1111,
+          "edge": 0.2499
+        }
+      ],
+      "avoidPatterns": [
+        {
+          "feature": "volumeQuality",
+          "winner": 0.4875,
+          "loser": 0.8911,
+          "edge": -0.4036
+        },
+        {
+          "feature": "breakoutQuality",
+          "winner": 0.671,
+          "loser": 0.9568,
+          "edge": -0.2858
+        },
+        {
+          "feature": "relativeVolume",
+          "winner": 0.5908,
+          "loser": 0.8703,
+          "edge": -0.2795
+        },
+        {
+          "feature": "marketImpulse",
+          "winner": 0.5768,
+          "loser": 0.8202,
+          "edge": -0.2434
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 0.6489,
+          "loser": 0.8846,
+          "edge": -0.2357
+        }
+      ],
+      "suggestedRules": {
+        "minConfidence": 75,
+        "minAlphaQuality": 65,
+        "targetR": 0.35,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-110",
       "status": "watchlist",
       "routeKey": "SPCE|low-priced|base|all|long",
       "symbol": "SPCE",
@@ -9302,6 +8468,731 @@
         "minConfidence": 70,
         "minAlphaQuality": 55,
         "targetR": 0.35,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-111",
+      "status": "watchlist",
+      "routeKey": "SPCE|low-priced|base|open|long",
+      "symbol": "SPCE",
+      "family": "low-priced",
+      "triggerMode": "base",
+      "session": "open",
+      "side": "long",
+      "metrics": {
+        "trades": 8,
+        "wins": 8,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 14262.69527131182,
+        "avgDollars": 1782.8369089139776,
+        "avgMfeR": 0.6587711460055871,
+        "avgMaeR": 0.39526310643850093,
+        "optionWorthyRate": 0,
+        "greatTradeRate": 0
+      },
+      "preferredTags": [
+        "opening-drive",
+        "compression-pop",
+        "clean-breakout",
+        "volume-expansion",
+        "options-worthy-burst"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "volumeQuality",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "volumeAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "volumeFlowAgreement",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "emaSlope",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        }
+      ],
+      "avoidPatterns": [],
+      "suggestedRules": {
+        "minConfidence": 70,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-112",
+      "status": "watchlist",
+      "routeKey": "SPCE|low-priced|base|morning|long",
+      "symbol": "SPCE",
+      "family": "low-priced",
+      "triggerMode": "base",
+      "session": "morning",
+      "side": "long",
+      "metrics": {
+        "trades": 8,
+        "wins": 8,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 14262.69527131182,
+        "avgDollars": 1782.8369089139776,
+        "avgMfeR": 0.6587711460055871,
+        "avgMaeR": 0.39526310643850093,
+        "optionWorthyRate": 0,
+        "greatTradeRate": 0
+      },
+      "preferredTags": [
+        "opening-drive",
+        "compression-pop",
+        "clean-breakout",
+        "volume-expansion",
+        "options-worthy-burst"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "volumeQuality",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "volumeAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "volumeFlowAgreement",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "emaSlope",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        }
+      ],
+      "avoidPatterns": [],
+      "suggestedRules": {
+        "minConfidence": 70,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-113",
+      "status": "watchlist",
+      "routeKey": "SPCE|low-priced|base|open-0930|long",
+      "symbol": "SPCE",
+      "family": "low-priced",
+      "triggerMode": "base",
+      "session": "open-0930",
+      "side": "long",
+      "metrics": {
+        "trades": 8,
+        "wins": 8,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 14262.69527131182,
+        "avgDollars": 1782.8369089139776,
+        "avgMfeR": 0.6587711460055871,
+        "avgMaeR": 0.39526310643850093,
+        "optionWorthyRate": 0,
+        "greatTradeRate": 0
+      },
+      "preferredTags": [
+        "opening-drive",
+        "compression-pop",
+        "clean-breakout",
+        "volume-expansion",
+        "options-worthy-burst"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "volumeQuality",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "volumeAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "volumeFlowAgreement",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "emaSlope",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        }
+      ],
+      "avoidPatterns": [],
+      "suggestedRules": {
+        "minConfidence": 70,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-114",
+      "status": "watchlist",
+      "routeKey": "RDDT|high-beta-growth|base|open-0930|short",
+      "symbol": "RDDT",
+      "family": "high-beta-growth",
+      "triggerMode": "base",
+      "session": "open-0930",
+      "side": "short",
+      "metrics": {
+        "trades": 18,
+        "wins": 16,
+        "losses": 2,
+        "winRate": 88.88888888888889,
+        "profitFactor": 10.176195053818878,
+        "netDollars": 14248.67774848453,
+        "avgDollars": 791.5932082491405,
+        "avgMfeR": 1.00255195380948,
+        "avgMaeR": 0.4260809356379618,
+        "optionWorthyRate": 11.11111111111111,
+        "greatTradeRate": 11.11111111111111
+      },
+      "preferredTags": [
+        "volume-expansion",
+        "unclassified",
+        "compression-pop",
+        "liquidity-sweep-reclaim",
+        "options-worthy-burst"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "trendQuality",
+          "winner": 0.75,
+          "loser": 0,
+          "edge": 0.75
+        },
+        {
+          "feature": "vwapPressure",
+          "winner": 0.6689,
+          "loser": 0,
+          "edge": 0.6689
+        },
+        {
+          "feature": "openingDriveQuality",
+          "winner": 0.4416,
+          "loser": 0,
+          "edge": 0.4416
+        },
+        {
+          "feature": "marketAlignment",
+          "winner": 0.4375,
+          "loser": 0,
+          "edge": 0.4375
+        },
+        {
+          "feature": "volumeFlowAgreement",
+          "winner": 0.47,
+          "loser": 0.105,
+          "edge": 0.365
+        }
+      ],
+      "avoidPatterns": [
+        {
+          "feature": "efficiency",
+          "winner": 0.6803,
+          "loser": 1,
+          "edge": -0.3197
+        }
+      ],
+      "suggestedRules": {
+        "minConfidence": 70,
+        "minAlphaQuality": 55,
+        "targetR": 0.5,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-115",
+      "status": "watchlist",
+      "routeKey": "FCEL|general|base|open|long",
+      "symbol": "FCEL",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "open",
+      "side": "long",
+      "metrics": {
+        "trades": 8,
+        "wins": 8,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 14233.137528586074,
+        "avgDollars": 1779.1421910732593,
+        "avgMfeR": 0.7238703410624633,
+        "avgMaeR": 0.35026178200410896,
+        "optionWorthyRate": 0,
+        "greatTradeRate": 0
+      },
+      "preferredTags": [
+        "opening-drive",
+        "compression-pop",
+        "clean-breakout",
+        "volume-expansion",
+        "options-worthy-burst"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "volumeQuality",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "volumeAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "volumeFlowAgreement",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "emaSlope",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        }
+      ],
+      "avoidPatterns": [],
+      "suggestedRules": {
+        "minConfidence": 70,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-116",
+      "status": "watchlist",
+      "routeKey": "FCEL|general|base|open-0930|long",
+      "symbol": "FCEL",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "open-0930",
+      "side": "long",
+      "metrics": {
+        "trades": 8,
+        "wins": 8,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 14233.137528586074,
+        "avgDollars": 1779.1421910732593,
+        "avgMfeR": 0.7238703410624633,
+        "avgMaeR": 0.35026178200410896,
+        "optionWorthyRate": 0,
+        "greatTradeRate": 0
+      },
+      "preferredTags": [
+        "opening-drive",
+        "compression-pop",
+        "clean-breakout",
+        "volume-expansion",
+        "options-worthy-burst"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "volumeQuality",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "volumeAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "volumeFlowAgreement",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "emaSlope",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        }
+      ],
+      "avoidPatterns": [],
+      "suggestedRules": {
+        "minConfidence": 70,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-117",
+      "status": "watchlist",
+      "routeKey": "APP|general|base|morning|long",
+      "symbol": "APP",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "morning",
+      "side": "long",
+      "metrics": {
+        "trades": 38,
+        "wins": 30,
+        "losses": 8,
+        "winRate": 78.94736842105263,
+        "profitFactor": 2.5743272915627697,
+        "netDollars": 14195.158481155735,
+        "avgDollars": 373.55680213567723,
+        "avgMfeR": 0.6901325308287286,
+        "avgMaeR": 0.4595944486934476,
+        "optionWorthyRate": 10.526315789473683,
+        "greatTradeRate": 10.526315789473683
+      },
+      "preferredTags": [
+        "opening-drive",
+        "unclassified",
+        "compression-pop",
+        "clean-breakout",
+        "volume-expansion"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "marketAlignment",
+          "winner": 0.6,
+          "loser": 0.25,
+          "edge": 0.35
+        },
+        {
+          "feature": "priorDayBreakQuality",
+          "winner": 0.5169,
+          "loser": 0.25,
+          "edge": 0.2669
+        },
+        {
+          "feature": "openingDriveQuality",
+          "winner": 0.6153,
+          "loser": 0.3694,
+          "edge": 0.2459
+        },
+        {
+          "feature": "breakoutQuality",
+          "winner": 0.6236,
+          "loser": 0.3852,
+          "edge": 0.2384
+        },
+        {
+          "feature": "timeEdge",
+          "winner": 1,
+          "loser": 0.8125,
+          "edge": 0.1875
+        }
+      ],
+      "avoidPatterns": [
+        {
+          "feature": "vwapPressure",
+          "winner": 0.356,
+          "loser": 0.5962,
+          "edge": -0.2402
+        },
+        {
+          "feature": "rejectionWick",
+          "winner": 0.0972,
+          "loser": 0.2645,
+          "edge": -0.1673
+        }
+      ],
+      "suggestedRules": {
+        "minConfidence": 75,
+        "minAlphaQuality": 65,
+        "targetR": 0.35,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-118",
+      "status": "watchlist",
+      "routeKey": "EOSE|general|base|open-1000|long",
+      "symbol": "EOSE",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "open-1000",
+      "side": "long",
+      "metrics": {
+        "trades": 8,
+        "wins": 8,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 14127.311126625882,
+        "avgDollars": 1765.9138908282353,
+        "avgMfeR": 0.5614620143405774,
+        "avgMaeR": 0.3232653690577663,
+        "optionWorthyRate": 0,
+        "greatTradeRate": 0
+      },
+      "preferredTags": [
+        "opening-drive",
+        "volume-expansion"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "emaSlope",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "trendQuality",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "chopQuality",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "relVolTodQuality",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        }
+      ],
+      "avoidPatterns": [],
+      "suggestedRules": {
+        "minConfidence": 70,
+        "minAlphaQuality": 55,
+        "targetR": 0.35,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-119",
+      "status": "watchlist",
+      "routeKey": "ASTS|general|base|open-0930|short",
+      "symbol": "ASTS",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "open-0930",
+      "side": "short",
+      "metrics": {
+        "trades": 11,
+        "wins": 11,
+        "losses": 0,
+        "winRate": 100,
+        "profitFactor": 999,
+        "netDollars": 14106.634945742484,
+        "avgDollars": 1282.421358703862,
+        "avgMfeR": 0.6012278328280855,
+        "avgMaeR": 0.5948108560731549,
+        "optionWorthyRate": 0,
+        "greatTradeRate": 0
+      },
+      "preferredTags": [
+        "volume-expansion",
+        "liquidity-sweep-reclaim",
+        "opening-drive",
+        "clean-breakout",
+        "options-worthy-burst"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "volumeQuality",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "priceAcceleration",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "relativeVolume",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        },
+        {
+          "feature": "atrExpansion",
+          "winner": 1,
+          "loser": 0,
+          "edge": 1
+        }
+      ],
+      "avoidPatterns": [],
+      "suggestedRules": {
+        "minConfidence": 70,
+        "minAlphaQuality": 65,
+        "targetR": 0.35,
+        "requireNoAvoidPattern": true
+      }
+    },
+    {
+      "id": "pattern-specialist-120",
+      "status": "watchlist",
+      "routeKey": "SOXL|general|base|powerhour|long",
+      "symbol": "SOXL",
+      "family": "general",
+      "triggerMode": "base",
+      "session": "powerhour",
+      "side": "long",
+      "metrics": {
+        "trades": 14,
+        "wins": 10,
+        "losses": 4,
+        "winRate": 71.42857142857143,
+        "profitFactor": 5.613394064686057,
+        "netDollars": 14074.3773061466,
+        "avgDollars": 1005.3126647247572,
+        "avgMfeR": 2.0355279826300774,
+        "avgMaeR": 1.2010404484395265,
+        "optionWorthyRate": 14.285714285714285,
+        "greatTradeRate": 14.285714285714285
+      },
+      "preferredTags": [
+        "unclassified",
+        "late-chase-risk",
+        "options-worthy-burst",
+        "volume-expansion"
+      ],
+      "featureBoosts": [
+        {
+          "feature": "emaSlope",
+          "winner": 1,
+          "loser": 0.4352,
+          "edge": 0.5648
+        },
+        {
+          "feature": "marketImpulse",
+          "winner": 1,
+          "loser": 0.5,
+          "edge": 0.5
+        },
+        {
+          "feature": "efficiency",
+          "winner": 1,
+          "loser": 0.5322,
+          "edge": 0.4678
+        },
+        {
+          "feature": "chopQuality",
+          "winner": 1,
+          "loser": 0.5986,
+          "edge": 0.4014
+        }
+      ],
+      "avoidPatterns": [
+        {
+          "feature": "rangeExpansionQuality",
+          "winner": 0.2486,
+          "loser": 0.7594,
+          "edge": -0.5108
+        },
+        {
+          "feature": "breakoutQuality",
+          "winner": 0.0525,
+          "loser": 0.4413,
+          "edge": -0.3888
+        },
+        {
+          "feature": "cleanVolume",
+          "winner": 0.3757,
+          "loser": 0.7608,
+          "edge": -0.3851
+        },
+        {
+          "feature": "optionBurstShape",
+          "winner": 0.2363,
+          "loser": 0.6051,
+          "edge": -0.3688
+        }
+      ],
+      "suggestedRules": {
+        "minConfidence": 75,
+        "minAlphaQuality": 65,
+        "targetR": 0.75,
         "requireNoAvoidPattern": true
       }
     }

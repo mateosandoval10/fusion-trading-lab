@@ -12,6 +12,7 @@ on:
       - "generated/**"
       - "packages/**"
       - "scripts/build_dashboard_data.js"
+      - "scripts/phase22_deep_specialist_tournament.js"
 
 permissions:
   contents: read

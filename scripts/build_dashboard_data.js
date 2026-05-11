@@ -312,6 +312,8 @@ const patternCandidates = readJson(join(root, 'models', 'specialists', 'pattern-
 const canonicalData = readJson(join(root, 'data', 'canonical', 'canonical-summary.json'), null)
   || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'canonical-data.json'), null);
 const specialistFactory = readJson(join(root, 'models', 'specialists', 'phase21-specialist-factory.json'), { candidates: [] });
+const phase22 = readJson(join(root, 'models', 'champions', 'current-phase22-deep-specialist-tournament.json'), null)
+  || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'phase22-deep-specialist-tournament.json'), null);
 const phase17 = readJson(join(root, 'models', 'specialists', 'current-phase17-specialist-tournament.json'), null);
 const championSummary = summarizeChampion(champion);
 
@@ -347,6 +349,15 @@ const dashboard = {
   },
   patternCandidates: patternCandidates.candidates || [],
   specialistFactory: specialistFactory.candidates || canonicalData?.factoryCandidates || [],
+  phase22: phase22 ? {
+    updatedAt: phase22.updatedAt,
+    runId: phase22.runId,
+    phase: phase22.phase,
+    config: phase22.config,
+    recommendedChampion: phase22.recommendedChampion,
+    categoryChampions: phase22.categoryChampions,
+    rankedVariants: phase22.rankedVariants?.slice(0, 40) || [],
+  } : null,
   forward: summarizeForward(),
   pine: pineStatus(),
   artifacts: {

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-09T21:59:35.168Z",
+  "updatedAt": "2026-05-11T05:59:43.437Z",
   "pinePath": "/Users/mateosandoval/Documents/New project/fusion-trading-lab/generated/fusionv3_codex_clean_tradingview.pine",
   "pineBytes": 116979,
   "hasClosedLoopAlert": true,
@@ -55,6 +55,54 @@
       "fastMoveRate": 50.70422535211267,
       "uniqueDays": 32,
       "uniqueWeeks": 9
+    }
+  },
+  "phase22": {
+    "phase": "Phase22 Deep Specialist Tournament",
+    "updatedAt": "2026-05-11T05:59:21.962Z",
+    "runId": "phase22-2026-05-11T05-59-21-961Z",
+    "recommendedId": "phase22__high-win-strict__all__all-sessions__all-triggers__both__strict",
+    "metrics": {
+      "trades": 397,
+      "wins": 379,
+      "losses": 18,
+      "winRate": 95.46599496221663,
+      "profitFactor": 15.542777389603781,
+      "netDollars": 218980.3900533996,
+      "avgDollars": 551.5878842654902,
+      "avgMfeR": 0.8375083858145617,
+      "avgMaeR": 0.33955683536151954,
+      "optionWorthyRate": 7.5566750629722925,
+      "maxDrawdownDollars": 1769.4701391705203,
+      "maxLossStreak": 1
+    },
+    "holdout": {
+      "trades": 100,
+      "wins": 95,
+      "losses": 5,
+      "winRate": 95,
+      "profitFactor": 12.788043385690646,
+      "netDollars": 62043.669966929476,
+      "avgDollars": 620.4366996692947,
+      "avgMfeR": 0.7995952280409527,
+      "avgMaeR": 0.3964617485309072,
+      "optionWorthyRate": 7.000000000000001,
+      "maxDrawdownDollars": 1169.1841043961276,
+      "maxLossStreak": 1
+    },
+    "stress": {
+      "trades": 397,
+      "wins": 378,
+      "losses": 19,
+      "winRate": 95.21410579345087,
+      "profitFactor": 14.073700181116246,
+      "netDollars": 205762.66679550457,
+      "avgDollars": 518.2938710214221,
+      "avgMfeR": 0.8375083858145617,
+      "avgMaeR": 0.33955683536151954,
+      "optionWorthyRate": 7.5566750629722925,
+      "maxDrawdownDollars": 1881.1947980996556,
+      "maxLossStreak": 1
     }
   }
 }

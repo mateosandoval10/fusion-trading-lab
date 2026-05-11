@@ -239,6 +239,47 @@ function renderFactory(data) {
   ])).join('') || row(['No factory candidates yet', '', '', '', '', '', '', '', '', '']);
 }
 
+function renderPhase22(data) {
+  const phase22 = data.phase22;
+  const champion = phase22?.recommendedChampion;
+  document.getElementById('phase22Badge').textContent = phase22?.updatedAt
+    ? `Updated ${new Date(phase22.updatedAt).toLocaleString()}`
+    : 'No Phase22 run yet';
+  document.getElementById('phase22Metrics').innerHTML = champion ? [
+    metric('Configs Tested', num(phase22.config?.variantsEvaluated || 0)),
+    metric('Trades', num(champion.metrics?.trades || 0)),
+    metric('Win Rate', pct(champion.metrics?.winRate || 0), champion.metrics?.winRate >= 80 ? 'good' : 'warn'),
+    metric('Net', money(champion.metrics?.netDollars || 0), colorForNet(champion.metrics?.netDollars)),
+    metric('Avg / Trade', money(champion.metrics?.avgDollars || 0), colorForNet(champion.metrics?.avgDollars)),
+    metric('Holdout Win', pct(champion.holdout?.winRate || 0), champion.holdout?.winRate >= 80 ? 'good' : 'warn'),
+    metric('Stress Net', money(champion.stress?.netDollars || 0), colorForNet(champion.stress?.netDollars)),
+    metric('Routes', num(champion.routeCount || 0)),
+    metric('Max DD', money(champion.metrics?.maxDrawdownDollars || 0), 'warn'),
+    metric('Loss Streak', num(champion.metrics?.maxLossStreak || 0)),
+    metric('MC P05 Net', money(champion.monteCarlo?.p05NetDollars || 0), colorForNet(champion.monteCarlo?.p05NetDollars)),
+    metric('MC P95 DD', money(champion.monteCarlo?.p95MaxDrawdownDollars || 0), 'warn'),
+  ].join('') : '<p class="muted">Run `npm run scalp:phase22` to build the deep tournament.</p>';
+
+  const categories = Object.entries(phase22?.categoryChampions || {}).filter(([, variant]) => variant);
+  document.getElementById('phase22CategoryTable').innerHTML = categories.map(([name, variant]) => row([
+    name,
+    `<strong>${variant.profile}</strong><br><span class="muted">${variant.universe} · ${variant.sessionGroup} · ${variant.triggerGroup}</span>`,
+    num(variant.metrics?.trades || 0),
+    pct(variant.metrics?.winRate || 0),
+    `<span class="${colorForNet(variant.metrics?.netDollars)}">${money(variant.metrics?.netDollars)}</span>`,
+    `${num(variant.holdout?.trades || 0)} / ${pct(variant.holdout?.winRate || 0)}`,
+    `<span class="${colorForNet(variant.stress?.netDollars)}">${money(variant.stress?.netDollars)}</span>`,
+  ])).join('') || row(['No Phase22 categories yet', '', '', '', '', '', '']);
+
+  document.getElementById('phase22TopRoutes').innerHTML = (champion?.topRoutes || []).slice(0, 8).map((route) => `
+    <div class="mini-card">
+      <strong>${route.symbol} · ${route.trigger} · ${route.side}</strong>
+      <p class="muted">${route.family} · ${route.session} · route score ${Number(route.routeScore || 0).toFixed(1)} · quality ${Number(route.qualityScore || 0).toFixed(1)}</p>
+      <p class="muted">${num(route.metrics?.trades || 0)} trades · ${pct(route.metrics?.winRate || 0)} win · <span class="${colorForNet(route.metrics?.netDollars)}">${money(route.metrics?.netDollars)}</span></p>
+    </div>
+  `).join('') || '<p class="muted">No Phase22 routes yet.</p>';
+}
+
 function renderDaily(data) {
   const daily = data.patternLab?.dailyPerformance || [];
   document.getElementById('dailyTable').innerHTML = daily.slice(-120).reverse().map((item) => row([
@@ -276,6 +317,7 @@ loadDashboard()
     renderPine(data);
     renderCandidates(data);
     renderFactory(data);
+    renderPhase22(data);
     renderDaily(data);
     renderForward(data);
   })

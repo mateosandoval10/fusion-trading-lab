@@ -13,7 +13,9 @@ mkdirSync(dashboardDataDir, { recursive: true });
 
 const pinePath = join(generatedDir, 'fusionv3_codex_clean_tradingview.pine');
 const championPath = join(root, 'models', 'champions', 'current-phase19-champion-council-fusion.json');
+const phase22Path = join(root, 'models', 'champions', 'current-phase22-deep-specialist-tournament.json');
 const champion = existsSync(championPath) ? JSON.parse(readFileSync(championPath, 'utf8')) : null;
+const phase22 = existsSync(phase22Path) ? JSON.parse(readFileSync(phase22Path, 'utf8')) : null;
 const pine = existsSync(pinePath) ? readFileSync(pinePath, 'utf8') : '';
 const activeModeSource = pine.split('\n').find((line) => line.includes('activeScalpMode = input.string')) || '';
 const activeModeMatch = activeModeSource.match(/activeScalpMode\s*=\s*input\.string\("([^"]+)".*options=\[([^\]]+)/);
@@ -36,6 +38,15 @@ const metadata = {
     qualified: champion.bestVariantQualified,
     metrics: champion.variants?.[champion.bestVariant]?.portfolio?.metrics || null,
     holdout: champion.variants?.[champion.bestVariant]?.portfolio?.holdout || null,
+  } : null,
+  phase22: phase22 ? {
+    phase: phase22.phase,
+    updatedAt: phase22.updatedAt,
+    runId: phase22.runId,
+    recommendedId: phase22.recommendedChampion?.id || null,
+    metrics: phase22.recommendedChampion?.metrics || null,
+    holdout: phase22.recommendedChampion?.holdout || null,
+    stress: phase22.recommendedChampion?.stress || null,
   } : null,
 };
 

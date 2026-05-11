@@ -28,3 +28,4 @@ The dashboard now includes a canonical data panel and specialist factory table:
 - `Phase21 Canonical Data` shows raw trades, deduped canonical trades, duplicates removed, route count, symbol count, global metrics, and top route quality.
 - `Phase21 Specialist Factory` shows deduped specialist candidates with consistency, outlier, drawdown, feature-boost, and target suggestions.
 - `Biggest Stock Hits` now prefers the canonical symbol manifest when available, so repeated ledger rows do not inflate the leaderboard.
+- `Phase22 Deep Tournament` shows the newest fused challenger champion, category winners, stress metrics, Monte Carlo risk, and top routes.
