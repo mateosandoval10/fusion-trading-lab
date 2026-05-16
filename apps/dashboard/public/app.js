@@ -64,6 +64,12 @@ async function loadDashboard() {
   } catch {
     data.phase25TradeLedgers = null;
   }
+  try {
+    const phase26TradeResponse = await fetch('./data/phase26-generalization-trade-ledgers.json', { cache: 'no-store' });
+    data.phase26TradeLedgers = phase26TradeResponse.ok ? await phase26TradeResponse.json() : null;
+  } catch {
+    data.phase26TradeLedgers = null;
+  }
   return data;
 }
 
@@ -677,6 +683,154 @@ function renderPhase25TradeLedger(data) {
   draw();
 }
 
+function renderPhase26(data) {
+  const phase26 = data.phase26;
+  const bestOverall = phase26?.categoryChampions?.bestOverall;
+  const bestProfit = phase26?.categoryChampions?.bestProfit;
+  const bestGeneralization = phase26?.categoryChampions?.bestGeneralization;
+  const bestHighWin = phase26?.categoryChampions?.bestHighWin;
+  document.getElementById('phase26Badge').textContent = phase26?.updatedAt
+    ? `Updated ${new Date(phase26.updatedAt).toLocaleString()}`
+    : 'No Phase26 run yet';
+  document.getElementById('phase26Metrics').innerHTML = phase26 ? [
+    metric('Source Trades', num(phase26.config?.sourceTrades || 0), 'good'),
+    metric('Evaluated', num(phase26.config?.evaluated || 0)),
+    metric('Qualified', num(phase26.config?.qualified || 0)),
+    metric('Promoted', num(phase26.config?.promoted || 0), phase26.config?.promoted ? 'good' : 'warn'),
+    metric('Best Trades', num(bestOverall?.metrics?.trades || 0)),
+    metric('Best Win', pct(bestOverall?.metrics?.winRate || 0), bestOverall?.metrics?.winRate >= 80 ? 'good' : 'warn'),
+    metric('Best Net', money(bestOverall?.metrics?.netDollars || 0), colorForNet(bestOverall?.metrics?.netDollars)),
+    metric('Holdout Win', pct(bestOverall?.holdout?.winRate || 0), bestOverall?.holdout?.winRate >= 70 ? 'good' : 'warn'),
+    metric('Symbol OOS+', pct(bestOverall?.leaveOneSymbolOut?.positiveRate || 0), bestOverall?.leaveOneSymbolOut?.positiveRate >= 70 ? 'good' : 'warn'),
+    metric('Family OOS+', pct(bestOverall?.leaveOneFamilyOut?.positiveRate || 0), bestOverall?.leaveOneFamilyOut?.positiveRate >= 80 ? 'good' : 'warn'),
+    metric('Deep Stress Net', money(bestOverall?.deepStress?.netDollars || 0), colorForNet(bestOverall?.deepStress?.netDollars)),
+    metric('Best Profit Net', money(bestProfit?.metrics?.netDollars || 0), colorForNet(bestProfit?.metrics?.netDollars)),
+  ].join('') : '<p class="muted">Run `npm run lab:phase26` to build the generalization engine.</p>';
+
+  const categories = Object.entries(phase26?.categoryChampions || {}).filter(([, variant]) => variant);
+  document.getElementById('phase26CategoryTable').innerHTML = categories.map(([name, variant]) => row([
+    `<strong>${name}</strong><br><span class="muted">${variant.layer || variant.id}</span>`,
+    `${variant.description || 'n/a'}<br><span class="muted">${variant.targetMode || 'n/a'} · votes ${variant.requiredVotes ?? 'n/a'}</span>`,
+    num(variant.metrics?.trades || 0),
+    pct(variant.metrics?.winRate || 0),
+    `<span class="${colorForNet(variant.metrics?.netDollars)}">${money(variant.metrics?.netDollars)}</span>`,
+    `${num(variant.holdout?.trades || 0)} / ${pct(variant.holdout?.winRate || 0)}`,
+    `${pct(variant.leaveOneSymbolOut?.positiveRate || 0)} / ${pct(variant.leaveOneFamilyOut?.positiveRate || 0)}`,
+    `<span class="${colorForNet(variant.deepStress?.netDollars)}">${money(variant.deepStress?.netDollars)}</span>`,
+    `<strong>${variant.decision || 'n/a'}</strong><br><span class="muted">${(variant.decisionReasons || []).slice(0, 2).join('<br>')}</span>`,
+  ])).join('') || row(['No Phase26 categories yet', '', '', '', '', '', '', '', '']);
+
+  document.getElementById('phase26LayerTable').innerHTML = (phase26?.perLayerBest || []).slice(0, 30).map((variant) => row([
+    `<strong>${variant.layer}</strong>`,
+    variant.description || 'n/a',
+    num(variant.metrics?.trades || 0),
+    pct(variant.metrics?.winRate || 0),
+    `<span class="${colorForNet(variant.metrics?.netDollars)}">${money(variant.metrics?.netDollars)}</span>`,
+    `${num(variant.holdout?.trades || 0)} / ${pct(variant.holdout?.winRate || 0)}`,
+    `${pct(variant.leaveOneSymbolOut?.positiveRate || 0)} / ${pct(variant.leaveOneFamilyOut?.positiveRate || 0)}`,
+    `<span class="muted">${variant.decision || 'n/a'}</span>`,
+  ])).join('') || row(['No Phase26 layers yet', '', '', '', '', '', '', '']);
+
+  document.getElementById('phase26TickerDiscoveryTable').innerHTML = (phase26?.tickerDiscovery || []).slice(0, 20).map((item) => row([
+    `<strong>${item.symbol}</strong><br><span class="muted">${item.family || 'n/a'}</span>`,
+    num(item.trades || 0),
+    pct(item.metrics?.winRate || 0),
+    `<span class="${colorForNet(item.metrics?.netDollars)}">${money(item.metrics?.netDollars)}</span>`,
+    Number(item.avgScore || 0).toFixed(3),
+    (item.dominantSetups || []).slice(0, 2).map((setup) => `${setup.name}: ${money(setup.metrics?.netDollars)}`).join('<br>') || 'n/a',
+  ])).join('') || row(['No ticker discovery rows yet', '', '', '', '', '']);
+
+  document.getElementById('phase26CoverageCards').innerHTML = (phase26?.improvementCoverage || []).map((item) => `
+    <div class="mini-card">
+      <strong>${item.name}</strong>
+      <p class="muted">${item.implementation}</p>
+    </div>
+  `).join('') || '<p class="muted">No implementation coverage loaded.</p>';
+}
+
+function phase26LedgerLabel(category, ledger) {
+  return `${category} · ${ledger.layer || ledger.id} · ${num(ledger.metrics?.trades || ledger.trades?.length || 0)} trades · ${pct(ledger.metrics?.winRate || 0)} · ${money(ledger.metrics?.netDollars || 0)}`;
+}
+
+function renderPhase26TradeLedger(data) {
+  const payload = data.phase26TradeLedgers;
+  const select = document.getElementById('phase26TradeLedgerSelect');
+  const search = document.getElementById('phase26TradeSearch');
+  const table = document.getElementById('phase26TradeTable');
+  const count = document.getElementById('phase26TradeCount');
+  const metricsEl = document.getElementById('phase26TradeMetrics');
+
+  if (!payload?.ledgers || !Object.keys(payload.ledgers).length) {
+    count.textContent = 'No trade ledger yet';
+    metricsEl.innerHTML = '<p class="muted">Run `npm run lab:phase26` to export exact generalization trades.</p>';
+    table.innerHTML = row(['No Phase26 trades yet', '', '', '', '', '', '', '', '', '', '', '', '']);
+    return;
+  }
+
+  const categories = Object.entries(payload.categoryMap || {}).filter(([, id]) => payload.ledgers[id]);
+  select.innerHTML = categories.map(([category, id]) => {
+    const ledger = payload.ledgers[id];
+    return `<option value="${category}">${phase26LedgerLabel(category, ledger)}</option>`;
+  }).join('');
+  if ([...select.options].some((option) => option.value === 'bestOverall')) select.value = 'bestOverall';
+
+  function draw() {
+    const category = select.value || categories[0]?.[0];
+    const id = payload.categoryMap?.[category] || categories[0]?.[1];
+    const ledger = payload.ledgers[id];
+    const query = (search.value || '').trim().toLowerCase();
+    const trades = (ledger?.trades || []).filter((trade) => {
+      if (!query) return true;
+      return [
+        trade.symbol,
+        trade.family,
+        trade.side,
+        trade.trigger,
+        trade.session,
+        trade.setup,
+        trade.regime,
+        trade.selectedRouteKey,
+        trade.outcome,
+        trade.entryTiming,
+        trade.freshSymbol ? 'fresh-symbol' : 'known-symbol',
+        ...(trade.tags || []),
+      ].join(' ').toLowerCase().includes(query);
+    });
+
+    count.textContent = `${num(trades.length)} shown / ${num(ledger?.trades?.length || 0)} trades`;
+    metricsEl.innerHTML = [
+      metric('Winner', category),
+      metric('Trades', num(ledger?.metrics?.trades || 0)),
+      metric('Win Rate', pct(ledger?.metrics?.winRate || 0), ledger?.metrics?.winRate >= 80 ? 'good' : 'warn'),
+      metric('Net', money(ledger?.metrics?.netDollars || 0), colorForNet(ledger?.metrics?.netDollars)),
+      metric('Avg / Trade', money(ledger?.metrics?.avgDollars || 0), colorForNet(ledger?.metrics?.avgDollars)),
+      metric('Holdout Win', pct(ledger?.holdout?.winRate || 0), ledger?.holdout?.winRate >= 70 ? 'good' : 'warn'),
+      metric('Symbol OOS+', pct(ledger?.leaveOneSymbolOut?.positiveRate || 0)),
+      metric('Family OOS+', pct(ledger?.leaveOneFamilyOut?.positiveRate || 0)),
+    ].join('');
+
+    table.innerHTML = trades.map((trade) => row([
+      trade.index,
+      trade.date,
+      `<strong>${trade.symbol}</strong><br><span class="muted">${trade.family}${trade.freshSymbol ? ' · fresh' : ''}</span>`,
+      `${trade.side}<br><span class="muted">${trade.setup} · ${trade.regime}</span>`,
+      `${shortTime(trade.entryTime)}<br><span class="muted">→ ${shortTime(trade.exitTime)}</span>`,
+      trade.minutesHeld === null || trade.minutesHeld === undefined ? 'n/a' : `${trade.minutesHeld}m${trade.overnight ? ' · ON' : ''}`,
+      `${price(trade.entry)}<br><span class="muted">→ ${price(trade.exit)}</span>`,
+      `<span class="${colorForNet(trade.pnlDollars)}">${money(trade.pnlDollars)}</span><br><span class="muted">${trade.outcome}</span>`,
+      `<span class="${colorForNet(trade.modeledPnlScaledTo10k)}">${money(trade.modeledPnlScaledTo10k)}</span>`,
+      `${Number(trade.mfeR || 0).toFixed(2)}R / ${Number(trade.maeR || 0).toFixed(2)}R`,
+      `${trade.targetR}R / ${trade.stopR}R`,
+      `${Number(trade.phase26Score || 0).toFixed(3)}<br><span class="muted">${trade.specialistVotes} votes · ${trade.entryTiming}</span>`,
+      `<span class="muted">${trade.selectedRouteKey || 'n/a'}</span>`,
+    ])).join('') || row(['No matching trades', '', '', '', '', '', '', '', '', '', '', '', '']);
+  }
+
+  select.onchange = draw;
+  search.oninput = draw;
+  draw();
+}
+
 function renderOptionsProbe(data) {
   const probe = data.optionsProbe;
   document.getElementById('optionsProbeBadge').textContent = probe?.updatedAt
@@ -859,10 +1013,12 @@ loadDashboard()
     renderPhase23(data);
     renderPhase24(data);
     renderPhase25(data);
+    renderPhase26(data);
     renderOptionsProbe(data);
     renderTradingViewMcp(data);
     renderPhase24TradeLedger(data);
     renderPhase25TradeLedger(data);
+    renderPhase26TradeLedger(data);
     renderPhase23TradeLedger(data);
     renderPhase22TradeLedger(data);
     renderDaily(data);

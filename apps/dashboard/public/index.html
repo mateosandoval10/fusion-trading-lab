@@ -440,6 +440,113 @@
       <section class="panel">
         <div class="panel-head">
           <div>
+            <p class="eyebrow">Phase26 Generalization Engine</p>
+            <h2>Unseen-symbol/family validation, failure blocking, adaptive exits, and meta-classifier fusion</h2>
+          </div>
+          <span class="badge" id="phase26Badge">Loading…</span>
+        </div>
+        <div class="metric-grid" id="phase26Metrics"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Generalization Layer</th>
+                <th>Trades</th>
+                <th>Win</th>
+                <th>Net</th>
+                <th>Holdout</th>
+                <th>Symbol / Family OOS+</th>
+                <th>Deep Stress</th>
+                <th>Decision</th>
+              </tr>
+            </thead>
+            <tbody id="phase26CategoryTable"></tbody>
+          </table>
+        </div>
+        <div class="grid two">
+          <div class="table-wrap compact-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Layer</th>
+                  <th>Purpose</th>
+                  <th>Trades</th>
+                  <th>Win</th>
+                  <th>Net</th>
+                  <th>Holdout</th>
+                  <th>Symbol / Family OOS+</th>
+                  <th>Decision</th>
+                </tr>
+              </thead>
+              <tbody id="phase26LayerTable"></tbody>
+            </table>
+          </div>
+          <div class="table-wrap compact-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Discovered Ticker</th>
+                  <th>Trades</th>
+                  <th>Win</th>
+                  <th>Net</th>
+                  <th>Score</th>
+                  <th>Dominant Setups</th>
+                </tr>
+              </thead>
+              <tbody id="phase26TickerDiscoveryTable"></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="phase26CoverageCards" class="specialist-grid"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Phase26 Exact Trades</p>
+            <h2>Every trade selected by the generalization winners</h2>
+          </div>
+          <span class="badge" id="phase26TradeCount">Loading…</span>
+        </div>
+        <div class="controls">
+          <label>
+            Winner
+            <select id="phase26TradeLedgerSelect"></select>
+          </label>
+          <label>
+            Symbol / setup / regime filter
+            <input id="phase26TradeSearch" type="search" placeholder="e.g. QS, route_durability, trend_day, fresh-symbol" />
+          </label>
+        </div>
+        <div class="metric-grid" id="phase26TradeMetrics"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Symbol</th>
+                <th>Side / Setup</th>
+                <th>Entry → Exit</th>
+                <th>Hold</th>
+                <th>Prices</th>
+                <th>PnL</th>
+                <th>10k Scale</th>
+                <th>MFE / MAE</th>
+                <th>Target / Stop</th>
+                <th>Score</th>
+                <th>Route</th>
+              </tr>
+            </thead>
+            <tbody id="phase26TradeTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
             <p class="eyebrow">Options Probe</p>
             <h2>Winning equity trades compared against free/estimated options data</h2>
           </div>

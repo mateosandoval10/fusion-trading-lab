@@ -19,6 +19,7 @@
     "scalp:phase23": "node scripts/phase23_intelligence_specialist_tournament.js",
     "lab:phase24": "node scripts/phase24_self_improvement_loop.js",
     "lab:phase25": "node scripts/phase25_fresh_symbol_tournament.js",
+    "lab:phase26": "node scripts/phase26_generalization_engine.js",
     "lab:self-improve": "npm run lab:phase24 && npm run options:probe -- --fetch-current=true --provider-symbol-limit=2 && npm run pine:export && npm run lab:dashboard",
     "options:probe": "node scripts/options_data_probe.js",
     "test": "npm run pine:export && npm run lab:dashboard && node scripts/validate_lab_outputs.js"

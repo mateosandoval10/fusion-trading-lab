@@ -92,7 +92,13 @@ function compactTournamentVariant(variant, options = {}) {
     test: metricCompact(variant.test || {}),
     holdout: metricCompact(variant.holdout || {}),
     stress: metricCompact(variant.stress || {}),
+    deepStress: metricCompact(variant.deepStress || {}),
     consistency: variant.consistency,
+    leaveOneSymbolOut: variant.leaveOneSymbolOut,
+    leaveOneFamilyOut: variant.leaveOneFamilyOut,
+    setupValidation: variant.setupValidation,
+    regimeValidation: variant.regimeValidation,
+    freshSymbolMetrics: metricCompact(variant.freshSymbolMetrics || {}),
     diagnostics: variant.diagnostics,
     engineAverages: variant.engineAverages,
     monteCarlo: variant.monteCarlo,
@@ -373,6 +379,8 @@ const phase24 = readJson(join(root, 'models', 'self-improvement', 'current-phase
   || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'phase24-self-improvement.json'), null);
 const phase25 = readJson(join(root, 'models', 'fresh-symbol', 'current-phase25-fresh-symbol-tournament.json'), null)
   || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'phase25-fresh-symbol-tournament.json'), null);
+const phase26 = readJson(join(root, 'models', 'generalization', 'current-phase26-generalization-engine.json'), null)
+  || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'phase26-generalization-engine.json'), null);
 const optionsProbe = readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'options-data-probe.json'), null)
   || readJson(join(root, 'reports', 'options-data-probe-report.json'), null);
 const tradingViewMcp = readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'tradingview-mcp-snapshot.json'), null)
@@ -463,6 +471,24 @@ const dashboard = {
     promoted: phase25.promoted?.slice(0, 20).map((variant) => compactTournamentVariant(variant, { topLimit: 8, tradeLimit: 3 })) || [],
     lowSampleWatchlist: phase25.lowSampleWatchlist?.slice(0, 20).map((variant) => compactTournamentVariant(variant, { topLimit: 6, tradeLimit: 3 })) || [],
     rankedVariants: phase25.rankedVariants?.slice(0, 40).map((variant) => compactTournamentVariant(variant, { topLimit: 6, tradeLimit: 0 })) || [],
+  } : null,
+  phase26: phase26 ? {
+    updatedAt: phase26.updatedAt,
+    runId: phase26.runId,
+    phase: phase26.phase,
+    goal: phase26.goal,
+    safety: phase26.safety,
+    config: phase26.config,
+    baselines: phase26.baselines,
+    improvementCoverage: phase26.improvementCoverage || [],
+    featureImportance: phase26.featureImportance?.slice(0, 30) || [],
+    patternPrototypes: phase26.patternPrototypes?.slice(0, 30) || [],
+    tickerDiscovery: phase26.tickerDiscovery?.slice(0, 40) || [],
+    categoryChampions: compactCategoryMap(phase26.categoryChampions, { topLimit: 12, tradeLimit: 6 }),
+    perLayerBest: phase26.perLayerBest?.slice(0, 30).map((variant) => compactTournamentVariant(variant, { topLimit: 8, tradeLimit: 3 })) || [],
+    promoted: phase26.promoted?.slice(0, 20).map((variant) => compactTournamentVariant(variant, { topLimit: 8, tradeLimit: 3 })) || [],
+    watchlist: phase26.watchlist?.slice(0, 20).map((variant) => compactTournamentVariant(variant, { topLimit: 8, tradeLimit: 3 })) || [],
+    rankedVariants: phase26.rankedVariants?.slice(0, 40).map((variant) => compactTournamentVariant(variant, { topLimit: 6, tradeLimit: 0 })) || [],
   } : null,
   optionsProbe: optionsProbe ? {
     updatedAt: optionsProbe.updatedAt,

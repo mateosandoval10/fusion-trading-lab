@@ -120,6 +120,17 @@ Phase23 is an intelligence overlay, not a live-trading bot. It is paper/backtest
 - Writes exact selected ledgers to `apps/dashboard/public/data/phase25-fresh-symbol-trade-ledgers.json`.
 - Adds dashboard panels for the fresh-symbol tournament, challenger leaderboard, fresh-symbol leaderboard, and every selected trade.
 
+## Phase26 Generalization Engine
+
+`npm run lab:phase26` is the overfit-control tournament built after Phase25 showed that known-symbol logic did not transfer well enough:
+
+- Adds fresh-symbol-first scoring, leave-one-symbol-out validation, leave-one-family-out validation, regime routing, setup archetypes, failure-pattern blocking, entry timing, MFE/MAE prediction, time-to-profit filtering, route durability, symbol personality, relative strength, liquidity quality, volume intent, VWAP gravity, candle anatomy, opening-range intelligence, adaptive targets, dynamic stops, after-cost scoring, loss-cluster cooldowns, recent edge decay, specialist voting, meta-classifier fusion, forward-gap penalty, pattern prototypes, counterfactual timing proxy, stress survival, ticker discovery, and champion fusion.
+- Uses chronological train/test/holdout plus normal and deep cost stress.
+- Promotes only variants that survive unseen-symbol/family diagnostics, holdout, stress, drawdown, loss-streak, and profit gates.
+- Writes the model to `models/generalization/current-phase26-generalization-engine.json`.
+- Writes exact selected ledgers to `apps/dashboard/public/data/phase26-generalization-trade-ledgers.json`.
+- Adds dashboard panels for promoted layers, implementation coverage, discovered tickers, generalization diagnostics, and every selected trade.
+
 ## TradingView Connection
 
 1. Add `generated/fusionv3_codex_clean_tradingview.pine` to TradingView.
