@@ -36,6 +36,7 @@ The dashboard now includes a canonical data panel and specialist factory table:
 - `Phase26 Generalization Engine` shows the overfit-control sweep: unseen-symbol/family diagnostics, promoted generalization layers, implementation coverage, discovered tickers, deep-stress metrics, and exact trade ledgers.
 - `Phase27 Promotion Audit` shows the current promoted Pine mode, safe-promotion decision, audit findings, specialist fallback modes, and forward-proof checklist.
 - `Phase27 Paper Options Overlay` shows estimated options translation for Phase26 winning stock signals, including rule choice, premium path, estimated PnL, and a paper-only execution caveat.
+- `Actual Historical Options Backtest` shows the no-estimates options backtest. It lists the exact option contract, strike, expiration, entry ask, exit bid, PnL, or the exact skip reason when provider data is missing.
 - `Options Probe` shows winning equity trades compared against free-provider availability and estimated option-contract returns. Exact historical data is labeled separately from estimated data.
 
 ## Specialist Detail Panels

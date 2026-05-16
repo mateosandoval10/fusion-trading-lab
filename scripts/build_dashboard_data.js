@@ -385,6 +385,8 @@ const phase27 = readJson(join(root, 'models', 'promotions', 'current-phase27-pro
   || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'phase27-promotion-audit.json'), null);
 const phase27Options = readJson(join(root, 'models', 'options', 'current-phase27-options-overlay.json'), null)
   || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'phase27-options-overlay.json'), null);
+const actualOptions = readJson(join(root, 'reports', 'options', 'latest-actual-options-backtest.json'), null)
+  || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'actual-options-backtest.json'), null);
 const optionsProbe = readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'options-data-probe.json'), null)
   || readJson(join(root, 'reports', 'options-data-probe-report.json'), null);
 const tradingViewMcp = readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'tradingview-mcp-snapshot.json'), null)
@@ -515,6 +517,18 @@ const dashboard = {
     totals: phase27Options.totals,
     dataConfidence: phase27Options.dataConfidence,
     rows: phase27Options.rows?.slice(0, 80) || [],
+  } : null,
+  actualOptions: actualOptions ? {
+    updatedAt: actualOptions.updatedAt,
+    phase: actualOptions.phase,
+    safety: actualOptions.safety,
+    sourceLedger: actualOptions.sourceLedger,
+    provider: actualOptions.provider,
+    providerRequirements: actualOptions.providerRequirements,
+    config: actualOptions.config,
+    summary: actualOptions.summary,
+    skipReasons: actualOptions.skipReasons || [],
+    rows: actualOptions.rows?.slice(0, 80) || [],
   } : null,
   optionsProbe: optionsProbe ? {
     updatedAt: optionsProbe.updatedAt,

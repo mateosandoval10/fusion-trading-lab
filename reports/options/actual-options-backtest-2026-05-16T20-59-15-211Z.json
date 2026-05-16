@@ -1,0 +1,307 @@
+{
+  "updatedAt": "2026-05-16T20:59:15.210Z",
+  "phase": "Actual Historical Options Backtest",
+  "safety": {
+    "paperOnly": true,
+    "noBrokerOrders": true,
+    "noEstimates": true
+  },
+  "sourceLedger": {
+    "selector": "phase26:bestOverall",
+    "phase": "phase26",
+    "category": "bestOverall",
+    "id": "phase26__route_durability_score__q68__fixed075__v7",
+    "sourceTrades": 10
+  },
+  "provider": "polygon",
+  "providerRequirements": {
+    "polygon": {
+      "env": "POLYGON_API_KEY",
+      "requiredFor": "exact intraday historical option contracts and bid/ask quotes",
+      "configured": false
+    }
+  },
+  "config": {
+    "capital": 10000,
+    "minDte": 0,
+    "maxDte": 14,
+    "preferredDte": 3,
+    "dteWeight": 3,
+    "strikeOffsetsPct": [
+      0,
+      0.01,
+      0.02
+    ],
+    "quoteSearchWindowMinutes": 10,
+    "commissionPerContract": 0.65
+  },
+  "summary": {
+    "signalsTested": 10,
+    "exactFilledTrades": 0,
+    "skippedTrades": 10,
+    "wins": 0,
+    "losses": 0,
+    "winRate": 0,
+    "netDollars": 0,
+    "avgDollars": 0,
+    "profitFactor": 0
+  },
+  "skipReasons": [
+    {
+      "status": "missing_api_key",
+      "count": 10
+    }
+  ],
+  "rows": [
+    {
+      "status": "missing_api_key",
+      "reason": "POLYGON_API_KEY is required for exact intraday historical option quotes.",
+      "provider": "polygon",
+      "trade": {
+        "sourceIndex": 2,
+        "symbol": "PANW",
+        "side": "short",
+        "optionType": "put",
+        "date": "2026-02-04",
+        "entryMs": 1770216000000,
+        "exitMs": 1770216300000,
+        "entryIso": "2026-02-04T14:40:00.000Z",
+        "exitIso": "2026-02-04T14:45:00.000Z",
+        "entryUnderlying": 162.14999389648438,
+        "exitUnderlying": 161.59792256278817,
+        "setup": "opening_drive",
+        "regime": "trend_day",
+        "confidence": 83,
+        "mfeR": 0.8241611178990019,
+        "maeR": 0.09510221078530785,
+        "pnlDollars": 594.8798303026927,
+        "selectedRouteKey": "PANW|general|base|morning|short"
+      }
+    },
+    {
+      "status": "missing_api_key",
+      "reason": "POLYGON_API_KEY is required for exact intraday historical option quotes.",
+      "provider": "polygon",
+      "trade": {
+        "sourceIndex": 3,
+        "symbol": "TCEHY",
+        "side": "short",
+        "optionType": "put",
+        "date": "2026-02-04",
+        "entryMs": 1770216000000,
+        "exitMs": 1770216600000,
+        "entryIso": "2026-02-04T14:40:00.000Z",
+        "exitIso": "2026-02-04T14:50:00.000Z",
+        "entryUnderlying": 71.05000305175781,
+        "exitUnderlying": 70.8403527873238,
+        "setup": "breakout_continuation",
+        "regime": "trend_day",
+        "confidence": 81,
+        "mfeR": 0.7011774099870344,
+        "maeR": 0,
+        "pnlDollars": 220.61620583260526,
+        "selectedRouteKey": "TCEHY|general|base|open-0930|short"
+      }
+    },
+    {
+      "status": "missing_api_key",
+      "reason": "POLYGON_API_KEY is required for exact intraday historical option quotes.",
+      "provider": "polygon",
+      "trade": {
+        "sourceIndex": 4,
+        "symbol": "RDDT",
+        "side": "short",
+        "optionType": "put",
+        "date": "2026-02-06",
+        "entryMs": 1770389100000,
+        "exitMs": 1770389700000,
+        "entryIso": "2026-02-06T14:45:00.000Z",
+        "exitIso": "2026-02-06T14:55:00.000Z",
+        "entryUnderlying": 149.6300048828125,
+        "exitUnderlying": 147.64560790975906,
+        "setup": "compression_breakout",
+        "regime": "squeeze_expansion",
+        "confidence": 82,
+        "mfeR": 0.7213798843057082,
+        "maeR": 0.255744661363731,
+        "pnlDollars": 1218.599255240341,
+        "selectedRouteKey": "RDDT|high-beta-growth|base|open-0930|short"
+      }
+    },
+    {
+      "status": "missing_api_key",
+      "reason": "POLYGON_API_KEY is required for exact intraday historical option quotes.",
+      "provider": "polygon",
+      "trade": {
+        "sourceIndex": 5,
+        "symbol": "GOOG",
+        "side": "short",
+        "optionType": "put",
+        "date": "2026-02-06",
+        "entryMs": 1770411300000,
+        "exitMs": 1770647700000,
+        "entryIso": "2026-02-06T20:55:00.000Z",
+        "exitIso": "2026-02-09T14:35:00.000Z",
+        "entryUnderlying": 323.0899963378906,
+        "exitUnderlying": 318.35534189946947,
+        "setup": "liquidity_sweep_reclaim",
+        "regime": "reversal_reclaim",
+        "confidence": 73,
+        "mfeR": 4.112421726845246,
+        "maeR": 0.6256448728638014,
+        "pnlDollars": 1275.9506880359627,
+        "selectedRouteKey": "GOOG|general|base|afternoon|short"
+      }
+    },
+    {
+      "status": "missing_api_key",
+      "reason": "POLYGON_API_KEY is required for exact intraday historical option quotes.",
+      "provider": "polygon",
+      "trade": {
+        "sourceIndex": 6,
+        "symbol": "SOFI",
+        "side": "long",
+        "optionType": "call",
+        "date": "2026-02-06",
+        "entryMs": 1770411300000,
+        "exitMs": 1770647700000,
+        "entryIso": "2026-02-06T20:55:00.000Z",
+        "exitIso": "2026-02-09T14:35:00.000Z",
+        "entryUnderlying": 20.864999771118164,
+        "exitUnderlying": 21.253567549333145,
+        "setup": "breakout_continuation",
+        "regime": "balanced",
+        "confidence": 75,
+        "mfeR": 3.424546357359473,
+        "maeR": 0.4892250097985482,
+        "pnlDollars": 2492.1679119452083,
+        "selectedRouteKey": "SOFI|high-beta-growth|base|afternoon|long"
+      }
+    },
+    {
+      "status": "missing_api_key",
+      "reason": "POLYGON_API_KEY is required for exact intraday historical option quotes.",
+      "provider": "polygon",
+      "trade": {
+        "sourceIndex": 7,
+        "symbol": "QS",
+        "side": "long",
+        "optionType": "call",
+        "date": "2026-02-06",
+        "entryMs": 1770411300000,
+        "exitMs": 1770647700000,
+        "entryIso": "2026-02-06T20:55:00.000Z",
+        "exitIso": "2026-02-09T14:35:00.000Z",
+        "entryUnderlying": 8.479999542236328,
+        "exitUnderlying": 9.417326694070272,
+        "setup": "breakout_continuation",
+        "regime": "trend_day",
+        "confidence": 84,
+        "mfeR": 14.844012596345548,
+        "maeR": 0,
+        "pnlDollars": 12214.792224477567,
+        "selectedRouteKey": "QS|ev-auto|base|all|long"
+      }
+    },
+    {
+      "status": "missing_api_key",
+      "reason": "POLYGON_API_KEY is required for exact intraday historical option quotes.",
+      "provider": "polygon",
+      "trade": {
+        "sourceIndex": 8,
+        "symbol": "U",
+        "side": "long",
+        "optionType": "call",
+        "date": "2026-02-06",
+        "entryMs": 1770411300000,
+        "exitMs": 1770647700000,
+        "entryIso": "2026-02-06T20:55:00.000Z",
+        "exitIso": "2026-02-09T14:35:00.000Z",
+        "entryUnderlying": 25.09000015258789,
+        "exitUnderlying": 26.604962583176942,
+        "setup": "options_burst",
+        "regime": "trend_day",
+        "confidence": 82,
+        "mfeR": 8.470283281807149,
+        "maeR": 0.2051783693278444,
+        "pnlDollars": 6970.351258926979,
+        "selectedRouteKey": "U|general|base|afternoon|long"
+      }
+    },
+    {
+      "status": "missing_api_key",
+      "reason": "POLYGON_API_KEY is required for exact intraday historical option quotes.",
+      "provider": "polygon",
+      "trade": {
+        "sourceIndex": 9,
+        "symbol": "NVDA",
+        "side": "long",
+        "optionType": "call",
+        "date": "2026-02-09",
+        "entryMs": 1770647400000,
+        "exitMs": 1770648000000,
+        "entryIso": "2026-02-09T14:30:00.000Z",
+        "exitIso": "2026-02-09T14:40:00.000Z",
+        "entryUnderlying": 187.3007049560547,
+        "exitUnderlying": 190.21793880583272,
+        "setup": "liquidity_sweep_reclaim",
+        "regime": "reversal_reclaim",
+        "confidence": 95,
+        "mfeR": 2.5200670038319393,
+        "maeR": 0.36056806568317196,
+        "pnlDollars": 2313.0756081311583,
+        "selectedRouteKey": "NVDA|semis-ai|base|all|long"
+      }
+    },
+    {
+      "status": "missing_api_key",
+      "reason": "POLYGON_API_KEY is required for exact intraday historical option quotes.",
+      "provider": "polygon",
+      "trade": {
+        "sourceIndex": 10,
+        "symbol": "SNOW",
+        "side": "long",
+        "optionType": "call",
+        "date": "2026-02-09",
+        "entryMs": 1770647400000,
+        "exitMs": 1770648000000,
+        "entryIso": "2026-02-09T14:30:00.000Z",
+        "exitIso": "2026-02-09T14:40:00.000Z",
+        "entryUnderlying": 170.1300048828125,
+        "exitUnderlying": 172.53763603357737,
+        "setup": "liquidity_sweep_reclaim",
+        "regime": "reversal_reclaim",
+        "confidence": 94,
+        "mfeR": 2.0807267436409105,
+        "maeR": 0.4792876553677896,
+        "pnlDollars": 2294.2256502830387,
+        "selectedRouteKey": "SNOW|general|base|all|long"
+      }
+    },
+    {
+      "status": "missing_api_key",
+      "reason": "POLYGON_API_KEY is required for exact intraday historical option quotes.",
+      "provider": "polygon",
+      "trade": {
+        "sourceIndex": 11,
+        "symbol": "RBLX",
+        "side": "long",
+        "optionType": "call",
+        "date": "2026-02-09",
+        "entryMs": 1770647400000,
+        "exitMs": 1770648000000,
+        "entryIso": "2026-02-09T14:30:00.000Z",
+        "exitIso": "2026-02-09T14:40:00.000Z",
+        "entryUnderlying": 70.26499938964844,
+        "exitUnderlying": 72.0740973940964,
+        "setup": "opening_drive",
+        "regime": "trend_day",
+        "confidence": 85,
+        "mfeR": 1.7998275304403526,
+        "maeR": 0.025144467943197947,
+        "pnlDollars": 4646.657746146168,
+        "selectedRouteKey": "RBLX|high-beta-growth|base|morning|long"
+      }
+    }
+  ]
+}

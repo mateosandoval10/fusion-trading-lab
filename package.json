@@ -23,6 +23,7 @@
     "lab:phase27": "node scripts/phase27_champion_promotion_reality_audit.js",
     "lab:self-improve": "npm run lab:phase24 && npm run options:probe -- --fetch-current=true --provider-symbol-limit=2 && npm run pine:export && npm run lab:dashboard",
     "options:probe": "node scripts/options_data_probe.js",
+    "options:actual": "node scripts/options_actual_backtest.js",
     "test": "npm run pine:export && npm run lab:dashboard && node scripts/validate_lab_outputs.js"
   },
   "engines": {

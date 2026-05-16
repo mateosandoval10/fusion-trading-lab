@@ -617,6 +617,33 @@
       <section class="panel">
         <div class="panel-head">
           <div>
+            <p class="eyebrow">Actual Historical Options Backtest</p>
+            <h2>Exact contract, strike, bid/ask entry, and bid/ask exit from provider data</h2>
+          </div>
+          <span class="badge" id="actualOptionsBadge">Loading…</span>
+        </div>
+        <div class="metric-grid" id="actualOptionsMetrics"></div>
+        <div id="actualOptionsNotes" class="grid two"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Stock Signal</th>
+                <th>Option Contract</th>
+                <th>Signal Time</th>
+                <th>Entry Fill</th>
+                <th>Exit Fill</th>
+                <th>PnL</th>
+              </tr>
+            </thead>
+            <tbody id="actualOptionsTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
             <p class="eyebrow">Options Probe</p>
             <h2>Winning equity trades compared against free/estimated options data</h2>
           </div>

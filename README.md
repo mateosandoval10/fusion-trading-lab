@@ -52,6 +52,7 @@ npm run lab:phase26
 npm run lab:phase27
 npm run lab:self-improve
 npm run options:probe
+npm run options:actual -- --ledger=phase26:bestOverall --limit=25
 npm run pine:export
 npm run lab:nightly
 npm run scalp:phase19 -- --fresh-data=false
@@ -149,6 +150,17 @@ Phase23 is an intelligence overlay, not a live-trading bot. It is paper/backtest
 - Writes the promotion audit to `models/promotions/current-phase27-promotion-audit.json`.
 - Estimates option-style returns for qualifying Phase26 winners in `models/options/current-phase27-options-overlay.json`.
 - Treats options output as paper analytics only: no broker API, no orders, and no exact historical bid/ask/fill modeling unless a future data provider is explicitly connected.
+
+## Actual Historical Options Backtest
+
+`npm run options:actual` is the no-estimates options path:
+
+- Reads exact stock signal timestamps from a selected winner ledger, defaulting to `phase26:bestOverall`.
+- Chooses a real listed call/put contract from provider contract metadata using side, DTE, and strike-offset policy.
+- Buys to open at the historical option ask at or after the stock signal timestamp.
+- Sells to close at the historical option bid at or after the algorithm exit timestamp.
+- Writes exact contract, strike, expiration, entry quote, exit quote, contracts, PnL, and skip reasons to `reports/options/latest-actual-options-backtest.json`.
+- Requires `POLYGON_API_KEY` for historical intraday option contracts and bid/ask quotes. If the key or quotes are missing, trades are skipped instead of estimated.
 
 ## TradingView Connection
 

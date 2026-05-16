@@ -911,6 +911,51 @@ function renderPhase27Options(data) {
   }).join('') || row(['No options overlay rows yet', '', '', '', '', '', '']);
 }
 
+function renderActualOptions(data) {
+  const actual = data.actualOptions;
+  const summary = actual?.summary || {};
+  const polygonConfigured = actual?.providerRequirements?.polygon?.configured;
+  document.getElementById('actualOptionsBadge').textContent = actual?.updatedAt
+    ? `Updated ${new Date(actual.updatedAt).toLocaleString()}`
+    : 'No actual options backtest yet';
+  document.getElementById('actualOptionsMetrics').innerHTML = actual ? [
+    metric('No Estimates', actual.safety?.noEstimates ? 'Yes' : 'No', actual.safety?.noEstimates ? 'good' : 'bad'),
+    metric('Provider', actual.provider || 'n/a', polygonConfigured ? 'good' : 'warn'),
+    metric('Signals Tested', num(summary.signalsTested || 0)),
+    metric('Exact Filled', num(summary.exactFilledTrades || 0), summary.exactFilledTrades ? 'good' : 'warn'),
+    metric('Skipped', num(summary.skippedTrades || 0), summary.skippedTrades ? 'warn' : ''),
+    metric('Win Rate', pct(summary.winRate || 0), summary.winRate >= 70 ? 'good' : 'warn'),
+    metric('Net', money(summary.netDollars || 0), colorForNet(summary.netDollars)),
+    metric('API Key', polygonConfigured ? 'Configured' : 'Missing', polygonConfigured ? 'good' : 'warn'),
+  ].join('') : '<p class="muted">Run `npm run options:actual` to test exact historical options quotes. It will not estimate missing prices.</p>';
+
+  document.getElementById('actualOptionsNotes').innerHTML = actual ? [
+    `<div class="mini-card"><strong>Provider requirement</strong><p class="muted">${actual.providerRequirements?.polygon?.env || 'POLYGON_API_KEY'} is required for exact intraday historical option bid/ask quotes. Missing data is skipped, not estimated.</p></div>`,
+    `<div class="mini-card"><strong>Skip reasons</strong><p class="muted">${(actual.skipReasons || []).map((item) => `${item.status}: ${num(item.count)}`).join('<br>') || 'No skips'}</p></div>`,
+  ].join('') : '';
+
+  document.getElementById('actualOptionsTable').innerHTML = (actual?.rows || []).slice(0, 40).map((item) => {
+    const trade = item.trade || {};
+    const contract = item.contract || {};
+    return row([
+      `<strong>${trade.symbol || 'n/a'}</strong><br><span class="muted">${trade.date || ''} · ${trade.side || ''}</span>`,
+      item.status === 'filled'
+        ? `${contract.optionTicker}<br><span class="muted">${contract.optionType} ${price(contract.strike)} · exp ${contract.expiration}</span>`
+        : `<span class="warn">${item.status}</span><br><span class="muted">${item.reason || ''}</span>`,
+      `${trade.entryIso || 'n/a'}<br><span class="muted">→ ${trade.exitIso || 'n/a'}</span>`,
+      item.status === 'filled'
+        ? `${price(item.entryQuote?.fill)} @ ask<br><span class="muted">${item.entryQuote?.time || ''}</span>`
+        : 'n/a',
+      item.status === 'filled'
+        ? `${price(item.exitQuote?.fill)} @ bid<br><span class="muted">${item.exitQuote?.time || ''}</span>`
+        : 'n/a',
+      item.status === 'filled'
+        ? `<span class="${colorForNet(item.pnlDollars)}">${money(item.pnlDollars)}</span><br><span class="muted">${Number(item.roiPct || 0).toFixed(1)}%</span>`
+        : 'n/a',
+    ]);
+  }).join('') || row(['No actual option rows yet', '', '', '', '', '']);
+}
+
 function renderOptionsProbe(data) {
   const probe = data.optionsProbe;
   document.getElementById('optionsProbeBadge').textContent = probe?.updatedAt
@@ -1096,6 +1141,7 @@ loadDashboard()
     renderPhase26(data);
     renderPhase27(data);
     renderPhase27Options(data);
+    renderActualOptions(data);
     renderOptionsProbe(data);
     renderTradingViewMcp(data);
     renderPhase24TradeLedger(data);
