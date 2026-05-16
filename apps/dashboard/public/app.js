@@ -58,6 +58,12 @@ async function loadDashboard() {
   } catch {
     data.phase24TradeLedgers = null;
   }
+  try {
+    const phase25TradeResponse = await fetch('./data/phase25-fresh-symbol-trade-ledgers.json', { cache: 'no-store' });
+    data.phase25TradeLedgers = phase25TradeResponse.ok ? await phase25TradeResponse.json() : null;
+  } catch {
+    data.phase25TradeLedgers = null;
+  }
   return data;
 }
 
@@ -543,6 +549,134 @@ function renderPhase24TradeLedger(data) {
   draw();
 }
 
+function renderPhase25(data) {
+  const phase25 = data.phase25;
+  const bestOverall = phase25?.categoryChampions?.bestOverall;
+  const bestProfit = phase25?.categoryChampions?.bestProfit;
+  const bestHighWin = phase25?.categoryChampions?.bestHighWin;
+  document.getElementById('phase25Badge').textContent = phase25?.updatedAt
+    ? `Updated ${new Date(phase25.updatedAt).toLocaleString()}`
+    : 'No Phase25 run yet';
+  document.getElementById('phase25Metrics').innerHTML = phase25 ? [
+    metric('Fresh Symbols', num(phase25.config?.freshSymbols || 0), 'good'),
+    metric('Fresh Trades', num(phase25.config?.freshTrades || 0), 'good'),
+    metric('Excluded Prior Symbols', num(phase25.config?.excludedSymbols || 0)),
+    metric('Challengers', num(phase25.config?.challengerCount || 0)),
+    metric('Evaluated', num(phase25.config?.evaluated || 0)),
+    metric('Kept Low-Floor', num(phase25.config?.kept || 0)),
+    metric('Qualified', num(phase25.config?.qualified || 0)),
+    metric('Promoted', num((phase25.promoted || []).length), (phase25.promoted || []).length ? 'good' : 'warn'),
+    metric('Best Overall Win', pct(bestOverall?.metrics?.winRate || 0), bestOverall?.metrics?.winRate >= 80 ? 'good' : 'warn'),
+    metric('Best Overall Net', money(bestOverall?.metrics?.netDollars || 0), colorForNet(bestOverall?.metrics?.netDollars)),
+    metric('Best Profit Net', money(bestProfit?.metrics?.netDollars || 0), colorForNet(bestProfit?.metrics?.netDollars)),
+    metric('Best High-Win', pct(bestHighWin?.metrics?.winRate || 0), bestHighWin?.metrics?.winRate >= 80 ? 'good' : 'warn'),
+    metric('Min Trade Floor', num(phase25.config?.minTrades || 0)),
+  ].join('') : '<p class="muted">Run `npm run lab:phase25` to test fresh symbols excluded from prior champions.</p>';
+
+  const categories = Object.entries(phase25?.categoryChampions || {}).filter(([, variant]) => variant);
+  document.getElementById('phase25CategoryTable').innerHTML = categories.map(([name, variant]) => row([
+    `<strong>${name}</strong><br><span class="muted">${variant.challenger || variant.id}</span>`,
+    `${variant.description || 'n/a'}<br><span class="muted">target ${variant.targetR ?? 'n/a'}R · q ${variant.threshold ?? 'n/a'}</span>`,
+    num(variant.metrics?.trades || 0),
+    pct(variant.metrics?.winRate || 0),
+    `<span class="${colorForNet(variant.metrics?.netDollars)}">${money(variant.metrics?.netDollars)}</span>`,
+    `${num(variant.holdout?.trades || 0)} / ${pct(variant.holdout?.winRate || 0)}`,
+    `<strong>${variant.decision || 'n/a'}</strong><br><span class="muted">${(variant.decisionReasons || []).slice(0, 2).join('<br>')}</span>`,
+  ])).join('') || row(['No Phase25 categories yet', '', '', '', '', '', '']);
+
+  document.getElementById('phase25ChallengerTable').innerHTML = (phase25?.perChallengerBest || []).slice(0, 30).map((variant) => row([
+    `<strong>${variant.challenger || variant.uniqueTwist}</strong>`,
+    variant.description || 'n/a',
+    num(variant.metrics?.trades || 0),
+    pct(variant.metrics?.winRate || 0),
+    `<span class="${colorForNet(variant.metrics?.netDollars)}">${money(variant.metrics?.netDollars)}</span>`,
+    `${num(variant.holdout?.trades || 0)} / ${pct(variant.holdout?.winRate || 0)}`,
+    `<span class="muted">${variant.decision || 'n/a'}</span>`,
+  ])).join('') || row(['No Phase25 challengers yet', '', '', '', '', '', '']);
+
+  document.getElementById('phase25FreshSymbolTable').innerHTML = (phase25?.freshSymbolLeaderboard || []).slice(0, 20).map((item) => row([
+    `<strong>${item.symbol}</strong><br><span class="muted">${item.family || 'n/a'}</span>`,
+    num(item.trades || 0),
+    pct(item.winRate || 0),
+    `<span class="${colorForNet(item.netDollars)}">${money(item.netDollars)}</span>`,
+  ])).join('') || row(['No fresh symbol leaderboard yet', '', '', '']);
+}
+
+function renderPhase25TradeLedger(data) {
+  const payload = data.phase25TradeLedgers;
+  const select = document.getElementById('phase25TradeLedgerSelect');
+  const search = document.getElementById('phase25TradeSearch');
+  const table = document.getElementById('phase25TradeTable');
+  const count = document.getElementById('phase25TradeCount');
+  const metricsEl = document.getElementById('phase25TradeMetrics');
+
+  if (!payload?.ledgers || !Object.keys(payload.ledgers).length) {
+    count.textContent = 'No trade ledger yet';
+    metricsEl.innerHTML = '<p class="muted">Run `npm run lab:phase25` to export exact fresh-symbol trades.</p>';
+    table.innerHTML = row(['No Phase25 trades yet', '', '', '', '', '', '', '', '', '', '', '']);
+    return;
+  }
+
+  const categories = Object.entries(payload.categoryMap || {}).filter(([, id]) => payload.ledgers[id]);
+  select.innerHTML = categories.map(([category, id]) => {
+    const ledger = payload.ledgers[id];
+    return `<option value="${category}">${ledgerLabel(category, ledger)}</option>`;
+  }).join('');
+  if ([...select.options].some((option) => option.value === 'bestProfit')) select.value = 'bestProfit';
+
+  function draw() {
+    const category = select.value || categories[0]?.[0];
+    const id = payload.categoryMap?.[category] || categories[0]?.[1];
+    const ledger = payload.ledgers[id];
+    const query = (search.value || '').trim().toLowerCase();
+    const trades = (ledger?.trades || []).filter((trade) => {
+      if (!query) return true;
+      return [
+        trade.symbol,
+        trade.family,
+        trade.side,
+        trade.trigger,
+        trade.session,
+        trade.selectedRouteKey,
+        trade.outcome,
+        ...(trade.tags || []),
+        trade.overnight ? 'overnight' : 'intraday',
+      ].join(' ').toLowerCase().includes(query);
+    });
+
+    count.textContent = `${num(trades.length)} shown / ${num(ledger?.trades?.length || 0)} trades`;
+    metricsEl.innerHTML = [
+      metric('Fresh Winner', category),
+      metric('Trades', num(ledger?.metrics?.trades || 0)),
+      metric('Win Rate', pct(ledger?.metrics?.winRate || 0), ledger?.metrics?.winRate >= 80 ? 'good' : 'warn'),
+      metric('Net', money(ledger?.metrics?.netDollars || 0), colorForNet(ledger?.metrics?.netDollars)),
+      metric('Avg / Trade', money(ledger?.metrics?.avgDollars || 0), colorForNet(ledger?.metrics?.avgDollars)),
+      metric('Holdout Win', pct(ledger?.holdout?.winRate || 0), ledger?.holdout?.winRate >= 80 ? 'good' : 'warn'),
+      metric('Stress Net', money(ledger?.stress?.netDollars || 0), colorForNet(ledger?.stress?.netDollars)),
+      metric('Decision', ledger?.decision || 'n/a'),
+    ].join('');
+
+    table.innerHTML = trades.map((trade) => row([
+      trade.index,
+      trade.date,
+      `<strong>${trade.symbol}</strong><br><span class="muted">${trade.family}</span>`,
+      `${trade.side}<br><span class="muted">${trade.trigger} · ${trade.session}</span>`,
+      `${shortTime(trade.entryTime)}<br><span class="muted">→ ${shortTime(trade.exitTime)}</span>`,
+      trade.minutesHeld === null || trade.minutesHeld === undefined ? 'n/a' : `${trade.minutesHeld}m${trade.overnight ? ' · ON' : ''}`,
+      `${price(trade.entry)}<br><span class="muted">→ ${price(trade.exit)}</span>`,
+      `<span class="${colorForNet(trade.pnlDollars)}">${money(trade.pnlDollars)}</span><br><span class="muted">${trade.outcome}</span>`,
+      `<span class="${colorForNet(trade.modeledPnlScaledTo10k)}">${money(trade.modeledPnlScaledTo10k)}</span>`,
+      `${Number(trade.mfeR || 0).toFixed(2)}R / ${Number(trade.maeR || 0).toFixed(2)}R`,
+      `${Number(trade.phase25Score || 0).toFixed(3)}<br><span class="muted">conf ${trade.confidence || 0}</span>`,
+      `<span class="muted">${trade.selectedRouteKey || 'n/a'}</span>`,
+    ])).join('') || row(['No matching trades', '', '', '', '', '', '', '', '', '', '', '']);
+  }
+
+  select.onchange = draw;
+  search.oninput = draw;
+  draw();
+}
+
 function renderOptionsProbe(data) {
   const probe = data.optionsProbe;
   document.getElementById('optionsProbeBadge').textContent = probe?.updatedAt
@@ -724,9 +858,11 @@ loadDashboard()
     renderPhase22(data);
     renderPhase23(data);
     renderPhase24(data);
+    renderPhase25(data);
     renderOptionsProbe(data);
     renderTradingViewMcp(data);
     renderPhase24TradeLedger(data);
+    renderPhase25TradeLedger(data);
     renderPhase23TradeLedger(data);
     renderPhase22TradeLedger(data);
     renderDaily(data);

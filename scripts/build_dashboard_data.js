@@ -67,6 +67,9 @@ function compactTournamentVariant(variant, options = {}) {
   const tradeLimit = options.tradeLimit ?? 8;
   return {
     id: variant.id,
+    challenger: variant.challenger,
+    description: variant.description,
+    uniqueTwist: variant.uniqueTwist,
     profile: variant.profile,
     goal: variant.goal,
     universe: variant.universe,
@@ -74,6 +77,8 @@ function compactTournamentVariant(variant, options = {}) {
     triggerGroup: variant.triggerGroup,
     routeSet: variant.routeSet,
     threshold: variant.threshold,
+    targetR: variant.targetR,
+    constraints: variant.constraints,
     maxFailedBreak: variant.maxFailedBreak,
     maxVwapExtension: variant.maxVwapExtension,
     minVolumeScore: variant.minVolumeScore,
@@ -91,6 +96,8 @@ function compactTournamentVariant(variant, options = {}) {
     diagnostics: variant.diagnostics,
     engineAverages: variant.engineAverages,
     monteCarlo: variant.monteCarlo,
+    decision: variant.decision,
+    decisionReasons: variant.decisionReasons,
     topSymbols: variant.topSymbols?.slice(0, topLimit) || [],
     topFamilies: variant.topFamilies?.slice(0, topLimit) || [],
     topTriggers: variant.topTriggers?.slice(0, topLimit) || [],
@@ -364,6 +371,8 @@ const phase23 = readJson(join(root, 'models', 'champions', 'current-phase23-inte
   || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'phase23-intelligence-specialist.json'), null);
 const phase24 = readJson(join(root, 'models', 'self-improvement', 'current-phase24-self-improvement.json'), null)
   || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'phase24-self-improvement.json'), null);
+const phase25 = readJson(join(root, 'models', 'fresh-symbol', 'current-phase25-fresh-symbol-tournament.json'), null)
+  || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'phase25-fresh-symbol-tournament.json'), null);
 const optionsProbe = readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'options-data-probe.json'), null)
   || readJson(join(root, 'reports', 'options-data-probe-report.json'), null);
 const tradingViewMcp = readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'tradingview-mcp-snapshot.json'), null)
@@ -440,6 +449,20 @@ const dashboard = {
     rankedVariants: phase24.rankedVariants?.slice(0, 40).map((variant) => compactTournamentVariant(variant, { topLimit: 6, tradeLimit: 0 })) || [],
     optionsWorthyTrades: phase24.optionsWorthyTrades?.slice(0, 30) || [],
     improvementLoop: phase24.improvementLoop || [],
+  } : null,
+  phase25: phase25 ? {
+    updatedAt: phase25.updatedAt,
+    runId: phase25.runId,
+    phase: phase25.phase,
+    goal: phase25.goal,
+    safety: phase25.safety,
+    config: phase25.config,
+    freshSymbolLeaderboard: phase25.freshSymbolLeaderboard?.slice(0, 40) || [],
+    categoryChampions: compactCategoryMap(phase25.categoryChampions, { topLimit: 12, tradeLimit: 6 }),
+    perChallengerBest: phase25.perChallengerBest?.slice(0, 30).map((variant) => compactTournamentVariant(variant, { topLimit: 8, tradeLimit: 3 })) || [],
+    promoted: phase25.promoted?.slice(0, 20).map((variant) => compactTournamentVariant(variant, { topLimit: 8, tradeLimit: 3 })) || [],
+    lowSampleWatchlist: phase25.lowSampleWatchlist?.slice(0, 20).map((variant) => compactTournamentVariant(variant, { topLimit: 6, tradeLimit: 3 })) || [],
+    rankedVariants: phase25.rankedVariants?.slice(0, 40).map((variant) => compactTournamentVariant(variant, { topLimit: 6, tradeLimit: 0 })) || [],
   } : null,
   optionsProbe: optionsProbe ? {
     updatedAt: optionsProbe.updatedAt,

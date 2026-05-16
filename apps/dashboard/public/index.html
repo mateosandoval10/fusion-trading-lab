@@ -340,6 +340,106 @@
       <section class="panel">
         <div class="panel-head">
           <div>
+            <p class="eyebrow">Phase25 Fresh Symbol Tournament</p>
+            <h2>30 champion-backbone challengers on symbols excluded from prior winners</h2>
+          </div>
+          <span class="badge" id="phase25Badge">Loading…</span>
+        </div>
+        <div class="metric-grid" id="phase25Metrics"></div>
+        <div class="grid two">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Unique Twist</th>
+                  <th>Trades</th>
+                  <th>Win</th>
+                  <th>Net</th>
+                  <th>Holdout</th>
+                  <th>Decision</th>
+                </tr>
+              </thead>
+              <tbody id="phase25CategoryTable"></tbody>
+            </table>
+          </div>
+          <div class="table-wrap compact-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Fresh Symbol</th>
+                  <th>Trades</th>
+                  <th>Win</th>
+                  <th>Net</th>
+                </tr>
+              </thead>
+              <tbody id="phase25FreshSymbolTable"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-wrap compact-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Challenger</th>
+                <th>Purpose</th>
+                <th>Trades</th>
+                <th>Win</th>
+                <th>Net</th>
+                <th>Holdout</th>
+                <th>Decision</th>
+              </tr>
+            </thead>
+            <tbody id="phase25ChallengerTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Phase25 Fresh Trades</p>
+            <h2>Every trade from the fresh-symbol winners</h2>
+          </div>
+          <span class="badge" id="phase25TradeCount">Loading…</span>
+        </div>
+        <div class="controls">
+          <label>
+            Winner
+            <select id="phase25TradeLedgerSelect"></select>
+          </label>
+          <label>
+            Symbol / route filter
+            <input id="phase25TradeSearch" type="search" placeholder="e.g. RMBS, CGC, options, short" />
+          </label>
+        </div>
+        <div class="metric-grid" id="phase25TradeMetrics"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Symbol</th>
+                <th>Side / Trigger</th>
+                <th>Entry → Exit</th>
+                <th>Hold</th>
+                <th>Prices</th>
+                <th>PnL</th>
+                <th>10k Scale</th>
+                <th>MFE / MAE</th>
+                <th>Score</th>
+                <th>Route</th>
+              </tr>
+            </thead>
+            <tbody id="phase25TradeTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
             <p class="eyebrow">Options Probe</p>
             <h2>Winning equity trades compared against free/estimated options data</h2>
           </div>

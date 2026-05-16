@@ -109,6 +109,17 @@ Phase23 is an intelligence overlay, not a live-trading bot. It is paper/backtest
 
 `npm run options:probe` compares winning equity trades against free/estimated options data. Exact historical option-chain data is only used when a free/keyed provider returns it; otherwise results are clearly marked `Estimated`.
 
+## Phase25 Fresh Symbol Tournament
+
+`npm run lab:phase25` tests the current champion backbone on symbols excluded from the Phase22/Phase23/Phase24 winner ledgers:
+
+- Builds a strict fresh-symbol universe, excluding prior champion symbols and preserving paper-only/no-broker-order safety.
+- Runs 30 challenger variants, each with one unique improvement such as options burst shape, volume accumulation, anti-chase guard, compression pop, liquidity sweep reclaim, trend pullback, low-price momentum, and sector/family rotation.
+- Applies chronological train/test/holdout, stress-cost, drawdown, loss-streak, unique-symbol/day/week, and promotion/watchlist/rejection gates.
+- Writes the model to `models/fresh-symbol/current-phase25-fresh-symbol-tournament.json`.
+- Writes exact selected ledgers to `apps/dashboard/public/data/phase25-fresh-symbol-trade-ledgers.json`.
+- Adds dashboard panels for the fresh-symbol tournament, challenger leaderboard, fresh-symbol leaderboard, and every selected trade.
+
 ## TradingView Connection
 
 1. Add `generated/fusionv3_codex_clean_tradingview.pine` to TradingView.

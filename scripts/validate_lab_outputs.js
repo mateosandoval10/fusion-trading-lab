@@ -9,6 +9,7 @@ const required = [
   'models/champions/current-phase19-champion-council-fusion.json',
   'models/champions/current-phase23-intelligence-specialist.json',
   'models/self-improvement/current-phase24-self-improvement.json',
+  'models/fresh-symbol/current-phase25-fresh-symbol-tournament.json',
   'models/pattern-lab/current-pattern-lab.json',
   'models/specialists/pattern-specialist-candidates.json',
   'models/specialists/phase21-specialist-factory.json',
@@ -19,6 +20,8 @@ const required = [
   'apps/dashboard/public/data/phase23-intelligence-trade-ledgers.json',
   'apps/dashboard/public/data/phase24-self-improvement.json',
   'apps/dashboard/public/data/phase24-trade-ledgers.json',
+  'apps/dashboard/public/data/phase25-fresh-symbol-tournament.json',
+  'apps/dashboard/public/data/phase25-fresh-symbol-trade-ledgers.json',
   'apps/dashboard/public/data/options-data-probe.json',
   'apps/dashboard/public/data/tradingview-mcp-snapshot.json',
   'apps/dashboard/public/data/phase22-trade-ledgers.json',
@@ -40,6 +43,7 @@ if (dashboard.canonical.stats.canonicalTrades < 1000) throw new Error('Canonical
 if (!Array.isArray(dashboard.specialistFactory)) throw new Error('Dashboard has no Phase21 specialist factory list');
 if (!dashboard.phase23?.recommendedChampion) throw new Error('Dashboard has no Phase23 recommended champion');
 if (!dashboard.phase24?.categoryChampions?.bestProfit) throw new Error('Dashboard has no Phase24 best profit champion');
+if (!dashboard.phase25?.categoryChampions?.bestProfit) throw new Error('Dashboard has no Phase25 fresh-symbol best profit champion');
 if (!dashboard.optionsProbe?.rows?.length) throw new Error('Dashboard has no options probe rows');
 if (!dashboard.tradingViewMcp?.quote?.symbol) throw new Error('Dashboard has no TradingView MCP snapshot');
 const phase22Trades = JSON.parse(readFileSync(join(root, 'apps/dashboard/public/data/phase22-trade-ledgers.json'), 'utf8'));
@@ -48,5 +52,7 @@ const phase23Trades = JSON.parse(readFileSync(join(root, 'apps/dashboard/public/
 if (!phase23Trades.ledgers || !Object.keys(phase23Trades.ledgers).length) throw new Error('Phase23 trade ledgers are empty');
 const phase24Trades = JSON.parse(readFileSync(join(root, 'apps/dashboard/public/data/phase24-trade-ledgers.json'), 'utf8'));
 if (!phase24Trades.ledgers || !Object.keys(phase24Trades.ledgers).length) throw new Error('Phase24 trade ledgers are empty');
+const phase25Trades = JSON.parse(readFileSync(join(root, 'apps/dashboard/public/data/phase25-fresh-symbol-trade-ledgers.json'), 'utf8'));
+if (!phase25Trades.ledgers || !Object.keys(phase25Trades.ledgers).length) throw new Error('Phase25 trade ledgers are empty');
 
 console.log('Lab validation passed');

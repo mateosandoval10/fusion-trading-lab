@@ -32,6 +32,7 @@ The dashboard now includes a canonical data panel and specialist factory table:
 - `Phase22 Trade Ledger` shows every exact backtest trade selected by each Phase22 winner category, with entry/exit time, prices, modeled PnL, 10k-scaled PnL, MFE/MAE, confidence, and selected route.
 - `Phase23 Intelligence Layer` shows the newest feature-engine overlay, including balanced/profit, high-win guarded, and elite-precision winners plus the feature blueprints used by Pine.
 - `Phase24 Self-Improvement Loop` shows the latest generate/backtest/score/promote run, including evaluated variants, promoted challengers, rejected challengers, and exact trade ledgers.
+- `Phase25 Fresh Symbol Tournament` shows the strict new-symbol sweep: prior champion symbols excluded, 30 unique challenger twists, qualified/watched/rejected decisions, fresh-symbol leaderboard, and exact trade ledgers.
 - `Options Probe` shows winning equity trades compared against free-provider availability and estimated option-contract returns. Exact historical data is labeled separately from estimated data.
 
 ## Specialist Detail Panels
