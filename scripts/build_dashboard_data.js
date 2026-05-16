@@ -381,6 +381,10 @@ const phase25 = readJson(join(root, 'models', 'fresh-symbol', 'current-phase25-f
   || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'phase25-fresh-symbol-tournament.json'), null);
 const phase26 = readJson(join(root, 'models', 'generalization', 'current-phase26-generalization-engine.json'), null)
   || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'phase26-generalization-engine.json'), null);
+const phase27 = readJson(join(root, 'models', 'promotions', 'current-phase27-promotion-audit.json'), null)
+  || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'phase27-promotion-audit.json'), null);
+const phase27Options = readJson(join(root, 'models', 'options', 'current-phase27-options-overlay.json'), null)
+  || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'phase27-options-overlay.json'), null);
 const optionsProbe = readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'options-data-probe.json'), null)
   || readJson(join(root, 'reports', 'options-data-probe-report.json'), null);
 const tradingViewMcp = readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'tradingview-mcp-snapshot.json'), null)
@@ -489,6 +493,28 @@ const dashboard = {
     promoted: phase26.promoted?.slice(0, 20).map((variant) => compactTournamentVariant(variant, { topLimit: 8, tradeLimit: 3 })) || [],
     watchlist: phase26.watchlist?.slice(0, 20).map((variant) => compactTournamentVariant(variant, { topLimit: 8, tradeLimit: 3 })) || [],
     rankedVariants: phase26.rankedVariants?.slice(0, 40).map((variant) => compactTournamentVariant(variant, { topLimit: 6, tradeLimit: 0 })) || [],
+  } : null,
+  phase27: phase27 ? {
+    updatedAt: phase27.updatedAt,
+    runId: phase27.runId,
+    phase: phase27.phase,
+    safety: phase27.safety,
+    promotedChampion: phase27.promotedChampion,
+    specialistModes: phase27.specialistModes,
+    auditFindings: phase27.auditFindings || [],
+    realityChecklist: phase27.realityChecklist || [],
+    activeModes: phase27.activeModes,
+    optionsOverlaySummary: phase27.optionsOverlaySummary,
+  } : null,
+  phase27Options: phase27Options ? {
+    updatedAt: phase27Options.updatedAt,
+    phase: phase27Options.phase,
+    safety: phase27Options.safety,
+    source: phase27Options.source,
+    config: phase27Options.config,
+    totals: phase27Options.totals,
+    dataConfidence: phase27Options.dataConfidence,
+    rows: phase27Options.rows?.slice(0, 80) || [],
   } : null,
   optionsProbe: optionsProbe ? {
     updatedAt: optionsProbe.updatedAt,

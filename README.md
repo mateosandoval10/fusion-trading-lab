@@ -28,7 +28,11 @@ flowchart LR
   TO --> P22["Phase22 Deep Specialist Tournament"]
   P22 --> P23["Phase23 Intelligence Specialist"]
   P23 --> P24["Phase24 Self-Improvement Loop"]
-  P24 --> CH
+  P24 --> P25["Phase25 Fresh Symbol Tournament"]
+  P25 --> P26["Phase26 Generalization Engine"]
+  P26 --> P27["Phase27 Promotion Audit"]
+  P27 --> CH
+  P27 --> OVL["Paper Options Overlay"]
   P24 --> OPT["Options Probe"]
   TO --> CH["Champion Registry"]
   CH --> PE["Pine Export"]
@@ -42,6 +46,10 @@ npm run lab:report
 npm run lab:phase21
 npm run scalp:phase22
 npm run scalp:phase23
+npm run lab:phase24
+npm run lab:phase25
+npm run lab:phase26
+npm run lab:phase27
 npm run lab:self-improve
 npm run options:probe
 npm run pine:export
@@ -130,6 +138,17 @@ Phase23 is an intelligence overlay, not a live-trading bot. It is paper/backtest
 - Writes the model to `models/generalization/current-phase26-generalization-engine.json`.
 - Writes exact selected ledgers to `apps/dashboard/public/data/phase26-generalization-trade-ledgers.json`.
 - Adds dashboard panels for promoted layers, implementation coverage, discovered tickers, generalization diagnostics, and every selected trade.
+
+## Phase27 Promotion Audit + Paper Options Overlay
+
+`npm run lab:phase27` promotes the safe Phase26 route-durability champion into Pine and creates a separate paper-only options overlay:
+
+- Patches `generated/fusionv3_codex_clean_tradingview.pine` with Phase26 Generalization, High Win, and Fresh Symbols modes.
+- Keeps the promoted mode labeled `Backtest Promoted`; forward-paper evidence is still required before `Forward Proven`.
+- Runs a reality audit for broker/order safety, lookahead risk, TradingView parity, execution realism, and forward-proof gaps.
+- Writes the promotion audit to `models/promotions/current-phase27-promotion-audit.json`.
+- Estimates option-style returns for qualifying Phase26 winners in `models/options/current-phase27-options-overlay.json`.
+- Treats options output as paper analytics only: no broker API, no orders, and no exact historical bid/ask/fill modeling unless a future data provider is explicitly connected.
 
 ## TradingView Connection
 

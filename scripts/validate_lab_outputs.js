@@ -11,6 +11,8 @@ const required = [
   'models/self-improvement/current-phase24-self-improvement.json',
   'models/fresh-symbol/current-phase25-fresh-symbol-tournament.json',
   'models/generalization/current-phase26-generalization-engine.json',
+  'models/promotions/current-phase27-promotion-audit.json',
+  'models/options/current-phase27-options-overlay.json',
   'models/pattern-lab/current-pattern-lab.json',
   'models/specialists/pattern-specialist-candidates.json',
   'models/specialists/phase21-specialist-factory.json',
@@ -25,6 +27,8 @@ const required = [
   'apps/dashboard/public/data/phase25-fresh-symbol-trade-ledgers.json',
   'apps/dashboard/public/data/phase26-generalization-engine.json',
   'apps/dashboard/public/data/phase26-generalization-trade-ledgers.json',
+  'apps/dashboard/public/data/phase27-promotion-audit.json',
+  'apps/dashboard/public/data/phase27-options-overlay.json',
   'apps/dashboard/public/data/options-data-probe.json',
   'apps/dashboard/public/data/tradingview-mcp-snapshot.json',
   'apps/dashboard/public/data/phase22-trade-ledgers.json',
@@ -49,6 +53,9 @@ if (!dashboard.phase24?.categoryChampions?.bestProfit) throw new Error('Dashboar
 if (!dashboard.phase25?.categoryChampions?.bestProfit) throw new Error('Dashboard has no Phase25 fresh-symbol best profit champion');
 if (!dashboard.phase26?.categoryChampions?.bestOverall) throw new Error('Dashboard has no Phase26 generalization champion');
 if (!dashboard.phase26?.improvementCoverage?.length) throw new Error('Dashboard has no Phase26 implementation coverage');
+if (!dashboard.phase27?.promotedChampion?.safeToPromote) throw new Error('Dashboard has no safe Phase27 promoted champion');
+if (!dashboard.phase27Options?.safety?.paperOnly) throw new Error('Dashboard Phase27 options overlay is not paper-only');
+if (!dashboard.phase27Options?.rows?.length) throw new Error('Dashboard has no Phase27 options overlay rows');
 if (!dashboard.optionsProbe?.rows?.length) throw new Error('Dashboard has no options probe rows');
 if (!dashboard.tradingViewMcp?.quote?.symbol) throw new Error('Dashboard has no TradingView MCP snapshot');
 const phase22Trades = JSON.parse(readFileSync(join(root, 'apps/dashboard/public/data/phase22-trade-ledgers.json'), 'utf8'));

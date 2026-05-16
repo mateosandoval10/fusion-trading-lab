@@ -34,6 +34,8 @@ The dashboard now includes a canonical data panel and specialist factory table:
 - `Phase24 Self-Improvement Loop` shows the latest generate/backtest/score/promote run, including evaluated variants, promoted challengers, rejected challengers, and exact trade ledgers.
 - `Phase25 Fresh Symbol Tournament` shows the strict new-symbol sweep: prior champion symbols excluded, 30 unique challenger twists, qualified/watched/rejected decisions, fresh-symbol leaderboard, and exact trade ledgers.
 - `Phase26 Generalization Engine` shows the overfit-control sweep: unseen-symbol/family diagnostics, promoted generalization layers, implementation coverage, discovered tickers, deep-stress metrics, and exact trade ledgers.
+- `Phase27 Promotion Audit` shows the current promoted Pine mode, safe-promotion decision, audit findings, specialist fallback modes, and forward-proof checklist.
+- `Phase27 Paper Options Overlay` shows estimated options translation for Phase26 winning stock signals, including rule choice, premium path, estimated PnL, and a paper-only execution caveat.
 - `Options Probe` shows winning equity trades compared against free-provider availability and estimated option-contract returns. Exact historical data is labeled separately from estimated data.
 
 ## Specialist Detail Panels

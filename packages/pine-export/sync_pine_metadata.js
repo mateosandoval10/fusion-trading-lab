@@ -16,13 +16,24 @@ const championPath = join(root, 'models', 'champions', 'current-phase19-champion
 const phase22Path = join(root, 'models', 'champions', 'current-phase22-deep-specialist-tournament.json');
 const phase23Path = join(root, 'models', 'champions', 'current-phase23-intelligence-specialist.json');
 const phase24Path = join(root, 'models', 'self-improvement', 'current-phase24-self-improvement.json');
-const champion = existsSync(championPath) ? JSON.parse(readFileSync(championPath, 'utf8')) : null;
-const phase22 = existsSync(phase22Path) ? JSON.parse(readFileSync(phase22Path, 'utf8')) : null;
-const phase23 = existsSync(phase23Path) ? JSON.parse(readFileSync(phase23Path, 'utf8')) : null;
-const phase24 = existsSync(phase24Path) ? JSON.parse(readFileSync(phase24Path, 'utf8')) : null;
+const phase26Path = join(root, 'models', 'generalization', 'current-phase26-generalization-engine.json');
+const phase27Path = join(root, 'models', 'promotions', 'current-phase27-promotion-audit.json');
+const optionsOverlayPath = join(root, 'models', 'options', 'current-phase27-options-overlay.json');
+const champion = readJson(championPath);
+const phase22 = readJson(phase22Path);
+const phase23 = readJson(phase23Path);
+const phase24 = readJson(phase24Path);
+const phase26 = readJson(phase26Path);
+const phase27 = readJson(phase27Path);
+const optionsOverlay = readJson(optionsOverlayPath);
 const pine = existsSync(pinePath) ? readFileSync(pinePath, 'utf8') : '';
 const activeModeSource = pine.split('\n').find((line) => line.includes('activeScalpMode = input.string')) || '';
 const activeModeMatch = activeModeSource.match(/activeScalpMode\s*=\s*input\.string\("([^"]+)".*options=\[([^\]]+)/);
+
+function readJson(path) {
+  if (!existsSync(path)) return null;
+  return JSON.parse(readFileSync(path, 'utf8'));
+}
 
 function compactVariant(variant) {
   if (!variant || typeof variant !== 'object') return null;
@@ -89,6 +100,57 @@ const metadata = {
     bestHighWin: compactVariant(phase24.categoryChampions?.bestHighWin),
     bestOptions: compactVariant(phase24.categoryChampions?.bestOptions),
     promoted: phase24.promoted?.slice(0, 8).map(compactVariant) || [],
+  } : null,
+  phase26: phase26 ? {
+    phase: phase26.phase,
+    updatedAt: phase26.updatedAt,
+    runId: phase26.runId,
+    safety: phase26.safety,
+    bestOverall: compactVariant(phase26.categoryChampions?.bestOverall),
+    bestProfit: compactVariant(phase26.categoryChampions?.bestProfit),
+    bestHighWin: compactVariant(phase26.categoryChampions?.bestHighWin),
+    promoted: phase26.promoted?.slice(0, 8).map(compactVariant) || [],
+  } : null,
+  phase27: phase27 ? {
+    phase: phase27.phase,
+    updatedAt: phase27.updatedAt,
+    runId: phase27.runId,
+    safety: phase27.safety,
+    promotedChampion: phase27.promotedChampion ? {
+      modeName: phase27.promotedChampion.modeName,
+      modelId: phase27.promotedChampion.modelId,
+      pineModelId: phase27.promotedChampion.pineModelId,
+      status: phase27.promotedChampion.status,
+      safeToPromote: phase27.promotedChampion.safeToPromote,
+      metrics: phase27.promotedChampion.metrics?.metrics || null,
+      holdout: phase27.promotedChampion.metrics?.holdout || null,
+      deepStress: phase27.promotedChampion.metrics?.deepStress || null,
+      whitelist: phase27.promotedChampion.whitelist?.slice(0, 80) || [],
+    } : null,
+    auditFindings: phase27.auditFindings || [],
+    optionsOverlaySummary: phase27.optionsOverlaySummary || null,
+  } : null,
+  optionsOverlay: optionsOverlay ? {
+    phase: optionsOverlay.phase,
+    updatedAt: optionsOverlay.updatedAt,
+    safety: optionsOverlay.safety,
+    source: optionsOverlay.source,
+    totals: optionsOverlay.totals,
+    dataConfidence: optionsOverlay.dataConfidence,
+    topRows: optionsOverlay.rows?.slice(0, 20).map((row) => ({
+      symbol: row.symbol,
+      side: row.side,
+      setup: row.setup,
+      date: row.date,
+      minutesHeld: row.minutesHeld,
+      equityPnlOn10k: row.equityPnlOn10k,
+      rule: row.systematic?.rule,
+      contractType: row.systematic?.contractType,
+      dte: row.systematic?.dte,
+      strike: row.systematic?.strike,
+      profitOnCapital: row.systematic?.profitOnCapital,
+      roiPct: row.systematic?.roiPct,
+    })) || [],
   } : null,
 };
 

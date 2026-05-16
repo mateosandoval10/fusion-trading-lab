@@ -547,6 +547,76 @@
       <section class="panel">
         <div class="panel-head">
           <div>
+            <p class="eyebrow">Phase27 Promotion Audit</p>
+            <h2>Current promoted champion, safety audit, and specialist fallback modes</h2>
+          </div>
+          <span class="badge" id="phase27Badge">Loading…</span>
+        </div>
+        <div class="metric-grid" id="phase27Metrics"></div>
+        <div class="grid two">
+          <div class="table-wrap compact-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Area</th>
+                  <th>Status</th>
+                  <th>Severity</th>
+                  <th>Finding</th>
+                </tr>
+              </thead>
+              <tbody id="phase27AuditTable"></tbody>
+            </table>
+          </div>
+          <div class="table-wrap compact-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mode</th>
+                  <th>Purpose</th>
+                  <th>Trades</th>
+                  <th>Win</th>
+                  <th>Net</th>
+                  <th>Holdout</th>
+                </tr>
+              </thead>
+              <tbody id="phase27SpecialistTable"></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="phase27Checklist" class="specialist-grid"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Phase27 Paper Options Overlay</p>
+            <h2>Estimated options translation for Phase26 winning stock signals</h2>
+          </div>
+          <span class="badge" id="phase27OptionsBadge">Loading…</span>
+        </div>
+        <div class="metric-grid" id="phase27OptionsMetrics"></div>
+        <div id="phase27OptionsWarning" class="stack"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th>Setup</th>
+                <th>Equity Move</th>
+                <th>System Contract</th>
+                <th>Premium</th>
+                <th>Est. System PnL</th>
+                <th>Best Rule</th>
+              </tr>
+            </thead>
+            <tbody id="phase27OptionsTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
             <p class="eyebrow">Options Probe</p>
             <h2>Winning equity trades compared against free/estimated options data</h2>
           </div>

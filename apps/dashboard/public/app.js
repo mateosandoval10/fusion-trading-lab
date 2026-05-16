@@ -831,6 +831,86 @@ function renderPhase26TradeLedger(data) {
   draw();
 }
 
+function renderPhase27(data) {
+  const phase27 = data.phase27;
+  const champion = phase27?.promotedChampion;
+  const championMetrics = champion?.metrics?.metrics || {};
+  const championHoldout = champion?.metrics?.holdout || {};
+  const championStress = champion?.metrics?.deepStress || {};
+  document.getElementById('phase27Badge').textContent = phase27?.updatedAt
+    ? `Updated ${new Date(phase27.updatedAt).toLocaleString()}`
+    : 'No Phase27 promotion audit yet';
+  document.getElementById('phase27Metrics').innerHTML = phase27 ? [
+    metric('Promoted Mode', champion?.modeName || 'n/a', champion?.safeToPromote ? 'good' : 'bad'),
+    metric('Status', champion?.status || 'n/a', champion?.status === 'Forward Proven' ? 'good' : 'warn'),
+    metric('Trades', num(championMetrics.trades || 0)),
+    metric('Win Rate', pct(championMetrics.winRate || 0), championMetrics.winRate >= 80 ? 'good' : 'warn'),
+    metric('Modeled Net', money(championMetrics.netDollars || 0), colorForNet(championMetrics.netDollars)),
+    metric('Holdout Win', pct(championHoldout.winRate || 0), championHoldout.winRate >= 70 ? 'good' : 'warn'),
+    metric('Deep Stress Net', money(championStress.netDollars || 0), colorForNet(championStress.netDollars)),
+    metric('Whitelist', num((champion?.whitelist || []).length)),
+  ].join('') : '<p class="muted">Run `npm run lab:phase27` after Phase26 to promote and audit the active champion.</p>';
+
+  document.getElementById('phase27AuditTable').innerHTML = (phase27?.auditFindings || []).map((item) => row([
+    `<strong>${item.area}</strong>`,
+    `<span class="${item.status === 'passed' ? 'good' : item.status === 'blocked' ? 'bad' : 'warn'}">${item.status}</span>`,
+    item.severity || 'n/a',
+    item.finding || 'n/a',
+  ])).join('') || row(['No audit findings yet', '', '', '']);
+
+  document.getElementById('phase27SpecialistTable').innerHTML = Object.entries(phase27?.specialistModes || {}).map(([name, specialist]) => row([
+    `<strong>${name}</strong><br><span class="muted">${specialist?.layer || specialist?.id || 'n/a'}</span>`,
+    specialist?.description || 'n/a',
+    num(specialist?.metrics?.trades || 0),
+    pct(specialist?.metrics?.winRate || 0),
+    `<span class="${colorForNet(specialist?.metrics?.netDollars)}">${money(specialist?.metrics?.netDollars || 0)}</span>`,
+    `${num(specialist?.holdout?.trades || 0)} / ${pct(specialist?.holdout?.winRate || 0)}`,
+  ])).join('') || row(['No specialist modes yet', '', '', '', '', '']);
+
+  document.getElementById('phase27Checklist').innerHTML = (phase27?.realityChecklist || []).map((item) => `
+    <div class="mini-card"><strong>Reality check</strong><p class="muted">${item}</p></div>
+  `).join('') || '<p class="muted">No reality checklist yet.</p>';
+}
+
+function renderPhase27Options(data) {
+  const overlay = data.phase27Options;
+  const totals = overlay?.totals || {};
+  document.getElementById('phase27OptionsBadge').textContent = overlay?.updatedAt
+    ? `Updated ${new Date(overlay.updatedAt).toLocaleString()}`
+    : 'No Phase27 options overlay yet';
+  document.getElementById('phase27OptionsMetrics').innerHTML = overlay ? [
+    metric('Paper Only', overlay.safety?.paperOnly ? 'Yes' : 'No', overlay.safety?.paperOnly ? 'good' : 'bad'),
+    metric('Option Trades', num(totals.trades || 0)),
+    metric('Est. System Win', pct(totals.systematicWinRate || 0), totals.systematicWinRate >= 80 ? 'good' : 'warn'),
+    metric('Equity 10k PnL', money(totals.equityPnlOn10k || 0), colorForNet(totals.equityPnlOn10k)),
+    metric('Est. Options 10k PnL', money(totals.systematicOptionsProfitOn10k || 0), colorForNet(totals.systematicOptionsProfitOn10k)),
+    metric('Best Rule 10k PnL', money(totals.bestRuleAtExitProfitOn10k || 0), colorForNet(totals.bestRuleAtExitProfitOn10k)),
+    metric('System Multiplier', `${Number(totals.systematicMultiplierVsEquity10k || 0).toFixed(2)}x`),
+    metric('Data Mode', overlay.dataConfidence?.estimatedBacktest || 'n/a', 'warn'),
+  ].join('') : '<p class="muted">Run `npm run lab:phase27` to generate the paper-only options overlay.</p>';
+
+  document.getElementById('phase27OptionsWarning').innerHTML = overlay ? `
+    <div class="mini-card">
+      <strong>Execution caveat</strong>
+      <p class="muted">This is an estimated paper overlay. It does not include exact historical option chains, bid/ask depth, fill probability, halts, assignment, IV crush, or broker execution. No orders are placed.</p>
+    </div>
+  ` : '';
+
+  document.getElementById('phase27OptionsTable').innerHTML = (overlay?.rows || []).slice(0, 40).map((item) => {
+    const system = item.systematic || {};
+    const best = item.bestRuleAtExit || {};
+    return row([
+      `<strong>${item.symbol}</strong><br><span class="muted">${item.date || ''} · ${item.side}</span>`,
+      `${item.setup || 'n/a'}<br><span class="muted">${item.regime || 'n/a'} · ${item.minutesHeld ?? 'n/a'}m</span>`,
+      `${price(item.equityEntry)} → ${price(item.equityExit)}<br><span class="muted">${money(item.equityPnlOn10k || 0)} equity / 10k</span>`,
+      `${system.rule || 'n/a'} ${system.contractType || ''}<br><span class="muted">${system.dte ?? 'n/a'} DTE · strike ${price(system.strike)}</span>`,
+      `${price(system.entryPremium)} → ${price(system.exitPremium)}<br><span class="muted">${num(system.contracts || 0)} contracts</span>`,
+      `<span class="${colorForNet(system.profitOnCapital)}">${money(system.profitOnCapital || 0)}</span><br><span class="muted">${Number(system.roiPct || 0).toFixed(0)}%</span>`,
+      `${best.rule || 'n/a'}<br><span class="${colorForNet(best.profitOnCapital)}">${money(best.profitOnCapital || 0)}</span>`,
+    ]);
+  }).join('') || row(['No options overlay rows yet', '', '', '', '', '', '']);
+}
+
 function renderOptionsProbe(data) {
   const probe = data.optionsProbe;
   document.getElementById('optionsProbeBadge').textContent = probe?.updatedAt
@@ -1014,6 +1094,8 @@ loadDashboard()
     renderPhase24(data);
     renderPhase25(data);
     renderPhase26(data);
+    renderPhase27(data);
+    renderPhase27Options(data);
     renderOptionsProbe(data);
     renderTradingViewMcp(data);
     renderPhase24TradeLedger(data);
