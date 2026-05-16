@@ -1,0 +1,47 @@
+{
+  "updatedAt": "2026-05-15T00:00:00.000-07:00",
+  "source": "TradingView MCP read-only tools",
+  "safety": {
+    "paperOnly": true,
+    "noBrokerOrders": true
+  },
+  "capabilitiesVerified": [
+    "quote_get",
+    "data_get_ohlcv"
+  ],
+  "limitations": [
+    "No real trades are placed.",
+    "Current MCP tools expose chart quote/OHLCV/equity/DOM data, not historical option-chain backtests.",
+    "Options-chain historical testing still requires provider data or estimated modeling."
+  ],
+  "quote": {
+    "success": true,
+    "symbol": "BATS:AAPL",
+    "time": 1778874900,
+    "open": 300.6,
+    "high": 300.67,
+    "low": 300.09,
+    "close": 300.28,
+    "last": 300.28,
+    "volume": 201973,
+    "description": "Apple Inc.",
+    "exchange": "Cboe One",
+    "type": "stock"
+  },
+  "ohlcvSummary": {
+    "success": true,
+    "bar_count": 100,
+    "period": {
+      "from": 1778782200,
+      "to": 1778874900
+    },
+    "open": 298.14,
+    "close": 300.28,
+    "high": 303.2,
+    "low": 296.52,
+    "range": 6.68,
+    "change": 2.14,
+    "change_pct": "0.72%",
+    "avg_volume": 46220
+  }
+}

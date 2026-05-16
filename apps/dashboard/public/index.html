@@ -268,6 +268,119 @@
       <section class="panel">
         <div class="panel-head">
           <div>
+            <p class="eyebrow">Phase24 Self-Improvement Loop</p>
+            <h2>Generate → backtest → score → promote/reject</h2>
+          </div>
+          <span class="badge" id="phase24Badge">Loading…</span>
+        </div>
+        <div class="metric-grid" id="phase24Metrics"></div>
+        <div class="grid two">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Profile / Pool</th>
+                  <th>Trades</th>
+                  <th>Win</th>
+                  <th>Net</th>
+                  <th>Holdout</th>
+                  <th>Decision</th>
+                </tr>
+              </thead>
+              <tbody id="phase24CategoryTable"></tbody>
+            </table>
+          </div>
+          <div class="stack" id="phase24LoopCards"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Phase24 Exact Trades</p>
+            <h2>Trades selected by the newest self-improvement winners</h2>
+          </div>
+          <span class="badge" id="phase24TradeCount">Loading…</span>
+        </div>
+        <div class="controls">
+          <label>
+            Winner
+            <select id="phase24TradeLedgerSelect"></select>
+          </label>
+          <label>
+            Symbol / route filter
+            <input id="phase24TradeSearch" type="search" placeholder="e.g. SOXL, profit, overnight, options" />
+          </label>
+        </div>
+        <div class="metric-grid" id="phase24TradeMetrics"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Symbol</th>
+                <th>Side / Trigger</th>
+                <th>Entry → Exit</th>
+                <th>Hold</th>
+                <th>Prices</th>
+                <th>PnL</th>
+                <th>10k Scale</th>
+                <th>MFE / MAE</th>
+                <th>Score</th>
+                <th>Route</th>
+              </tr>
+            </thead>
+            <tbody id="phase24TradeTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Options Probe</p>
+            <h2>Winning equity trades compared against free/estimated options data</h2>
+          </div>
+          <span class="badge" id="optionsProbeBadge">Loading…</span>
+        </div>
+        <div class="metric-grid" id="optionsProbeMetrics"></div>
+        <div class="grid two">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Symbol</th>
+                  <th>Equity Trade</th>
+                  <th>Best Est. Contract</th>
+                  <th>System Exit</th>
+                  <th>Oracle Exit</th>
+                  <th>Data</th>
+                </tr>
+              </thead>
+              <tbody id="optionsProbeTable"></tbody>
+            </table>
+          </div>
+          <div class="stack" id="optionsProviderCards"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">TradingView MCP</p>
+            <h2>Read-only chart data integration status</h2>
+          </div>
+          <span class="badge" id="tradingViewMcpBadge">Loading…</span>
+        </div>
+        <div class="metric-grid" id="tradingViewMcpMetrics"></div>
+        <div class="stack" id="tradingViewMcpNotes"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
             <p class="eyebrow">Phase23 Intelligence Trades</p>
             <h2>Exact trades taken by each intelligence overlay</h2>
           </div>

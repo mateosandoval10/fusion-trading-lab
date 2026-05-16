@@ -34,11 +34,28 @@ function syncLegacyModels() {
 syncLegacyModels();
 
 const shouldBacktest = process.argv.includes('--backtest');
+const shouldPattern = process.argv.includes('--pattern') || process.env.FUSION_RUN_PATTERN_LAB === 'true';
+const shouldSelfImprove = process.argv.includes('--self-improve') || process.env.FUSION_RUN_PHASE24 === 'true';
+const hasFullCanonical = existsSync(join(root, 'optimization-results', 'canonical', 'canonical-trades.full.jsonl'));
+
 if (shouldBacktest) {
   run('node', ['scripts/phase19_champion_council_fusion.js', '--fresh-data=true']);
 }
 
-run('node', ['packages/pattern-lab/pattern_lab.js']);
+if (shouldPattern) {
+  run('node', ['packages/pattern-lab/pattern_lab.js']);
+} else {
+  console.log('\nSkipping Pattern Lab by default to avoid overwriting committed canonical outputs without full raw ledgers.');
+  console.log('Use --pattern or FUSION_RUN_PATTERN_LAB=true when full input ledgers are available.');
+}
+
+if (shouldSelfImprove && hasFullCanonical) {
+  run('node', ['scripts/phase24_self_improvement_loop.js']);
+  run('node', ['scripts/options_data_probe.js']);
+} else if (shouldSelfImprove) {
+  console.log('\nSkipping Phase24 self-improvement because optimization-results/canonical/canonical-trades.full.jsonl is not present.');
+}
+
 run('node', ['packages/pine-export/sync_pine_metadata.js']);
 run('node', ['scripts/build_dashboard_data.js']);
 run('node', ['scripts/validate_lab_outputs.js']);

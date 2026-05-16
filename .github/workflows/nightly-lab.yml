@@ -4,7 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       backtest:
-        description: Run Phase19 backtest before Pattern Lab
+        description: Run Phase19 backtest before rebuilding dashboard
+        type: boolean
+        default: false
+      pattern:
+        description: Rebuild Pattern Lab/canonical data from available raw ledgers
+        type: boolean
+        default: false
+      self_improve:
+        description: Run Phase24 if full canonical JSONL is present
         type: boolean
         default: false
   schedule:
@@ -31,10 +39,17 @@ jobs:
       - name: Run lab
         run: |
           if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.event.inputs.backtest || 'false' }}" = "true" ]; then
-            npm run lab:nightly -- --backtest
+            ARGS="--backtest"
           else
-            npm run lab:nightly
+            ARGS=""
           fi
+          if [ "${{ github.event.inputs.pattern || 'false' }}" = "true" ]; then
+            ARGS="$ARGS --pattern"
+          fi
+          if [ "${{ github.event.inputs.self_improve || 'false' }}" = "true" ]; then
+            ARGS="$ARGS --self-improve"
+          fi
+          npm run lab:nightly -- $ARGS
 
       - name: Compress ledgers and reports
         run: |

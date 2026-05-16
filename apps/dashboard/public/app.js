@@ -52,6 +52,12 @@ async function loadDashboard() {
   } catch {
     data.phase23TradeLedgers = null;
   }
+  try {
+    const phase24TradeResponse = await fetch('./data/phase24-trade-ledgers.json', { cache: 'no-store' });
+    data.phase24TradeLedgers = phase24TradeResponse.ok ? await phase24TradeResponse.json() : null;
+  } catch {
+    data.phase24TradeLedgers = null;
+  }
   return data;
 }
 
@@ -420,6 +426,180 @@ function renderPhase23(data) {
   `).join('') || '<p class="muted">No Phase23 feature cards yet.</p>';
 }
 
+function renderPhase24(data) {
+  const phase24 = data.phase24;
+  const bestProfit = phase24?.categoryChampions?.bestProfit;
+  const bestHighWin = phase24?.categoryChampions?.bestHighWin;
+  const bestOptions = phase24?.categoryChampions?.bestOptions;
+  document.getElementById('phase24Badge').textContent = phase24?.updatedAt
+    ? `Updated ${new Date(phase24.updatedAt).toLocaleString()}`
+    : 'No Phase24 run yet';
+  document.getElementById('phase24Metrics').innerHTML = phase24 ? [
+    metric('Evaluated', num(phase24.config?.evaluated || 0)),
+    metric('Kept Variants', num(phase24.config?.kept || 0)),
+    metric('Pools', num(phase24.config?.pools || 0)),
+    metric('Promoted', num((phase24.promoted || []).length), (phase24.promoted || []).length ? 'good' : 'warn'),
+    metric('Best Profit Trades', num(bestProfit?.metrics?.trades || 0)),
+    metric('Best Profit Net', money(bestProfit?.metrics?.netDollars || 0), colorForNet(bestProfit?.metrics?.netDollars)),
+    metric('Best Profit Win', pct(bestProfit?.metrics?.winRate || 0), bestProfit?.metrics?.winRate >= 80 ? 'good' : 'warn'),
+    metric('Best High-Win', pct(bestHighWin?.metrics?.winRate || 0), bestHighWin?.metrics?.winRate >= 90 ? 'good' : 'warn'),
+    metric('Options Worthy', pct(bestOptions?.metrics?.optionWorthyRate || 0)),
+    metric('Options Trades', num((phase24.optionsWorthyTrades || []).length)),
+    metric('Paper Only', phase24.safety?.paperOnly ? 'Yes' : 'Unknown', phase24.safety?.paperOnly ? 'good' : 'warn'),
+    metric('No Broker Orders', phase24.safety?.noBrokerOrders ? 'Yes' : 'Unknown', phase24.safety?.noBrokerOrders ? 'good' : 'warn'),
+  ].join('') : '<p class="muted">Run `npm run lab:self-improve` to build the Phase24 loop.</p>';
+
+  const categories = Object.entries(phase24?.categoryChampions || {}).filter(([, variant]) => variant);
+  document.getElementById('phase24CategoryTable').innerHTML = categories.map(([name, variant]) => row([
+    `<strong>${name}</strong><br><span class="muted">${variant.id}</span>`,
+    `${variant.profile}<br><span class="muted">${variant.poolLabel || variant.poolId} · ${variant.direction} · ${variant.sessionGroup}</span>`,
+    num(variant.metrics?.trades || 0),
+    pct(variant.metrics?.winRate || 0),
+    `<span class="${colorForNet(variant.metrics?.netDollars)}">${money(variant.metrics?.netDollars)}</span>`,
+    `${num(variant.holdout?.trades || 0)} / ${pct(variant.holdout?.winRate || 0)}`,
+    `<strong>${variant.decision || 'n/a'}</strong><br><span class="muted">${(variant.decisionReasons || []).slice(0, 2).join('<br>')}</span>`,
+  ])).join('') || row(['No Phase24 categories yet', '', '', '', '', '', '']);
+
+  document.getElementById('phase24LoopCards').innerHTML = [
+    ...(phase24?.improvementLoop || []).map((item, index) => `
+      <div class="mini-card"><strong>Step ${index + 1}</strong><p class="muted">${item}</p></div>
+    `),
+    `<div class="mini-card"><strong>Top Options-Worthy</strong><p class="muted">${(phase24?.optionsWorthyTrades || []).slice(0, 5).map((trade) => `${trade.symbol}: ${money(trade.estimatedBestOption?.oracleProfitOn10k || 0)} est. oracle / 10k`).join('<br>') || 'No option candidates yet'}</p></div>`,
+  ].join('');
+}
+
+function renderPhase24TradeLedger(data) {
+  const payload = data.phase24TradeLedgers;
+  const select = document.getElementById('phase24TradeLedgerSelect');
+  const search = document.getElementById('phase24TradeSearch');
+  const table = document.getElementById('phase24TradeTable');
+  const count = document.getElementById('phase24TradeCount');
+  const metricsEl = document.getElementById('phase24TradeMetrics');
+
+  if (!payload?.ledgers || !Object.keys(payload.ledgers).length) {
+    count.textContent = 'No trade ledger yet';
+    metricsEl.innerHTML = '<p class="muted">Run `npm run lab:self-improve` to export exact Phase24 ledgers.</p>';
+    table.innerHTML = row(['No Phase24 trades yet', '', '', '', '', '', '', '', '', '', '', '']);
+    return;
+  }
+
+  const categories = Object.entries(payload.categoryMap || {}).filter(([, id]) => payload.ledgers[id]);
+  select.innerHTML = categories.map(([category, id]) => {
+    const ledger = payload.ledgers[id];
+    return `<option value="${category}">${ledgerLabel(category, ledger)}</option>`;
+  }).join('');
+  if ([...select.options].some((option) => option.value === 'bestProfit')) select.value = 'bestProfit';
+
+  function draw() {
+    const category = select.value || categories[0]?.[0];
+    const id = payload.categoryMap?.[category] || categories[0]?.[1];
+    const ledger = payload.ledgers[id];
+    const query = (search.value || '').trim().toLowerCase();
+    const trades = (ledger?.trades || []).filter((trade) => {
+      if (!query) return true;
+      return [
+        trade.symbol,
+        trade.family,
+        trade.side,
+        trade.trigger,
+        trade.session,
+        trade.selectedRouteKey,
+        trade.outcome,
+        ...(trade.tags || []),
+        trade.overnight ? 'overnight' : 'intraday',
+      ].join(' ').toLowerCase().includes(query);
+    });
+
+    count.textContent = `${num(trades.length)} shown / ${num(ledger?.trades?.length || 0)} trades`;
+    metricsEl.innerHTML = [
+      metric('Winner', category),
+      metric('Trades', num(ledger?.metrics?.trades || 0)),
+      metric('Win Rate', pct(ledger?.metrics?.winRate || 0), ledger?.metrics?.winRate >= 80 ? 'good' : 'warn'),
+      metric('Net', money(ledger?.metrics?.netDollars || 0), colorForNet(ledger?.metrics?.netDollars)),
+      metric('Avg / Trade', money(ledger?.metrics?.avgDollars || 0), colorForNet(ledger?.metrics?.avgDollars)),
+      metric('Holdout Win', pct(ledger?.holdout?.winRate || 0), ledger?.holdout?.winRate >= 80 ? 'good' : 'warn'),
+      metric('Stress Net', money(ledger?.stress?.netDollars || 0), colorForNet(ledger?.stress?.netDollars)),
+      metric('Decision', ledger?.decision || 'n/a'),
+    ].join('');
+
+    table.innerHTML = trades.map((trade) => row([
+      trade.index,
+      trade.date,
+      `<strong>${trade.symbol}</strong><br><span class="muted">${trade.family}</span>`,
+      `${trade.side}<br><span class="muted">${trade.trigger} · ${trade.session}</span>`,
+      `${shortTime(trade.entryTime)}<br><span class="muted">→ ${shortTime(trade.exitTime)}</span>`,
+      trade.minutesHeld === null || trade.minutesHeld === undefined ? 'n/a' : `${trade.minutesHeld}m${trade.overnight ? ' · ON' : ''}`,
+      `${price(trade.entry)}<br><span class="muted">→ ${price(trade.exit)}</span>`,
+      `<span class="${colorForNet(trade.pnlDollars)}">${money(trade.pnlDollars)}</span><br><span class="muted">${trade.outcome}</span>`,
+      `<span class="${colorForNet(trade.modeledPnlScaledTo10k)}">${money(trade.modeledPnlScaledTo10k)}</span>`,
+      `${Number(trade.mfeR || 0).toFixed(2)}R / ${Number(trade.maeR || 0).toFixed(2)}R`,
+      `${Number(trade.phase24Score || 0).toFixed(3)}<br><span class="muted">conf ${trade.confidence || 0}</span>`,
+      `<span class="muted">${trade.selectedRouteKey || 'n/a'}</span>`,
+    ])).join('') || row(['No matching trades', '', '', '', '', '', '', '', '', '', '', '']);
+  }
+
+  select.onchange = draw;
+  search.oninput = draw;
+  draw();
+}
+
+function renderOptionsProbe(data) {
+  const probe = data.optionsProbe;
+  document.getElementById('optionsProbeBadge').textContent = probe?.updatedAt
+    ? `Updated ${new Date(probe.updatedAt).toLocaleString()}`
+    : 'No options probe yet';
+  document.getElementById('optionsProbeMetrics').innerHTML = probe ? [
+    metric('Source', `${probe.sourceLedger?.phase}:${probe.sourceLedger?.category}`),
+    metric('Trades Tested', num(probe.totals?.trades || 0)),
+    metric('Equity 10k PnL', money(probe.totals?.equityPnlOn10k || 0), colorForNet(probe.totals?.equityPnlOn10k)),
+    metric('Est. System Option 10k', money(probe.totals?.estimatedSystemExitOptionProfitOn10k || 0), colorForNet(probe.totals?.estimatedSystemExitOptionProfitOn10k)),
+    metric('Est. Oracle Option 10k', money(probe.totals?.estimatedOracleOptionProfitOn10k || 0), colorForNet(probe.totals?.estimatedOracleOptionProfitOn10k)),
+    metric('Historical Contracts', probe.dataConfidence?.exactHistoricalContracts || 'n/a'),
+    metric('Current Chains', probe.dataConfidence?.currentChains || 'n/a'),
+    metric('Mode', probe.dataConfidence?.estimatedBacktest || 'n/a'),
+  ].join('') : '<p class="muted">Run `npm run options:probe` to test free/estimated options data.</p>';
+
+  document.getElementById('optionsProbeTable').innerHTML = (probe?.rows || []).slice(0, 30).map((item) => {
+    const oracle = item.estimatedBestOracle || {};
+    const system = item.estimatedBestAtSystemExit || {};
+    return row([
+      `<strong>${item.symbol}</strong><br><span class="muted">${item.optionSide}</span>`,
+      `${item.side} @ ${price(item.entry)} → ${price(item.exit)}<br><span class="muted">${money(item.equityPnlOn10k)} equity / 10k</span>`,
+      `${oracle.contractType || item.optionSide} ${price(oracle.strike)} · ${oracle.dte ?? 'n/a'} DTE<br><span class="muted">entry ${price(oracle.entryPremium)}</span>`,
+      `${money(system.profitOn10k || 0)}<br><span class="muted">${Number(system.roiPct || 0).toFixed(0)}%</span>`,
+      `${money(oracle.oracleProfitOn10k || 0)}<br><span class="muted">${Number(oracle.oracleRoiPct || 0).toFixed(0)}%</span>`,
+      `<span class="muted">${oracle.dataConfidence || 'Estimated'}</span>`,
+    ]);
+  }).join('') || row(['No option rows yet', '', '', '', '', '']);
+
+  document.getElementById('optionsProviderCards').innerHTML = (probe?.providerResults || []).map((item) => `
+    <div class="mini-card">
+      <strong>${item.provider}</strong>
+      <p class="muted">${item.symbol || ''} · ${item.status}</p>
+      <p class="muted">${item.note || item.message || item.error || ''}</p>
+    </div>
+  `).join('') || '<p class="muted">No provider probes yet.</p>';
+}
+
+function renderTradingViewMcp(data) {
+  const tv = data.tradingViewMcp;
+  document.getElementById('tradingViewMcpBadge').textContent = tv?.updatedAt
+    ? `Updated ${new Date(tv.updatedAt).toLocaleString()}`
+    : 'No MCP snapshot yet';
+  document.getElementById('tradingViewMcpMetrics').innerHTML = tv ? [
+    metric('Quote Symbol', tv.quote?.symbol || 'n/a'),
+    metric('Last', price(tv.quote?.last || tv.quote?.close || 0)),
+    metric('Volume', num(tv.quote?.volume || 0)),
+    metric('Bars Checked', num(tv.ohlcvSummary?.bar_count || 0)),
+    metric('100-Bar Change', tv.ohlcvSummary?.change_pct || 'n/a', Number(tv.ohlcvSummary?.change || 0) >= 0 ? 'good' : 'bad'),
+    metric('Read Only', tv.safety?.noBrokerOrders ? 'No orders' : 'Unknown', tv.safety?.noBrokerOrders ? 'good' : 'warn'),
+  ].join('') : '<p class="muted">Use TradingView MCP quote/OHLCV tools to refresh this snapshot.</p>';
+  document.getElementById('tradingViewMcpNotes').innerHTML = tv ? [
+    `<div class="mini-card"><strong>Capabilities</strong><p class="muted">${(tv.capabilitiesVerified || []).join(', ') || 'n/a'}</p></div>`,
+    `<div class="mini-card"><strong>Limits</strong><p class="muted">${(tv.limitations || []).join('<br>') || 'n/a'}</p></div>`,
+  ].join('') : '';
+}
+
 function topPhase23Engines(trade) {
   return Object.entries(trade.phase23Engines || {})
     .sort(([, a], [, b]) => Number(b || 0) - Number(a || 0))
@@ -543,6 +723,10 @@ loadDashboard()
     renderFactory(data);
     renderPhase22(data);
     renderPhase23(data);
+    renderPhase24(data);
+    renderOptionsProbe(data);
+    renderTradingViewMcp(data);
+    renderPhase24TradeLedger(data);
     renderPhase23TradeLedger(data);
     renderPhase22TradeLedger(data);
     renderDaily(data);

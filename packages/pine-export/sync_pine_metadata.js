@@ -15,9 +15,11 @@ const pinePath = join(generatedDir, 'fusionv3_codex_clean_tradingview.pine');
 const championPath = join(root, 'models', 'champions', 'current-phase19-champion-council-fusion.json');
 const phase22Path = join(root, 'models', 'champions', 'current-phase22-deep-specialist-tournament.json');
 const phase23Path = join(root, 'models', 'champions', 'current-phase23-intelligence-specialist.json');
+const phase24Path = join(root, 'models', 'self-improvement', 'current-phase24-self-improvement.json');
 const champion = existsSync(championPath) ? JSON.parse(readFileSync(championPath, 'utf8')) : null;
 const phase22 = existsSync(phase22Path) ? JSON.parse(readFileSync(phase22Path, 'utf8')) : null;
 const phase23 = existsSync(phase23Path) ? JSON.parse(readFileSync(phase23Path, 'utf8')) : null;
+const phase24 = existsSync(phase24Path) ? JSON.parse(readFileSync(phase24Path, 'utf8')) : null;
 const pine = existsSync(pinePath) ? readFileSync(pinePath, 'utf8') : '';
 const activeModeSource = pine.split('\n').find((line) => line.includes('activeScalpMode = input.string')) || '';
 const activeModeMatch = activeModeSource.match(/activeScalpMode\s*=\s*input\.string\("([^"]+)".*options=\[([^\]]+)/);
@@ -77,6 +79,16 @@ const metadata = {
     stress: phase23.recommendedChampion?.stress || null,
     elitePrecision: compactVariant(phase23.categoryChampions?.elitePrecision),
     highWinGuarded: compactVariant(phase23.categoryChampions?.highWinGuarded),
+  } : null,
+  phase24: phase24 ? {
+    phase: phase24.phase,
+    updatedAt: phase24.updatedAt,
+    runId: phase24.runId,
+    safety: phase24.safety,
+    bestProfit: compactVariant(phase24.categoryChampions?.bestProfit),
+    bestHighWin: compactVariant(phase24.categoryChampions?.bestHighWin),
+    bestOptions: compactVariant(phase24.categoryChampions?.bestOptions),
+    promoted: phase24.promoted?.slice(0, 8).map(compactVariant) || [],
   } : null,
 };
 

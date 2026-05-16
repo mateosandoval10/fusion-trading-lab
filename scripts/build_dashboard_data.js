@@ -362,6 +362,12 @@ const phase22 = readJson(join(root, 'models', 'champions', 'current-phase22-deep
   || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'phase22-deep-specialist-tournament.json'), null);
 const phase23 = readJson(join(root, 'models', 'champions', 'current-phase23-intelligence-specialist.json'), null)
   || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'phase23-intelligence-specialist.json'), null);
+const phase24 = readJson(join(root, 'models', 'self-improvement', 'current-phase24-self-improvement.json'), null)
+  || readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'phase24-self-improvement.json'), null);
+const optionsProbe = readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'options-data-probe.json'), null)
+  || readJson(join(root, 'reports', 'options-data-probe-report.json'), null);
+const tradingViewMcp = readJson(join(root, 'apps', 'dashboard', 'public', 'data', 'tradingview-mcp-snapshot.json'), null)
+  || readJson(join(root, 'reports', 'tradingview-mcp-snapshot.json'), null);
 const phase17 = readJson(join(root, 'models', 'specialists', 'current-phase17-specialist-tournament.json'), null);
 const championSummary = summarizeChampion(champion);
 
@@ -419,6 +425,33 @@ const dashboard = {
     machineLearningDraft: phase23.machineLearningDraft,
     rankedVariants: phase23.rankedVariants?.slice(0, 40).map((variant) => compactTournamentVariant(variant, { topLimit: 6, tradeLimit: 0 })) || [],
   } : null,
+  phase24: phase24 ? {
+    updatedAt: phase24.updatedAt,
+    runId: phase24.runId,
+    phase: phase24.phase,
+    goal: phase24.goal,
+    safety: phase24.safety,
+    config: phase24.config,
+    baselines: phase24.baselines,
+    categoryChampions: compactCategoryMap(phase24.categoryChampions, { topLimit: 10, tradeLimit: 5 }),
+    promoted: phase24.promoted?.slice(0, 20).map((variant) => compactTournamentVariant(variant, { topLimit: 8, tradeLimit: 3 })) || [],
+    watchlist: phase24.watchlist?.slice(0, 20).map((variant) => compactTournamentVariant(variant, { topLimit: 8, tradeLimit: 3 })) || [],
+    rejected: phase24.rejected?.slice(0, 20).map((variant) => compactTournamentVariant(variant, { topLimit: 5, tradeLimit: 2 })) || [],
+    rankedVariants: phase24.rankedVariants?.slice(0, 40).map((variant) => compactTournamentVariant(variant, { topLimit: 6, tradeLimit: 0 })) || [],
+    optionsWorthyTrades: phase24.optionsWorthyTrades?.slice(0, 30) || [],
+    improvementLoop: phase24.improvementLoop || [],
+  } : null,
+  optionsProbe: optionsProbe ? {
+    updatedAt: optionsProbe.updatedAt,
+    phase: optionsProbe.phase,
+    sourceLedger: optionsProbe.sourceLedger,
+    config: optionsProbe.config,
+    providerResults: optionsProbe.providerResults || [],
+    totals: optionsProbe.totals,
+    dataConfidence: optionsProbe.dataConfidence,
+    rows: optionsProbe.rows?.slice(0, 60) || [],
+  } : null,
+  tradingViewMcp,
   forward: summarizeForward(),
   pine: pineStatus(),
   artifacts: {

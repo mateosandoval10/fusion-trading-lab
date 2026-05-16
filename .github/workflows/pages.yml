@@ -10,9 +10,12 @@ on:
       - "reports/**"
       - "data/canonical/**"
       - "generated/**"
+      - "config/**"
       - "packages/**"
       - "scripts/build_dashboard_data.js"
       - "scripts/phase22_deep_specialist_tournament.js"
+      - "scripts/phase24_self_improvement_loop.js"
+      - "scripts/options_data_probe.js"
 
 permissions:
   contents: read

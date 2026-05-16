@@ -27,7 +27,9 @@ flowchart LR
   SP --> TO["Tournaments"]
   TO --> P22["Phase22 Deep Specialist Tournament"]
   P22 --> P23["Phase23 Intelligence Specialist"]
-  P23 --> CH
+  P23 --> P24["Phase24 Self-Improvement Loop"]
+  P24 --> CH
+  P24 --> OPT["Options Probe"]
   TO --> CH["Champion Registry"]
   CH --> PE["Pine Export"]
   CH --> DB["Dashboard"]
@@ -40,6 +42,8 @@ npm run lab:report
 npm run lab:phase21
 npm run scalp:phase22
 npm run scalp:phase23
+npm run lab:self-improve
+npm run options:probe
 npm run pine:export
 npm run lab:nightly
 npm run scalp:phase19 -- --fresh-data=false
@@ -90,6 +94,20 @@ GitHub stores code, models, reports, Pine exports, canonical summaries, speciali
 - Exports Pine metadata so TradingView can show `Phase23 Intelligence Specialist` as a selectable/auto-selected specialist mode.
 
 Phase23 is an intelligence overlay, not a live-trading bot. It is paper/backtest analytics until forward evidence promotes it.
+
+## Phase24 Self-Improvement Loop
+
+`npm run lab:self-improve` runs the repeatable improvement pipeline:
+
+- Generates challenger variants from Phase22/Phase23 winners, fused ledgers, family rotations, symbol batches, intraday pools, and overnight pools.
+- Scores entries using entry-time features only, then evaluates exits/targets after selection.
+- Tests profit-first, high-win, options-burst, intraday-scalp, and overnight-burst profiles.
+- Applies train/test/holdout/stress checks, drawdown/loss-streak gates, and promotion/watchlist/rejection reasons.
+- Writes the current self-improvement model to `models/self-improvement/current-phase24-self-improvement.json`.
+- Writes exact selected ledgers to `apps/dashboard/public/data/phase24-trade-ledgers.json`.
+- Updates Pine metadata and dashboard panels.
+
+`npm run options:probe` compares winning equity trades against free/estimated options data. Exact historical option-chain data is only used when a free/keyed provider returns it; otherwise results are clearly marked `Estimated`.
 
 ## TradingView Connection
 
