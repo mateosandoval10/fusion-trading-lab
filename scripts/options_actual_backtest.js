@@ -20,10 +20,33 @@ const paths = {
 
 for (const path of [paths.reports, paths.dashboardData, paths.generated, paths.cache]) mkdirSync(path, { recursive: true });
 
+function loadLocalEnv() {
+  for (const file of ['.env.local', '.env']) {
+    const envPath = join(root, file);
+    if (!existsSync(envPath)) continue;
+    const lines = readFileSync(envPath, 'utf8').split(/\r?\n/);
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) continue;
+      const match = trimmed.match(/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/);
+      if (!match) continue;
+      const [, key, rawValue] = match;
+      if (process.env[key]) continue;
+      process.env[key] = rawValue.replace(/^['"]|['"]$/g, '');
+    }
+  }
+}
+
+loadLocalEnv();
+
 const args = new Map(process.argv.slice(2).map((arg) => {
   const [key, value = 'true'] = arg.replace(/^--/, '').split('=');
   return [key, value];
 }));
+
+const polygonCallsPerMinute = Number(args.get('polygon-calls-per-minute') || process.env.POLYGON_CALLS_PER_MINUTE || 5);
+const polygonMinIntervalMs = polygonCallsPerMinute > 0 ? Math.ceil(60_000 / polygonCallsPerMinute) : 0;
+let lastPolygonCallAt = 0;
 
 function readJson(path, fallback = null) {
   if (!existsSync(path)) return fallback;
@@ -181,6 +204,11 @@ async function polygonGet(url) {
       status: 'missing_api_key',
       message: 'POLYGON_API_KEY is required for exact intraday historical option quotes.',
     };
+  }
+  if (polygonMinIntervalMs > 0) {
+    const waitMs = Math.max(0, lastPolygonCallAt + polygonMinIntervalMs - Date.now());
+    if (waitMs > 0) await new Promise((resolve) => setTimeout(resolve, waitMs));
+    lastPolygonCallAt = Date.now();
   }
   url.searchParams.set('apiKey', apiKey);
   const response = await fetch(url);

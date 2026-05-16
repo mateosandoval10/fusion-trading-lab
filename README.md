@@ -161,6 +161,8 @@ Phase23 is an intelligence overlay, not a live-trading bot. It is paper/backtest
 - Sells to close at the historical option bid at or after the algorithm exit timestamp.
 - Writes exact contract, strike, expiration, entry quote, exit quote, contracts, PnL, and skip reasons to `reports/options/latest-actual-options-backtest.json`.
 - Requires `POLYGON_API_KEY` for historical intraday option contracts and bid/ask quotes. If the key or quotes are missing, trades are skipped instead of estimated.
+- Loads credentials from local `.env.local` or `.env` files, which are ignored by Git. Do not put real keys in `.env.example`.
+- Respects a 5-calls/minute default throttle for Polygon; override with `--polygon-calls-per-minute=5` only if your plan allows it.
 
 ## TradingView Connection
 
